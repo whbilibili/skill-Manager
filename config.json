@@ -1,0 +1,235 @@
+{
+  "version": "2.0.0",
+  "skills_dir": "/Users/wanghong/.skills-manager/skills",
+  "tools": {
+    "cursor": {
+      "enabled": true,
+      "detected": true,
+      "skills_path": "/Users/wanghong/.cursor/skills",
+      "config_path": "/Users/wanghong/.cursor"
+    },
+    "kiro": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.kiro/skills",
+      "config_path": "/Users/wanghong/.kiro"
+    },
+    "opencode": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.config/opencode/skills",
+      "config_path": "/Users/wanghong/.config/opencode"
+    },
+    "cline": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.cline/skills",
+      "config_path": "/Users/wanghong/.cline"
+    },
+    "qwen-code": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.qwen/skills",
+      "config_path": "/Users/wanghong/.qwen"
+    },
+    "codex": {
+      "enabled": true,
+      "detected": true,
+      "skills_path": "/Users/wanghong/.codex/skills",
+      "config_path": "/Users/wanghong/.codex"
+    },
+    "kilo-code": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.kilocode/skills",
+      "config_path": "/Users/wanghong/.kilocode"
+    },
+    "vercel-skills": {
+      "enabled": true,
+      "detected": true,
+      "skills_path": "/Users/wanghong/.agents/skills",
+      "config_path": "/Users/wanghong/.agents"
+    },
+    "commandcode": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.commandcode/skills",
+      "config_path": "/Users/wanghong/.commandcode"
+    },
+    "trae": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.trae/skills",
+      "config_path": "/Users/wanghong/.trae"
+    },
+    "antigravity": {
+      "enabled": true,
+      "detected": true,
+      "skills_path": "/Users/wanghong/.antigravity/skills",
+      "config_path": "/Users/wanghong/.antigravity"
+    },
+    "openclaw": {
+      "enabled": true,
+      "detected": true,
+      "skills_path": "/Users/wanghong/.openclaw/skills",
+      "config_path": "/Users/wanghong/.openclaw"
+    },
+    "augment": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.augment/skills",
+      "config_path": "/Users/wanghong/.augment"
+    },
+    "qoder": {
+      "enabled": true,
+      "detected": true,
+      "skills_path": "/Users/wanghong/.qoder/skills",
+      "config_path": "/Users/wanghong/.qoder"
+    },
+    "goose": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.config/goose/skills",
+      "config_path": "/Users/wanghong/.config/goose"
+    },
+    "zencoder": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.zencoder/skills",
+      "config_path": "/Users/wanghong/.zencoder"
+    },
+    "crush": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.config/crush/skills",
+      "config_path": "/Users/wanghong/.config/crush"
+    },
+    "codebuddy": {
+      "enabled": true,
+      "detected": true,
+      "skills_path": "/Users/wanghong/.codebuddy/skills",
+      "config_path": "/Users/wanghong/.codebuddy"
+    },
+    "iflow": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.iflow/skills",
+      "config_path": "/Users/wanghong/.iflow"
+    },
+    "pi": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.pi/agent/skills",
+      "config_path": "/Users/wanghong/.pi/agent"
+    },
+    "gemini": {
+      "enabled": true,
+      "detected": true,
+      "skills_path": "/Users/wanghong/.gemini/skills",
+      "config_path": "/Users/wanghong/.gemini"
+    },
+    "junie": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.junie/skills",
+      "config_path": "/Users/wanghong/.junie"
+    },
+    "continue": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.continue/skills",
+      "config_path": "/Users/wanghong/.continue"
+    },
+    "droid": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.factory/skills",
+      "config_path": "/Users/wanghong/.factory"
+    },
+    "windsurf": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.windsurf/skills",
+      "config_path": "/Users/wanghong/.windsurf"
+    },
+    "roo-code": {
+      "enabled": false,
+      "detected": false,
+      "skills_path": "/Users/wanghong/.roo/skills",
+      "config_path": "/Users/wanghong/.roo"
+    },
+    "claude-code": {
+      "enabled": true,
+      "detected": true,
+      "skills_path": "/Users/wanghong/.claude/skills",
+      "config_path": "/Users/wanghong/.claude"
+    }
+  },
+  "custom_tools": {
+    "qclaw": {
+      "name": "Qclaw",
+      "config_path": "/Users/wanghong/.qclaw",
+      "skills_path": "/Users/wanghong/.qclaw/skills",
+      "enabled": true,
+      "icon_path": null
+    }
+  },
+  "preferences": {
+    "theme": "system",
+    "font_family": "system",
+    "language": "zh",
+    "auto_sync": true,
+    "sync_on_save": true,
+    "cloud_sync_auto": true,
+    "cloud_sync_interval_minutes": 10,
+    "default_editor": "builtin",
+    "tab_size": 2,
+    "show_sync_notifications": true,
+    "remove_links_when_disabling_tool": false,
+    "vault_backup_consent": "granted",
+    "telemetry_consent": "granted",
+    "github_token": null
+  },
+  "marketplace_sources": [
+    {
+      "id": "src_composio_awesome_claude_skills",
+      "name": "awesome-claude-skills",
+      "url": "https://github.com/ComposioHQ/awesome-claude-skills",
+      "source_type": "crawler",
+      "enabled": true,
+      "builtin": true,
+      "api_key": null
+    },
+    {
+      "id": "src_skills_sh_home",
+      "name": "skills.sh",
+      "url": "https://skills.sh",
+      "source_type": "crawler",
+      "enabled": true,
+      "builtin": true,
+      "api_key": null
+    }
+  ],
+  "poll_client_state": {
+    "voter_id": "acda9c63-bb7d-451d-8eac-e76bcbbfd137",
+    "voted_options": {
+      "poll_feature_request_20260216": "poll_feature_request_20260216_opt_1"
+    }
+  },
+  "auth_session": {
+    "provider": "github",
+    "access_token": "58838710-d5ff-4179-ad56-5ae038dec50a",
+    "refresh_token": "76aaf314-29c1-4271-a6f2-5f268d2793af",
+    "profile": {
+      "username": "whbilibili",
+      "avatar_url": "https://avatars.githubusercontent.com/u/66902079?v=4"
+    }
+  },
+  "cloud_sync": {
+    "device_id": "e5a91c6205614d77946959651cb9082e",
+    "last_revision": 1,
+    "last_synced_at": 1774406311,
+    "last_payload_hash": "1d87d830aa01ad1a53cfb6b1ccd92adb73e94a57979bd3a0a93b099218254338"
+  },
+  "initialized": true
+}

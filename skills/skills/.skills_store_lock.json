@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "mission-control": {
+      "name": "Mission Control",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=mission-control",
+      "source": "skillhub",
+      "version": "2.3.1"
+    },
+    "figma": {
+      "name": "Figma",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=figma",
+      "source": "skillhub",
+      "version": "2.1.0"
+    },
+    "seo-content-writer": {
+      "name": "Seo Content Writer",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=seo-content-writer",
+      "source": "skillhub",
+      "version": "3.0.0"
+    },
+    "capability-evolver": {
+      "name": "Capability Evolver",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=capability-evolver",
+      "source": "skillhub",
+      "version": "1.31.0"
+    },
+    "elevenlabs": {
+      "name": "Elevenlabs",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=elevenlabs",
+      "source": "skillhub",
+      "version": "1.3.4"
+    }
+  }
+}

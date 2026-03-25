@@ -1,0 +1,16 @@
+{
+  "author": "garrytan",
+  "created_at": 1774238533,
+  "description": "If PROACTIVE is \"false\" , do not proactively suggest gstack skills — only invoke them when the user explicitly asks. The user opted out of proactive suggestions.",
+  "install_url": "https://github.com/garrytan/gstack",
+  "marketplace_skill_id": "sk_e6183f7f9086624f",
+  "marketplace_skill_slug": "garrytan/gstack/plan-ceo-review",
+  "marketplace_source_id": "src_skills_sh_home",
+  "name": "plan-ceo-review",
+  "remote_revision": "market-api-fnv64:7e9fa0e9b5d9e04b",
+  "repo_url": "https://github.com/garrytan/gstack",
+  "skill_path": "plan-ceo-review",
+  "source": "marketplace",
+  "tags": [],
+  "version": "1.0"
+}
