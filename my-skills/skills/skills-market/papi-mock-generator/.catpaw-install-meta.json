@@ -1,0 +1,9 @@
+{
+  "source": "market",
+  "id": 10575,
+  "alias": "papi-mock-generator",
+  "intro": "PAPI 接口 Mock 数据生成器。读取 PAPI 接口文档，自动生成正常/边界/错误三种场景的 Mock JSON，输出可直接用于联调的数据和 PAPI Mock URL。",
+  "updateTime": "1773925574000",
+  "downloadTime": 1776421427168,
+  "location": "global"
+}

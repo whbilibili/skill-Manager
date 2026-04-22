@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 1489,
+  "updateTime": 1776648956000,
+  "downloadTime": 1776651441640,
+  "alias": "catpaw-skill-installer",
+  "intro": "为 CatPaw 发现并安装 Skills。适用于用户需要查找、安装 Skill 的情境。支持项目级和全局安装。"
+}

@@ -1,0 +1,17 @@
+skill-manifest-version: 1
+skill-id: e8acce6008e473f8edf6a192a92e05890816daaebdb3a2e3c36ed9d4cd9d9a11
+
+files:
+  cd6e7b8fc4eaad19eeb75502974bedd9b21705105bdd224f14308065c54e4032  SKILL.md
+  8cf4a719c0d2b1acf3f32d7f8fe5915b39c86e4cccafa50bada0c485bd5b1ea9  assets/LEARNINGS.md
+  d21e17069a44dc7f660a993349499a20f0f8c0d0518eb8b6e6c1ddf91a6dc841  assets/SKILL-TEMPLATE.md
+  ef27a10564b0ba9dbe655ad1b59c74c64a5f5ee9d7adf3063843050a70187043  hooks/openclaw/HOOK.md
+  1fcd3424157c201535a91a0762d0aabdbb7b7cec639fb2f4d42bf5d300a8b2ed  hooks/openclaw/handler.js
+  be261d1a82bf2327da9afc46e159144359bf42c33d7e2a56452873d822d8406f  hooks/openclaw/handler.ts
+  ea4f30ed6fa941d4794a39b7bc1a4100d37ee8e3029393884e4fa9c2df7e7010  references/examples.md
+  dabf8202bda6a27b0adfaaad938d6d4fe78f30c1323c8fa2637b232827e0ce56  references/hooks-setup.md
+  a2a3005d60dc9f865db0ba4cfaa63d1fab2caa39255d90b9f0d80ad1f3af0183  references/openclaw-integration.md
+  d31d7a5c5115346339fe14c682f6068ba5205c894f90ca3ccac91d91759b746a  scripts/activator.sh
+  aa1c146174fb2ab08551df5a67e2e08eddb2d6a03b37c503273604e87dbe7e79  scripts/error-detector.sh
+  3c9ce991b587eeeb8f52eaf854e8713924f2cfceeaaef3acbf61a430c578a4f5  scripts/extract-skill.sh
+  6840c2d443afba621ef829f6fff8860b158d5760a858192c31b593264c0d386d  scripts/openclaw-activate.sh

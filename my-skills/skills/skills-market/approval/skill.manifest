@@ -1,0 +1,11 @@
+skill-manifest-version: 1
+skill-id: 82da0877f32f2ab13a003588fdd273279535d178ba5cb0e73206a3ee8c9d1c45
+
+files:
+  ab310ed22ae4e00a21de90607170d7658ff1be1269fee99006ce1f77b3fcbf1b  SKILL.md
+  51104e70b91feb8ab1460cb67ac7698e33c1f03b5e916a8ffd235b27a1a8b9d1  references/cli-cheatsheet.md
+  45094ce31f6fee52a88422d5bd279bfe087167079070b1b6781070136bf0e3a0  references/flow.md
+  5536f69f636455d18ddb03eea3a63019b62603220cca9683d3c228e7a307724a  references/process-routing.md
+  9d9d969c5888022c5d4edf968cde6e7cb192628069b969d2341156fa7b1f4f55  references/resubmit.md
+  72416b42b19b60afc8975b924d819d4f1fad9241cfd7284478905bf3560ea1d1  references/update.md
+  b8ad624b0b4e293a567ecb8ea7e00cba0aeb94a88b3a145bfd0b062eea169cc9  references/workflow-batch.md

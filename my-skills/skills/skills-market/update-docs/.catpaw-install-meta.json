@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 778,
+  "updateTime": 1773925543000,
+  "downloadTime": 1776396633629,
+  "alias": "文档更新工具",
+  "intro": "代码文档更新和同步工具。Next.js 文档维护、PR 影响分析。MDX、API 参考、文档关联性检查。"
+}

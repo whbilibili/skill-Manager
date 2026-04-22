@@ -1,0 +1,10 @@
+skill-manifest-version: 1
+skill-id: a7b206b1e94ec30b632291d483955d1436a6e46fc669c7dd7e19fab732478457
+
+files:
+  6a617b76d8a1b3693c71877ae2de9971df58499a3f6a9ea8225fb285b535a401  CHANGELOG.md
+  0107246d44ddd2f098d6ce58daf34ad9d7820964cc38da817eb68b6110641f63  SKILL.md
+  3e066c42a21dcbe83f8fa4ca34c3b39454d7cdf29d16fdc1bea7686ec3bdbf81  references/advanced.md
+  e7ccd492f54c4c58b871daa198836f7e2ccdbd9ec34f977cf69d5c12052ca4c1  references/authentication.md
+  b1195bddba968fd1bfc62cee95053b687a1ceecc77a614e4c8fbfcdcee347115  references/full-commands.md
+  24377f330a2350b135aa214bdfd57b3ac91ff97d7b294a126400a6b7fa724a55  tests/test_smoke.sh

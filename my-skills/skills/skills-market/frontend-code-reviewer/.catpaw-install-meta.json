@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 1456,
+  "updateTime": 1776095169000,
+  "downloadTime": 1776396272248,
+  "alias": "前端代码审查专家",
+  "intro": "前端代码审查专家 - 扫描 Git 变更（暂存区/工作区），产出 PR 审查报告。覆盖 JS/TS/React/Vue/单测规范，确保代码符合公司标准。"
+}

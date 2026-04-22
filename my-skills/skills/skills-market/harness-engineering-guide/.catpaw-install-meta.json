@@ -1,0 +1,9 @@
+{
+  "source": "market",
+  "id": 38977,
+  "alias": "harness-engineering-guide",
+  "intro": "\"驾驭工程（Harness Engineering）— AI Agent 行为治理实战手册。基于 Mitchell Hashimoto 六大支柱理论（上下文架构/架构约束/自验证循环/上下文隔离/熵治理/可拆卸性），融合真实 Agent 运营中的 22 条规则、7 个防幻觉自验证机制和持续改进闭环。让 Agent 不犯已知的错：犯错→识别模式→固化规则→回测验证→永不再犯。适用于所有使用 OpenClaw/CatClaw/Claude Code 等 AI Agent 框架的开发者和运维者。\"",
+  "updateTime": "1776396750000",
+  "downloadTime": 1776411343075,
+  "location": "global"
+}

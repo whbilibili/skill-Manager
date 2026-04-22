@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 65,
+  "updateTime": 1776412579000,
+  "downloadTime": 1776415612440,
+  "alias": "AI写作去痕",
+  "intro": "Humanizer-zh 是一个用于去除文本中 AI 生成痕迹的工具，帮助你将 AI 生成的内容改写得更自然、更像人类书写的文本。\r\n\r\n本项目适用于：\r\n\r\n编辑和审阅 AI 生成的内容\r\n提升文章的人性化程度\r\n学习识别 AI 写作的常见模式\r\n\r\n来源：https://github.com/op7418/Humanizer-zh"
+}

@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 11445,
+  "updateTime": 1775790759000,
+  "downloadTime": 1775795133903,
+  "alias": "Plan-CEO-Review",
+  "intro": "源自 YC CEO Garry Tan 的开源项目 gstack。核心在于应用“创始人第一性原理”审视产品计划，强制 你的虾从执行者转变为战略挑战者，拒绝平庸，追求 10 星级体验。\r\n\r\n核心逻辑：\r\n极致扩张 (Dream Big)：打破限制，构思行业顶尖方案。\r\n精选强化 (Selective Expansion)：在现有范围内寻找闪光点。\r\n极致严谨 (Maximum Rigor)：以最挑剔的眼光压测逻辑边界。\r\n极致收敛 (Strip to Essentials)：砍掉冗余，直击核心价值。\r\n\r\n触发方式：\r\n指令触发：在对话中输入“think bigger”、“重新思考”、“战略评审”、“这个方案够有野心吗”或“is this ambitious enough”等关键词。\r\n致敬开源：https://github.com/garrytan/gstack/"
+}

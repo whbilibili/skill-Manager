@@ -1,0 +1,9 @@
+{
+  "source": "market",
+  "id": 214,
+  "alias": "CICD管道构建指南",
+  "intro": "构建安全高效的CI/CD管道，涵盖供应链安全（SLSA）、Monorepo优化、缓存策略和并行化模式，支持GitHub Actions、GitLab CI和Argo Workflows。适用于设置自动化测试、构建或部署工作流。",
+  "updateTime": "1773925543000",
+  "downloadTime": 1776410678757,
+  "location": "global"
+}

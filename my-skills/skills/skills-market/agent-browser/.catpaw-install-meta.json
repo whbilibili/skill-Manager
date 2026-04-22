@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 1783,
+  "updateTime": 1776090979000,
+  "downloadTime": 1776094025941,
+  "alias": "agent-browser",
+  "intro": "通过 agent-browser CLI 进行 headless 浏览器自动化。当需要浏览器交互（表单填写、模拟点击、页面截图、JS 执行），且 web_fetch 纯文本抓取无法满足时使用。"
+}

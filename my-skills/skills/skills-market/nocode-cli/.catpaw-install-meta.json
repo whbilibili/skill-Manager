@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 2981,
+  "updateTime": 1776790151000,
+  "downloadTime": 1776795438211,
+  "alias": "nocode-cli",
+  "intro": "通过 NoCode CLI 操作美团 NoCode 零代码平台。当用户要求创建/修改零代码应用、截图预览、部署上线、管理项目、查看工程文件、操作数据库，或提及 \"nocode\"、\"零代码\"、\"NoCode\" 时使用。"
+}

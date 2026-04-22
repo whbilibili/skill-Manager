@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 1776,
+  "updateTime": 1773925511000,
+  "downloadTime": 1774595303028,
+  "alias": "Vercel",
+  "intro": "前端开发者的老朋友。\r\n写完代码，一句\"帮我部署到Vercel\"，30秒上线。不用记命令，不用翻文档，不用配CI/CD。"
+}

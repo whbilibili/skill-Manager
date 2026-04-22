@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 2145,
+  "updateTime": 1775636285000,
+  "downloadTime": 1775636985301,
+  "alias": "龙虾给我大象发图图",
+  "intro": "🦞📸 CatClaw/OpenClaw 图片发送增强技能。在大象（Daxiang）频道中，当用户需要查看图片时，自动将本地图片上传到美团 S3Plus，然后以 Markdown 图片格式返回给用户，确保图片在大象中可直接预览。优先使用外网地址，外网不可用时回退到内网地址。适用于 CatClaw、OpenClaw 等 AI Agent 平台。触发词：看图片、发图片、截图发我、显示图片、查看图片、图片预览。"
+}

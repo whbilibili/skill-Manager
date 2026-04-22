@@ -1,0 +1,10 @@
+skill-manifest-version: 1
+skill-id: 495bb5e6fdb8fa83a9961ff7f20ff99d970727f9c543520e42afcb4b51a1404e
+
+files:
+  6bb40c309e4311bdefe172247c34293adf6ed6516fb27d258dc430141c307f1c  SKILL.md
+  bca93b179f76682e8679b9225a3886a5407db32487998a5db83941f81ccf4f8c  references/commands.md
+  8cd29014cc2f5d0be90121077539ceddc13ee61ea14971d9055227e63fa79619  references/integration-examples.md
+  3e40941ca31658a78851cefc5e7447826267f5769a79a0a027b0bffe8e7e071c  scripts/auth-cache.sh
+  648e0c9f0457931a63c6b9f80d66ab0911a56c28ab6024fe59407d4a81b656cd  scripts/auto-refresh.sh
+  e6877ea238205cd3aef29b9bb321cd70e21987ab07f7853b3358a97dd24fcf32  scripts/cache-manager.py

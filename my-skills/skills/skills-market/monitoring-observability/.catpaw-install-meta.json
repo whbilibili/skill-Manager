@@ -1,0 +1,9 @@
+{
+  "source": "market",
+  "id": 2664,
+  "alias": "监控与可观测",
+  "intro": "为应用和基础设施设置监控、日志和可观测性。用于实现健康检查、指标采集、日志聚合或告警系统。支持Prometheus、Grafana、ELK、Datadog",
+  "updateTime": "1773925546000",
+  "downloadTime": 1776421426943,
+  "location": "global"
+}

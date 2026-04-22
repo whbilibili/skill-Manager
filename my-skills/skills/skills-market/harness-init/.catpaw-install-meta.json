@@ -1,0 +1,9 @@
+{
+  "source": "market",
+  "id": 20237,
+  "alias": "harness-init",
+  "intro": "为项目搭建最基础的 AI 智能体友好的 harness 结构。创建精简 CLAUDE.md（地图）+ docs/ 知识库目录。当用户提到：harness, 搭建harness, init harness, 项目脚手架, agent-friendly, 智能体友好, bootstrap harness, setup harness, harness engineering 时触发。",
+  "updateTime": "1774860506000",
+  "downloadTime": 1776411342813,
+  "location": "global"
+}

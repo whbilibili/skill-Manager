@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 2030,
+  "updateTime": 1776660475000,
+  "downloadTime": 1776665684064,
+  "alias": "friday-skill-cli",
+  "intro": "Friday Skills 广场 CLI 工具。认证优先级：(1) MOA 无感登录（@mtfe/mtsso-auth-official，无需确认）(2) CIBA 降级（需大象确认）(3) --browser（浏览器 cookie）(4) --app-auth（client credentials，无用户身份）。"
+}

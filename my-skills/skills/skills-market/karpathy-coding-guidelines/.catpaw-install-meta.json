@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 32634,
+  "updateTime": 1775794244000,
+  "downloadTime": 1776391869640,
+  "alias": "karpathy-coding-guidelines",
+  "intro": "Karpathy 编码准则，用于减少 AI 写代码时的常见错误。基于 Andrej Karpathy 对 LLM 编码陷阱的观察，包含四条核心原则：先澄清不假设、最小代码原则、外科手术式修改、定义可验证的成功标准。当写代码、审查代码、重构代码、需求理解有歧义时使用。触发词：写代码、代码审查、重构、编码规范、karpathy、coding guidelines。"
+}

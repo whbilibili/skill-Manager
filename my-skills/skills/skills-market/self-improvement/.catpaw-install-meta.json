@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 1648,
+  "updateTime": 1776668462000,
+  "downloadTime": 1776671765138,
+  "alias": "自我进化学习助手",
+  "intro": "自我进化助手——把错误、纠正、知识缺口和能力诉求沉淀到 .learnings，并在必要时升级到 memory 或新 skill。支持 CatPaw Desk 和 OpenClaw 双平台，OpenClaw 安装后可一键激活（自动创建 .learnings、安装 hook、注入 SOUL.md 提醒）。"
+}

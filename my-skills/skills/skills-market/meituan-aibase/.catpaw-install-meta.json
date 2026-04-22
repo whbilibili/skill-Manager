@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 24368,
+  "updateTime": 1776736009000,
+  "downloadTime": 1776737694476,
+  "alias": "meituan-aibase",
+  "intro": "管理美团 AI Base 数据库工作区（workspace）。AI Base 100% 兼容 Supabase 语法，基于 PostgreSQL + PostgREST。支持：查询工作区列表/详情/连接信息、执行 SQL、查看/创建表、执行数据库迁移、生成 TypeScript 类型。当用户提到 AI Base、aibase、Supabase、查数据库、执行SQL、建表、数据库迁移、生成TS类型、查 workspace、获取 API Key、成员管理时使用。"
+}

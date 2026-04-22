@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 1802,
+  "updateTime": 1774688063000,
+  "downloadTime": 1774688605494,
+  "alias": "self-improving-agent",
+  "intro": "\"Agent 自我反思与自动模式提取。当用户明确纠正 agent 行为（'你刚才做错了'）、agent 发现自身错误、或需要从错误中提取教训时触发。含自动知识提取（Claudeception 式）和置信度晋升机制。触发词：你做错了、agent 行为纠正、self-reflect、从错误中学习、learn from mistake、记住这个教训、/learn。\""
+}

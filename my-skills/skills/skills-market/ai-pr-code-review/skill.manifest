@@ -1,0 +1,27 @@
+skill-manifest-version: 1
+skill-id: 67f540e382b8b530c343cf479a946ee462f7ca25301834b80c06a767854b47e0
+
+files:
+  00144bfa9808f1b96e97e47d67c379ca81c164c60f420fed410636dade6d669b  SKILL.md
+  46fef4d74d8812254528a939f972cb2535472c8d7b062f298d14eb8fbfd7fe2e  cr-config.yaml
+  4d1c07a29153d0cc46abe27392acf378b8651f448a84ae1cabbc99e0181bcf26  references/citadel-write-guide.md
+  22a4074b4882beb9515714c82021214f6f35f5498dbdc4423311382eccc879bd  references/coding-standards-checklist.md
+  db12ecf485c698f13415e3040677a5c9e09dfdcf3ebdf4b74c46e4fc8e546178  references/coe-rules.md
+  cbd779c833b7a989f2a759b7828cc4cb36a7fa92386d2c080ada04e15dc906c8  references/comment-templates.md
+  0f28b0670c81a606b1edb92c5ea16278210a8edd062a3c290dcd3bb8fac6c35d  references/cr-comment.sh
+  77978a49b1e250e0f1570c963e83400deeb562c0b4bd8d2ef1b3a3c289987e3a  references/daxiang-notify-api.md
+  8fc7b8ac484f610d7633aed34071ff1ff5d6408f225cae99626c90130404bb45  references/domain-knowledge.md
+  1f90f46ee2b0d646e5f8836b260454caa201aa37fcf0e41869f5f2cbac34c92f  references/env-setup-guide.md
+  7de9d0e25f18458376d06f87ae02444c08a2874d950a0a81f28af6ad0b4b0c2a  references/performance-checklist.md
+  9af0dcebd66edbb4044b080ef5c032f26468899f02ef7ff31daca07281fba27e  references/pr-comment-guide.md
+  1e5bd7744ea312d351414db7ff55ba863ffd9e3abe5e01d7398eb4c669d05ece  references/stability-security-checklist.md
+  deb53b856c5507bb4f2c93fc8b4a3a193e96279ecfc076bf4188c6cbd7d2028f  references/super-large-pr-guide.md
+  1ee11dd58ac95c772d5120461980efca23602c67095fe2f6ca4b75468dee5012  references/table-write-guide.md
+  cce024407c143fb78e6efa35698d9b2aec49a4f05412e62e8ee926550b88acbd  references/team-onboarding.md
+  8d87603884ffec7ea22e18f669b28d1c9fc47dc6b6e68c20bef94c79f9062b8f  references/zero-tolerance-checklist.md
+  a0bdcdbae23cf021b93c575df2dbe53851cc3d65ff4f7312cddd6f5379b7d919  scripts/__pycache__/code_cli.cpython-312.pyc
+  68a9eddf2a99130051909dd7635f9a7b5c484e5e60e9f311085514c7c255774c  scripts/code_cli.py
+  c75f80c0757d2e1c760620526f9b1fc48bd113bece66efb18bcdfb7933d3051a  scripts/env-check.sh
+  21ac358b246cc1e6ae2cc5373cecfd45280440f50ff40f3126a168b3387c1f6e  scripts/get_org_info.py
+  8b829f40a6a8f62362c9be8da3feaa45b878ffe5f601702843306ae9f04efec5  scripts/get_org_info.sh
+  32fb12e34cfed00afbb52f5af2a8afd4d0391133470e13dee500376df83a0192  scripts/notify.py

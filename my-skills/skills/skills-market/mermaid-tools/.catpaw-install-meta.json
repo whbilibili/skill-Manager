@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 201,
+  "updateTime": 1776756659000,
+  "downloadTime": 1776759433639,
+  "alias": "Mermaid图表工具",
+  "intro": "从Markdown文件中提取Mermaid图表并使用内置脚本生成高质量PNG图像。适用于处理Mermaid图表、将图表转换为PNG格式、从Markdown中提取图表或处理包含嵌入式Mermaid代码的文档。"
+}

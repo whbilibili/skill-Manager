@@ -1,0 +1,8 @@
+{
+  "source": "market",
+  "id": 4414,
+  "updateTime": 1776759032000,
+  "downloadTime": 1776759432845,
+  "alias": "账号超持久登录授权",
+  "intro": "统一管理美团内部服务的认证 Token 缓存，支持 Friday MCP Token 无交互续期、SSO Cookie 检查、MOA 登录态管理。 agent 调用内部服务前先检查缓存，有效直接复用，过期自动换票。 触发词：认证缓存、token复用、减少授权、token续期、SSO续期、登录态管理、mcp token刷新、 401自愈、403自愈、Friday MCP token、CIBA授权、mtsso换票。 适用场景：(1) Friday MCP 调用前检查 token (2) 访问 .sankuai.com 前检查 SSO (3) 需要 MOA 登录态的操作 (4) cron 定时刷新认证 (5) 401/403 自愈换票"
+}
