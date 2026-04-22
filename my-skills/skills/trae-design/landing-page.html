@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trae — Build with AI, Ship with Confidence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/lucide-static@1.8.0/font/lucide.css" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#171B26;--s1:#262A37;--s2:#2A2E3E;--s3:#363B4E;
+  --t1:#C9D1D9;--t2:#9599A6;--t3:#737780;--t4:#5C6373;
+  --accent:#10B981;--accent-s:#022C22;--accent-hover:#059669;
+  --purple:#7563E7;--blue:#387BFF;
+  --red:#CC4B53;--amber:#EB9B61;--green:#10B981;
+  --font:Inter,system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{background:var(--bg);color:var(--t1);font-family:var(--font);font-size:14px;line-height:1.5}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* Nav */
+nav{padding:16px 0;border-bottom:1px solid var(--s1)}
+nav .container{display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:20px;font-weight:700;color:var(--accent);letter-spacing:-0.5px}
+.nav-links{display:flex;gap:24px;font-size:13px;color:var(--t2)}
+.nav-links a{color:var(--t2);transition:color .12s}
+.nav-links a:hover{color:var(--t1);text-decoration:none}
+.nav-cta{background:var(--accent);color:#fff;padding:8px 16px;border-radius:6px;font-size:13px;font-weight:500;border:none;cursor:pointer;transition:background .18s ease-out}
+.nav-cta:hover{background:var(--accent-hover);text-decoration:none;color:#fff}
+
+/* Hero */
+.hero{padding:96px 0 48px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:
+  linear-gradient(rgba(38,42,55,.3) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(38,42,55,.3) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;mask-image:radial-gradient(ellipse at center,black 30%,transparent 70%)}
+.hero h1{font-size:56px;font-weight:700;line-height:1.08;margin-bottom:16px;position:relative;letter-spacing:-1px}
+.hero h1 .green{color:var(--accent)}
+.hero p{font-size:18px;color:var(--t2);max-width:560px;margin:0 auto 32px;position:relative}
+.hero-btns{display:flex;gap:12px;justify-content:center;position:relative}
+.btn-hero{padding:14px 28px;border-radius:6px;font-size:16px;font-weight:500;border:none;cursor:pointer;transition:all .18s ease-out;font-family:var(--font)}
+.btn-hero-primary{background:var(--accent);color:#fff}
+.btn-hero-primary:hover{background:var(--accent-hover);text-decoration:none;color:#fff}
+.btn-hero-secondary{background:var(--s1);color:var(--t1);border:1px solid var(--s3)}
+.btn-hero-secondary:hover{background:var(--s2);text-decoration:none;color:var(--t1)}
+
+/* IDE Mockup */
+.ide-mockup{margin:48px auto 0;max-width:900px;background:var(--s1);border:1px solid var(--s3);border-radius:12px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.ide-titlebar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--s1);border-bottom:1px solid var(--s3)}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot-r{background:#CC4B53}.dot-y{background:#EB9B61}.dot-g{background:#10B981}
+.ide-title{font-size:12px;color:var(--t3);margin-left:8px;font-family:var(--mono)}
+.ide-body{display:grid;grid-template-columns:200px 1fr 240px;height:320px}
+.ide-sidebar{background:var(--bg);border-right:1px solid var(--s3);padding:12px;font-size:12px;color:var(--t2)}
+.ide-sidebar .folder{font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.ide-sidebar .file{padding:3px 0 3px 16px;color:var(--t3);cursor:default}
+.ide-sidebar .file.active{color:var(--accent)}
+.ide-editor{padding:16px;font-family:var(--mono);font-size:12px;line-height:1.8;overflow:hidden;background:var(--bg)}
+.ln{color:var(--t4);user-select:none;display:inline-block;width:24px;text-align:right;margin-right:12px}
+.kw{color:var(--purple)}.str{color:var(--accent)}.fn{color:var(--blue)}.cm{color:var(--t4);font-style:italic}
+.ai-hl{background:var(--accent-s);display:block;margin:0 -16px;padding:0 16px;border-left:2px solid var(--accent)}
+.ide-chat{background:var(--s1);border-left:1px solid var(--s3);padding:12px;display:flex;flex-direction:column}
+.ide-chat-header{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.ide-chat-msg{font-size:11px;color:var(--t2);background:var(--bg);border-radius:6px;padding:8px;margin-bottom:8px;line-height:1.5}
+.ide-chat-input{margin-top:auto;background:var(--bg);border:1px solid var(--s3);border-radius:6px;padding:8px;font-size:11px;color:var(--t3)}
+
+/* Features */
+.features{padding:96px 0}
+.section-title{font-size:28px;font-weight:600;text-align:center;margin-bottom:8px}
+.section-sub{font-size:16px;color:var(--t2);text-align:center;margin-bottom:48px}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feature-card{background:var(--s1);border-radius:8px;padding:24px;transition:border .18s ease-out;border:1px solid transparent}
+.feature-card:hover{border-color:var(--s3)}
+.feature-icon{width:40px;height:40px;border-radius:8px;background:var(--accent-s);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px;color:var(--accent)}
+.feature-card h3{font-size:16px;font-weight:600;margin-bottom:6px}
+.feature-card p{font-size:13px;color:var(--t2);line-height:1.5}
+
+/* Steps */
+.steps{padding:96px 0}
+.steps-row{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;position:relative}
+.steps-row::before{content:'';position:absolute;top:32px;left:calc(16.67% + 16px);right:calc(16.67% + 16px);height:2px;background:var(--s3)}
+.step{text-align:center;position:relative}
+.step-num{width:64px;height:64px;border-radius:50%;background:var(--s1);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:24px;font-weight:700;color:var(--accent);margin:0 auto 16px;position:relative;z-index:1}
+.step h3{font-size:16px;font-weight:600;margin-bottom:6px}
+.step p{font-size:13px;color:var(--t2)}
+
+/* Metrics */
+.metrics{padding:96px 0;background:var(--s1)}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+.metric-num{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.metric-label{font-size:13px;color:var(--t2)}
+
+/* CTA */
+.cta{padding:96px 0;text-align:center}
+.cta h2{font-size:36px;font-weight:600;margin-bottom:12px}
+.cta p{font-size:16px;color:var(--t2);margin-bottom:32px}
+
+/* Footer */
+footer{padding:32px 0;border-top:1px solid var(--s1);font-size:12px;color:var(--t4)}
+footer .container{display:flex;justify-content:space-between;align-items:center}
+footer a{color:var(--t3)}
+
+@media(max-width:768px){
+  .hero h1{font-size:36px}
+  .features-grid,.steps-row,.metrics-grid{grid-template-columns:1fr}
+  .steps-row::before{display:none}
+  .ide-body{grid-template-columns:1fr;height:auto}
+  .ide-sidebar,.ide-chat{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+<div class="container">
+  <div class="logo">Trae</div>
+  <div class="nav-links">
+    <a href="#">Features</a>
+    <a href="#">Docs</a>
+    <a href="#">Pricing</a>
+    <a href="#">Blog</a>
+  </div>
+  <a href="#" class="nav-cta">Download Free</a>
+</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="container">
+  <h1>Build with <span class="green">AI</span>,<br>Ship with Confidence</h1>
+  <p>The AI-native IDE that understands your codebase. Write, refactor, and debug with an intelligent copilot — right inside your editor.</p>
+  <div class="hero-btns">
+    <a href="#" class="btn-hero btn-hero-primary">Get Started Free</a>
+    <a href="#" class="btn-hero btn-hero-secondary">View Documentation</a>
+  </div>
+
+  <!-- IDE MOCKUP -->
+  <div class="ide-mockup">
+    <div class="ide-titlebar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <span class="ide-title">Trae — main.tsx</span>
+    </div>
+    <div class="ide-body">
+      <div class="ide-sidebar">
+        <div class="folder">▾ src</div>
+        <div class="file active">main.tsx</div>
+        <div class="file">App.tsx</div>
+        <div class="folder">▾ components</div>
+        <div class="file">&nbsp; Button.tsx</div>
+        <div class="file">&nbsp; Card.tsx</div>
+        <div class="folder">▸ utils</div>
+        <div class="file">package.json</div>
+      </div>
+      <div class="ide-editor">
+        <div><span class="ln">1</span><span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;</div>
+        <div><span class="ln">2</span><span class="kw">import</span> { <span class="fn">createRoot</span> } <span class="kw">from</span> <span class="str">'react-dom/client'</span>;</div>
+        <div><span class="ln">3</span></div>
+        <div><span class="ln">4</span><span class="cm">// Entry point for the Trae app</span></div>
+        <div><span class="ln">5</span><span class="kw">const</span> <span class="fn">App</span> = () =&gt; {</div>
+        <div><span class="ln">6</span>  <span class="kw">const</span> [count, setCount] = <span class="fn">useState</span>(0);</div>
+        <div class="ai-hl"><span class="ln">7</span>  <span class="cm">// AI: Consider using useCallback here</span></div>
+        <div><span class="ln">8</span>  <span class="kw">const</span> <span class="fn">increment</span> = () =&gt; <span class="fn">setCount</span>(c =&gt; c + 1);</div>
+        <div><span class="ln">9</span></div>
+        <div><span class="ln">10</span>  <span class="kw">return</span> (</div>
+        <div><span class="ln">11</span>    &lt;<span class="fn">button</span> <span class="fn">onClick</span>={<span class="fn">increment</span>}&gt;</div>
+        <div><span class="ln">12</span>      Count: {count}</div>
+        <div><span class="ln">13</span>    &lt;/<span class="fn">button</span>&gt;</div>
+        <div><span class="ln">14</span>  );</div>
+        <div><span class="ln">15</span>};</div>
+      </div>
+      <div class="ide-chat">
+        <div class="ide-chat-header">✦ Trae AI</div>
+        <div class="ide-chat-msg">I noticed the <code style="font-family:var(--mono);background:var(--s3);padding:1px 4px;border-radius:2px">increment</code> function is recreated every render. Wrap it in <code style="font-family:var(--mono);background:var(--s3);padding:1px 4px;border-radius:2px">useCallback</code> for better performance.</div>
+        <div class="ide-chat-msg" style="background:var(--s2)">Can you apply that fix?</div>
+        <div class="ide-chat-input">Ask Trae anything...</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+<div class="container">
+  <div class="section-title">Intelligent by Design</div>
+  <div class="section-sub">Every feature built around how developers actually work</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Inline AI Chat</h3>
+      <p>Ask questions about your code without leaving the editor. Context-aware responses grounded in your codebase.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3>Smart Refactoring</h3>
+      <p>AI-powered refactoring that understands intent, not just syntax. Rename, extract, and restructure with confidence.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛡</div>
+      <h3>Code Review Agent</h3>
+      <p>Automated reviews that catch bugs, security issues, and anti-patterns before they reach production.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <h3>Multi-file Edits</h3>
+      <p>Apply changes across your entire project in one action. The AI understands cross-file dependencies.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧪</div>
+      <h3>Test Generation</h3>
+      <p>Generate comprehensive test suites from your implementation. Covers edge cases you might miss.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔌</div>
+      <h3>Extension Ecosystem</h3>
+      <p>Compatible with VS Code extensions. Bring your favorite tools — themes, linters, debuggers — they all work.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="steps">
+<div class="container">
+  <div class="section-title">How It Works</div>
+  <div class="section-sub">From install to productive in three steps</div>
+  <div class="steps-row">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Download & Install</h3>
+      <p>Free download for macOS, Windows, and Linux. Import your VS Code settings in one click.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Open Your Project</h3>
+      <p>Trae indexes your codebase and builds a contextual understanding of your architecture.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Code with AI</h3>
+      <p>Ask questions, get suggestions, apply fixes — all within your natural coding flow.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- METRICS -->
+<section class="metrics">
+<div class="container">
+  <div class="metrics-grid">
+    <div><div class="metric-num">2M+</div><div class="metric-label">Downloads</div></div>
+    <div><div class="metric-num">150ms</div><div class="metric-label">Avg Response</div></div>
+    <div><div class="metric-num">50+</div><div class="metric-label">Languages</div></div>
+    <div><div class="metric-num">99.9%</div><div class="metric-label">Uptime</div></div>
+  </div>
+</div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+<div class="container">
+  <h2>Ready to Build Smarter?</h2>
+  <p>Join millions of developers who ship faster with Trae.</p>
+  <a href="#" class="btn-hero btn-hero-primary">Download Trae Free</a>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<div class="container">
+  <div><span class="logo" style="font-size:14px">Trae</span> · AI-native IDE by ByteDance</div>
+  <div><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">GitHub</a></div>
+</div>
+</footer>
+
+</body>
+</html>

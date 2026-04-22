@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trae Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/lucide-static@1.8.0/font/lucide.css">
+<style>
+/* ── CSS CUSTOM PROPERTIES ── */
+[data-theme="dark"] {
+  --bg:           #171B26;
+  --surface1:     #262A37;
+  --surface2:     #2A2E3E;
+  --surface3:     #363B4E;
+  --border:       #262A37;
+  --border-vis:   #363B4E;
+  --text1:        #C9D1D9;
+  --text2:        #9599A6;
+  --text3:        #737780;
+  --text4:        #5C6373;
+  --accent:       #10B981;
+  --accent-sub:   #022C22;
+  --success:      #10B981;
+  --warning:      #EB9B61;
+  --error:        #CC4B53;
+  --purple:       #7563E7;
+  --blue:         #387BFF;
+  --elev1:        none;
+  --elev2:        0 4px 12px rgba(0,0,0,0.4);
+  --elev3:        0 8px 24px rgba(0,0,0,0.5);
+}
+[data-theme="light"] {
+  --bg:           #F0F2F5;
+  --surface1:     #FFFFFF;
+  --surface2:     #E0E3EA;
+  --surface3:     #C9D1D9;
+  --border:       #E0E3EA;
+  --border-vis:   #C9D1D9;
+  --text1:        #171B26;
+  --text2:        #5C6373;
+  --text3:        #737780;
+  --text4:        #9599A6;
+  --accent:       #059669;
+  --accent-sub:   #ECFDF5;
+  --success:      #10B981;
+  --warning:      #EB9B61;
+  --error:        #CC4B53;
+  --purple:       #7563E7;
+  --blue:         #387BFF;
+  --elev1:        0 1px 3px rgba(0,0,0,0.08);
+  --elev2:        0 4px 12px rgba(0,0,0,0.12);
+  --elev3:        0 8px 24px rgba(0,0,0,0.16);
+}
+
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text1);
+  min-height: 100vh;
+  padding: 32px 24px 96px;
+  transition: background 300ms ease-out, color 300ms ease-out;
+}
+
+/* ── GRID ── */
+.grid {
+  display: grid;
+  max-width: 1120px;
+  margin: 0 auto;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 56px 200px 220px 200px 220px auto;
+  gap: 8px;
+}
+
+/* ── HEADER ROW ── */
+.header-row {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px;
+  margin-bottom: 4px;
+}
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text1);
+  letter-spacing: -0.02em;
+}
+.brand-sub {
+  font-size: 12px;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+}
+.header-spacer { flex: 1; }
+.header-tag {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+  background: var(--surface1);
+  border: 1px solid var(--border-vis);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+/* ── CARD BASE ── */
+.card {
+  background: var(--surface1);
+  border: 1px solid var(--border-vis);
+  border-radius: 8px;
+  padding: 16px;
+  overflow: hidden;
+  transition: background 300ms ease-out, border-color 300ms ease-out;
+  box-shadow: var(--elev1);
+}
+.card-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+/* ── ROW 1: Color Primitives (spans all 4 cols) ── */
+.card-colors {
+  grid-column: 1 / -1;
+}
+.color-scales {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+.color-scale { flex: 1; min-width: 0; }
+.scale-name {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.scale-swatches {
+  display: flex;
+  gap: 2px;
+}
+.swatch {
+  flex: 1;
+  height: 28px;
+  border-radius: 3px;
+  position: relative;
+  cursor: default;
+}
+.swatch:hover .swatch-tip {
+  opacity: 1;
+  transform: translateY(-4px);
+}
+.swatch-tip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: var(--surface3);
+  color: var(--text1);
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 2px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 120ms ease-out, transform 120ms ease-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── ROW 2: Semantic Tokens (2 cols) + Build Status (1 col) + Metrics (1 col) ── */
+.card-tokens { grid-column: span 2; }
+.card-build  { grid-column: span 1; }
+.card-metric { grid-column: span 1; }
+
+.token-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.token-col-label {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.token-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.token-swatch {
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.token-name {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text2);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.token-val {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+}
+
+/* Build Status */
+.build-list { display: flex; flex-direction: column; gap: 6px; }
+.build-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--surface2);
+  border-radius: 6px;
+  border: 1px solid var(--border-vis);
+}
+.build-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.build-dot.success { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.build-dot.warning { background: var(--warning); }
+.build-dot.error   { background: var(--error); }
+.build-dot.running {
+  background: var(--blue);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.build-info { flex: 1; min-width: 0; }
+.build-name {
+  font-size: 12px;
+  color: var(--text1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.build-time {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+}
+
+/* Metric Card */
+.metric-big {
+  font-size: 42px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.metric-label {
+  font-size: 12px;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+.metric-bar-track {
+  height: 4px;
+  background: var(--surface3);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.metric-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 300ms ease-out;
+}
+.metric-sub {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+}
+
+/* ── ROW 3: Typography (2 cols) + Spacing (1 col) + Radius (1 col) ── */
+.card-type    { grid-column: span 2; }
+.card-spacing { grid-column: span 1; }
+.card-radius  { grid-column: span 1; }
+
+.type-sample { margin-bottom: 10px; }
+.type-display {
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--text1);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 2px;
+}
+.type-body {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text2);
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+.type-mono {
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  line-height: 1.5;
+}
+.type-meta {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+  margin-top: 2px;
+}
+
+/* Spacing */
+.spacing-list { display: flex; flex-direction: column; gap: 4px; }
+.spacing-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.spacing-box {
+  background: var(--accent);
+  opacity: 0.7;
+  border-radius: 2px;
+  flex-shrink: 0;
+  height: 8px;
+}
+.spacing-token {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+  width: 28px;
+  flex-shrink: 0;
+}
+.spacing-val {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
+}
+
+/* Radius */
+.radius-list { display: flex; flex-direction: column; gap: 8px; }
+.radius-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.radius-box {
+  width: 36px; height: 28px;
+  background: var(--surface3);
+  border: 1.5px solid var(--border-vis);
+  flex-shrink: 0;
+}
+.radius-info { flex: 1; }
+.radius-name {
+  font-size: 11px;
+  color: var(--text2);
+}
+.radius-val {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+}
+
+/* ── ROW 4: Buttons (1 col) + Input (1 col) + Activity Feed (2 cols) ── */
+.card-buttons  { grid-column: span 1; }
+.card-input    { grid-column: span 1; }
+.card-activity { grid-column: span 2; }
+
+/* Buttons */
+.btn-group { display: flex; flex-direction: column; gap: 8px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 120ms ease-out, color 120ms ease-out, border-color 120ms ease-out;
+  width: 100%;
+}
+.btn-primary {
+  background: #10B981;
+  color: #FFFFFF;
+}
+.btn-primary:hover { background: #059669; }
+.btn-secondary {
+  background: var(--surface1);
+  color: var(--text1);
+  border: 1px solid var(--border-vis);
+}
+.btn-secondary:hover { background: var(--surface2); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text1);
+  font-weight: 400;
+}
+.btn-ghost:hover { background: var(--surface2); }
+.btn-danger {
+  background: transparent;
+  color: var(--error);
+  border: 1px solid var(--error);
+  font-weight: 400;
+}
+.btn-danger:hover { background: rgba(204,75,83,0.1); }
+
+/* Input */
+.input-demo { display: flex; flex-direction: column; gap: 10px; }
+.input-group { display: flex; flex-direction: column; gap: 4px; }
+.input-label {
+  font-size: 12px;
+  color: var(--text2);
+  font-weight: 500;
+}
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--text3);
+  font-size: 14px;
+  pointer-events: none;
+}
+.input-field {
+  width: 100%;
+  height: 36px;
+  background: var(--bg);
+  border: 1px solid var(--border-vis);
+  border-radius: 6px;
+  padding: 8px 12px 8px 32px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text1);
+  outline: none;
+  transition: border-color 120ms ease-out;
+}
+.input-field:focus { border-color: var(--accent); }
+.input-field::placeholder { color: var(--text4); }
+.input-field.mono-input {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding-left: 12px;
+}
+.input-hint {
+  font-size: 11px;
+  color: var(--text4);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Activity Feed */
+.activity-list { display: flex; flex-direction: column; gap: 0; }
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.activity-icon.green  { background: var(--accent-sub); color: var(--accent); }
+.activity-icon.blue   { background: rgba(56,123,255,0.12); color: var(--blue); }
+.activity-icon.purple { background: rgba(117,99,231,0.12); color: var(--purple); }
+.activity-icon.amber  { background: rgba(235,155,97,0.12); color: var(--warning); }
+.activity-icon.red    { background: rgba(204,75,83,0.12); color: var(--error); }
+.activity-body { flex: 1; min-width: 0; }
+.activity-title {
+  font-size: 13px;
+  color: var(--text1);
+  line-height: 1.4;
+}
+.activity-title span { color: var(--accent); }
+.activity-meta {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+  margin-top: 1px;
+}
+.activity-time {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* ── ROW 5: Tags (1 col) + Toggle (1 col) + Token Key (2 cols) ── */
+.card-tags    { grid-column: span 1; }
+.card-toggle  { grid-column: span 1; }
+.card-tokenkey { grid-column: span 2; }
+
+/* Tags */
+.tag-group { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  cursor: default;
+}
+.tag-default { background: var(--surface2); color: var(--text2); border: 1px solid var(--border-vis); }
+.tag-accent  { background: var(--accent-sub); color: var(--accent); border: 1px solid rgba(16,185,129,0.2); }
+.tag-blue    { background: rgba(56,123,255,0.1); color: var(--blue); border: 1px solid rgba(56,123,255,0.2); }
+.tag-purple  { background: rgba(117,99,231,0.1); color: var(--purple); border: 1px solid rgba(117,99,231,0.2); }
+.tag-amber   { background: rgba(235,155,97,0.1); color: var(--warning); border: 1px solid rgba(235,155,97,0.2); }
+.tag-error   { background: rgba(204,75,83,0.1); color: var(--error); border: 1px solid rgba(204,75,83,0.2); }
+.tag-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Toggle */
+.toggle-list { display: flex; flex-direction: column; gap: 10px; }
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.toggle-label {
+  font-size: 13px;
+  color: var(--text1);
+}
+.toggle-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 1px;
+}
+.toggle {
+  position: relative;
+  width: 36px; height: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: var(--surface3);
+  transition: background 180ms ease-out;
+}
+.toggle input:checked + .toggle-track { background: var(--accent); }
+.toggle-thumb {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 180ms ease-out;
+  pointer-events: none;
+}
+.toggle input:checked ~ .toggle-thumb { transform: translateX(16px); }
+
+/* Token Key */
+.tokenkey-body { display: flex; flex-direction: column; gap: 12px; }
+.tokenkey-palette {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.tk-swatch {
+  flex: 1;
+  height: 24px;
+  border-radius: 4px;
+  position: relative;
+}
+.tk-swatch-label {
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+  text-align: center;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tokenkey-type {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+.tk-type-item { display: flex; flex-direction: column; gap: 1px; }
+.tk-display {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text1);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.tk-body {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+.tk-mono {
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+}
+.tk-meta {
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+}
+.tokenkey-spacing {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+.tk-sp-box {
+  background: var(--purple);
+  opacity: 0.6;
+  border-radius: 2px;
+}
+.tk-sp-label {
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text4);
+  text-align: center;
+  margin-top: 3px;
+}
+
+/* ── ROW 6: Code Snippet (2 cols) + Sparkline (1 col) + Status (1 col) ── */
+.card-code     { grid-column: span 2; }
+.card-spark    { grid-column: span 1; }
+.card-status   { grid-column: span 1; }
+
+/* Code */
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--border-vis);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  overflow: hidden;
+}
+.code-line { display: flex; gap: 12px; }
+.code-ln {
+  color: var(--text4);
+  user-select: none;
+  min-width: 16px;
+  text-align: right;
+}
+.code-kw  { color: #7563E7; }
+.code-fn  { color: #387BFF; }
+.code-str { color: #10B981; }
+.code-cm  { color: var(--text4); font-style: italic; }
+.code-ty  { color: #EB9B61; }
+.code-num { color: #CC4B53; }
+.code-var { color: var(--text1); }
+
+/* Sparkline */
+.spark-wrap {
+  position: relative;
+  height: 80px;
+  margin-bottom: 8px;
+}
+.spark-svg { width: 100%; height: 100%; }
+.spark-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.spark-val {
+  font-size: 22px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text1);
+  letter-spacing: -0.02em;
+}
+.spark-delta {
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+}
+
+/* Status */
+.status-list { display: flex; flex-direction: column; gap: 6px; }
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--surface2);
+  border-radius: 6px;
+}
+.status-indicator {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-indicator.online  { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.status-indicator.warn    { background: var(--warning); }
+.status-indicator.offline { background: var(--error); }
+.status-indicator.idle    { background: var(--text4); }
+.status-name {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text1);
+}
+.status-val {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
+}
+
+/* ── FLOATING BAR ── */
+.floating-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface1);
+  border: 1.5px solid var(--border-vis);
+  box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.24);
+  transition: background 300ms ease-out, border-color 300ms ease-out;
+}
+.mode-btn {
+  height: 32px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text3);
+  transition: background 180ms ease-out, color 180ms ease-out;
+  outline: none;
+}
+.mode-btn:hover { color: var(--text1); }
+.mode-btn.active {
+  background: var(--surface3);
+  color: var(--text1);
+}
+.mode-btn i { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="grid">
+
+  <!-- HEADER -->
+  <div class="header-row">
+    <div class="brand-logo">
+      <div class="brand-dot"></div>
+      <span class="brand-name">Trae</span>
+    </div>
+    <span class="brand-sub">AI IDE / Developer Tooling</span>
+    <div class="header-spacer"></div>
+    <span class="header-tag">design-model v1.0</span>
+    <span class="header-tag">dark-first</span>
+    <span class="header-tag">Inter + JetBrains Mono</span>
+  </div>
+
+  <!-- ROW 1: Color Primitives -->
+  <div class="card card-colors">
+    <div class="card-label">Primitive Color Scales</div>
+    <div class="color-scales">
+      <!-- Neutral -->
+      <div class="color-scale">
+        <div class="scale-name">neutral</div>
+        <div class="scale-swatches">
+          <div class="swatch" style="background:#F0F2F5"><span class="swatch-tip">50 · #F0F2F5</span></div>
+          <div class="swatch" style="background:#E0E3EA"><span class="swatch-tip">100 · #E0E3EA</span></div>
+          <div class="swatch" style="background:#C9D1D9"><span class="swatch-tip">200 · #C9D1D9</span></div>
+          <div class="swatch" style="background:#9599A6"><span class="swatch-tip">300 · #9599A6</span></div>
+          <div class="swatch" style="background:#737780"><span class="swatch-tip">400 · #737780</span></div>
+          <div class="swatch" style="background:#5C6373"><span class="swatch-tip">500 · #5C6373</span></div>
+          <div class="swatch" style="background:#3A3F4B"><span class="swatch-tip">600 · #3A3F4B</span></div>
+          <div class="swatch" style="background:#363B4E"><span class="swatch-tip">700 · #363B4E</span></div>
+          <div class="swatch" style="background:#2A2E3E"><span class="swatch-tip">800 · #2A2E3E</span></div>
+          <div class="swatch" style="background:#262A37"><span class="swatch-tip">900 · #262A37</span></div>
+          <div class="swatch" style="background:#171B26"><span class="swatch-tip">950 · #171B26</span></div>
+        </div>
+      </div>
+      <!-- Brand Green -->
+      <div class="color-scale">
+        <div class="scale-name">brand</div>
+        <div class="scale-swatches">
+          <div class="swatch" style="background:#ECFDF5"><span class="swatch-tip">50 · #ECFDF5</span></div>
+          <div class="swatch" style="background:#D1FAE5"><span class="swatch-tip">100 · #D1FAE5</span></div>
+          <div class="swatch" style="background:#A7F3D0"><span class="swatch-tip">200 · #A7F3D0</span></div>
+          <div class="swatch" style="background:#6EE7B7"><span class="swatch-tip">300 · #6EE7B7</span></div>
+          <div class="swatch" style="background:#34D399"><span class="swatch-tip">400 · #34D399</span></div>
+          <div class="swatch" style="background:#10B981"><span class="swatch-tip">500 · #10B981</span></div>
+          <div class="swatch" style="background:#059669"><span class="swatch-tip">600 · #059669</span></div>
+          <div class="swatch" style="background:#047857"><span class="swatch-tip">700 · #047857</span></div>
+          <div class="swatch" style="background:#065F46"><span class="swatch-tip">800 · #065F46</span></div>
+          <div class="swatch" style="background:#064E3B"><span class="swatch-tip">900 · #064E3B</span></div>
+          <div class="swatch" style="background:#022C22"><span class="swatch-tip">950 · #022C22</span></div>
+        </div>
+      </div>
+      <!-- Secondary Purple -->
+      <div class="color-scale">
+        <div class="scale-name">secondary</div>
+        <div class="scale-swatches">
+          <div class="swatch" style="background:#F5F3FF"><span class="swatch-tip">50 · #F5F3FF</span></div>
+          <div class="swatch" style="background:#EDE9FE"><span class="swatch-tip">100 · #EDE9FE</span></div>
+          <div class="swatch" style="background:#DDD6FE"><span class="swatch-tip">200 · #DDD6FE</span></div>
+          <div class="swatch" style="background:#C4B5FD"><span class="swatch-tip">300 · #C4B5FD</span></div>
+          <div class="swatch" style="background:#A78BFA"><span class="swatch-tip">400 · #A78BFA</span></div>
+          <div class="swatch" style="background:#7563E7"><span class="swatch-tip">500 · #7563E7</span></div>
+          <div class="swatch" style="background:#6D28D9"><span class="swatch-tip">600 · #6D28D9</span></div>
+          <div class="swatch" style="background:#5B21B6"><span class="swatch-tip">700 · #5B21B6</span></div>
+          <div class="swatch" style="background:#4C1D95"><span class="swatch-tip">800 · #4C1D95</span></div>
+          <div class="swatch" style="background:#3B0764"><span class="swatch-tip">900 · #3B0764</span></div>
+          <div class="swatch" style="background:#1E0038"><span class="swatch-tip">950 · #1E0038</span></div>
+        </div>
+      </div>
+      <!-- Blue -->
+      <div class="color-scale">
+        <div class="scale-name">blue</div>
+        <div class="scale-swatches">
+          <div class="swatch" style="background:#EFF6FF"><span class="swatch-tip">50 · #EFF6FF</span></div>
+          <div class="swatch" style="background:#DBEAFE"><span class="swatch-tip">100 · #DBEAFE</span></div>
+          <div class="swatch" style="background:#BFDBFE"><span class="swatch-tip">200 · #BFDBFE</span></div>
+          <div class="swatch" style="background:#93C5FD"><span class="swatch-tip">300 · #93C5FD</span></div>
+          <div class="swatch" style="background:#60A5FA"><span class="swatch-tip">400 · #60A5FA</span></div>
+          <div class="swatch" style="background:#387BFF"><span class="swatch-tip">500 · #387BFF</span></div>
+          <div class="swatch" style="background:#2563EB"><span class="swatch-tip">600 · #2563EB</span></div>
+          <div class="swatch" style="background:#1D4ED8"><span class="swatch-tip">700 · #1D4ED8</span></div>
+          <div class="swatch" style="background:#1E40AF"><span class="swatch-tip">800 · #1E40AF</span></div>
+          <div class="swatch" style="background:#1E3A8A"><span class="swatch-tip">900 · #1E3A8A</span></div>
+          <div class="swatch" style="background:#172554"><span class="swatch-tip">950 · #172554</span></div>
+        </div>
+      </div>
+      <!-- Red / Green / Amber -->
+      <div class="color-scale">
+        <div class="scale-name">semantic</div>
+        <div class="scale-swatches">
+          <div class="swatch" style="background:#CC4B53"><span class="swatch-tip">error · #CC4B53</span></div>
+          <div class="swatch" style="background:#EB9B61"><span class="swatch-tip">warn · #EB9B61</span></div>
+          <div class="swatch" style="background:#10B981"><span class="swatch-tip">success · #10B981</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Semantic Tokens -->
+  <div class="card card-tokens">
+    <div class="card-label">Semantic Tokens — Dark / Light</div>
+    <div class="token-grid">
+      <!-- Dark -->
+      <div>
+        <div class="token-col-label">dark</div>
+        <div class="token-row"><div class="token-swatch" style="background:#171B26"></div><span class="token-name">background</span><span class="token-val">#171B26</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#262A37"></div><span class="token-name">surface1</span><span class="token-val">#262A37</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#2A2E3E"></div><span class="token-name">surface2</span><span class="token-val">#2A2E3E</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#363B4E"></div><span class="token-name">surface3</span><span class="token-val">#363B4E</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#C9D1D9"></div><span class="token-name">text1</span><span class="token-val">#C9D1D9</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#9599A6"></div><span class="token-name">text2</span><span class="token-val">#9599A6</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#10B981"></div><span class="token-name">accent</span><span class="token-val">#10B981</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#022C22"></div><span class="token-name">accent-sub</span><span class="token-val">#022C22</span></div>
+      </div>
+      <!-- Light -->
+      <div>
+        <div class="token-col-label">light</div>
+        <div class="token-row"><div class="token-swatch" style="background:#F0F2F5; border:1px solid #C9D1D9"></div><span class="token-name">background</span><span class="token-val">#F0F2F5</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#FFFFFF; border:1px solid #C9D1D9"></div><span class="token-name">surface1</span><span class="token-val">#FFFFFF</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#E0E3EA"></div><span class="token-name">surface2</span><span class="token-val">#E0E3EA</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#C9D1D9"></div><span class="token-name">surface3</span><span class="token-val">#C9D1D9</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#171B26"></div><span class="token-name">text1</span><span class="token-val">#171B26</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#5C6373"></div><span class="token-name">text2</span><span class="token-val">#5C6373</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#059669"></div><span class="token-name">accent</span><span class="token-val">#059669</span></div>
+        <div class="token-row"><div class="token-swatch" style="background:#ECFDF5; border:1px solid #A7F3D0"></div><span class="token-name">accent-sub</span><span class="token-val">#ECFDF5</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Build Status -->
+  <div class="card card-build">
+    <div class="card-label">Build Status</div>
+    <div class="build-list">
+      <div class="build-item">
+        <div class="build-dot success"></div>
+        <div class="build-info">
+          <div class="build-name">main · #a3f2c1</div>
+          <div class="build-time">passed · 2m 14s</div>
+        </div>
+        <i class="icon icon-check-circle" style="color:var(--success);font-size:14px"></i>
+      </div>
+      <div class="build-item">
+        <div class="build-dot running"></div>
+        <div class="build-info">
+          <div class="build-name">feat/ai-chat · #7b3e9d</div>
+          <div class="build-time">running · 0m 47s</div>
+        </div>
+        <i class="icon icon-loader" style="color:var(--blue);font-size:14px"></i>
+      </div>
+      <div class="build-item">
+        <div class="build-dot error"></div>
+        <div class="build-info">
+          <div class="build-name">fix/token-refresh</div>
+          <div class="build-time">failed · lint error</div>
+        </div>
+        <i class="icon icon-x-circle" style="color:var(--error);font-size:14px"></i>
+      </div>
+      <div class="build-item">
+        <div class="build-dot warning"></div>
+        <div class="build-info">
+          <div class="build-name">release/v2.4.0</div>
+          <div class="build-time">warning · 3 tests skipped</div>
+        </div>
+        <i class="icon icon-alert-triangle" style="color:var(--warning);font-size:14px"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Metric -->
+  <div class="card card-metric">
+    <div class="card-label">AI Completions</div>
+    <div class="metric-big">2,847</div>
+    <div class="metric-label">accepted today</div>
+    <div class="metric-bar-track">
+      <div class="metric-bar-fill" style="width:73%"></div>
+    </div>
+    <div class="metric-sub">73% acceptance rate</div>
+    <div style="height:12px"></div>
+    <div class="metric-bar-track">
+      <div class="metric-bar-fill" style="width:91%; background:var(--blue)"></div>
+    </div>
+    <div class="metric-sub" style="color:var(--blue)">91% context hit rate</div>
+    <div style="height:12px"></div>
+    <div class="metric-bar-track">
+      <div class="metric-bar-fill" style="width:58%; background:var(--purple)"></div>
+    </div>
+    <div class="metric-sub" style="color:var(--purple)">58% multi-line fills</div>
+  </div>
+
+  <!-- ROW 3: Typography -->
+  <div class="card card-type">
+    <div class="card-label">Typography Scale</div>
+    <div class="type-sample">
+      <div class="type-display">The machine is alive.</div>
+      <div class="type-meta">Inter · 36px · weight 600 · lh 1.1 · display</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-body">Trae thinks alongside you — precision tooling where a single flash of Intelligent Green signals the AI is ready. Dense, immersive, terminal-native.</div>
+      <div class="type-meta">Inter · 14px · weight 400 · lh 1.5 · body</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-mono">const completion = await trae.complete(context);</div>
+      <div class="type-meta">JetBrains Mono · 13px · weight 400 · lh 1.5 · mono</div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Spacing -->
+  <div class="card card-spacing">
+    <div class="card-label">Spacing Scale</div>
+    <div class="spacing-list">
+      <div class="spacing-row"><span class="spacing-token">2xs</span><div class="spacing-box" style="width:2px"></div><span class="spacing-val">2px</span></div>
+      <div class="spacing-row"><span class="spacing-token">xs</span><div class="spacing-box" style="width:4px"></div><span class="spacing-val">4px</span></div>
+      <div class="spacing-row"><span class="spacing-token">sm</span><div class="spacing-box" style="width:8px"></div><span class="spacing-val">8px</span></div>
+      <div class="spacing-row"><span class="spacing-token">md</span><div class="spacing-box" style="width:16px"></div><span class="spacing-val">16px</span></div>
+      <div class="spacing-row"><span class="spacing-token">lg</span><div class="spacing-box" style="width:24px"></div><span class="spacing-val">24px</span></div>
+      <div class="spacing-row"><span class="spacing-token">xl</span><div class="spacing-box" style="width:32px"></div><span class="spacing-val">32px</span></div>
+      <div class="spacing-row"><span class="spacing-token">2xl</span><div class="spacing-box" style="width:48px"></div><span class="spacing-val">48px</span></div>
+      <div class="spacing-row"><span class="spacing-token">3xl</span><div class="spacing-box" style="width:64px; opacity:0.4"></div><span class="spacing-val">64px</span></div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Radius -->
+  <div class="card card-radius">
+    <div class="card-label">Border Radius</div>
+    <div class="radius-list">
+      <div class="radius-row">
+        <div class="radius-box" style="border-radius:0px"></div>
+        <div class="radius-info"><div class="radius-name">none</div><div class="radius-val">0px</div></div>
+      </div>
+      <div class="radius-row">
+        <div class="radius-box" style="border-radius:4px"></div>
+        <div class="radius-info"><div class="radius-name">element</div><div class="radius-val">4px · checkboxes</div></div>
+      </div>
+      <div class="radius-row">
+        <div class="radius-box" style="border-radius:6px"></div>
+        <div class="radius-info"><div class="radius-name">control</div><div class="radius-val">6px · buttons, inputs</div></div>
+      </div>
+      <div class="radius-row">
+        <div class="radius-box" style="border-radius:8px"></div>
+        <div class="radius-info"><div class="radius-name">component</div><div class="radius-val">8px · cards</div></div>
+      </div>
+      <div class="radius-row">
+        <div class="radius-box" style="border-radius:12px"></div>
+        <div class="radius-info"><div class="radius-name">container</div><div class="radius-val">12px · modals</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 4: Buttons -->
+  <div class="card card-buttons">
+    <div class="card-label">Button Variants</div>
+    <div class="btn-group">
+      <button class="btn btn-primary"><i class="icon icon-zap" style="font-size:14px"></i> Generate Code</button>
+      <button class="btn btn-secondary"><i class="icon icon-git-branch" style="font-size:14px"></i> New Branch</button>
+      <button class="btn btn-ghost"><i class="icon icon-terminal" style="font-size:14px"></i> Open Terminal</button>
+      <button class="btn btn-danger"><i class="icon icon-trash-2" style="font-size:14px"></i> Delete File</button>
+    </div>
+  </div>
+
+  <!-- ROW 4: Input -->
+  <div class="card card-input">
+    <div class="card-label">Input Fields</div>
+    <div class="input-demo">
+      <div class="input-group">
+        <label class="input-label">Search files</label>
+        <div class="input-wrap">
+          <i class="icon icon-search input-icon"></i>
+          <input class="input-field" type="text" placeholder="main.tsx, utils/..." value="">
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="input-label">AI Prompt</label>
+        <div class="input-wrap">
+          <i class="icon icon-sparkles input-icon"></i>
+          <input class="input-field" type="text" placeholder="Ask Trae anything..." value="">
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Git commit</label>
+        <div class="input-wrap">
+          <input class="input-field mono-input" type="text" placeholder="feat: add AI completion" value="fix: resolve token refresh">
+        </div>
+        <span class="input-hint">⌘ + Enter to commit</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 4: Activity Feed -->
+  <div class="card card-activity">
+    <div class="card-label">Activity Feed</div>
+    <div class="activity-list">
+      <div class="activity-item">
+        <div class="activity-icon green"><i class="icon icon-cpu" style="font-size:13px"></i></div>
+        <div class="activity-body">
+          <div class="activity-title">AI completed <span>47 lines</span> in useAuth.ts</div>
+          <div class="activity-meta">feat/ai-chat · wanghong52</div>
+        </div>
+        <div class="activity-time">just now</div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon blue"><i class="icon icon-git-merge" style="font-size:13px"></i></div>
+        <div class="activity-body">
+          <div class="activity-title">Merged <span>feat/token-cache</span> → main</div>
+          <div class="activity-meta">3 files changed · +142 −38</div>
+        </div>
+        <div class="activity-time">2m ago</div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon purple"><i class="icon icon-sparkles" style="font-size:13px"></i></div>
+        <div class="activity-body">
+          <div class="activity-title">Trae refactored <span>api/completions.ts</span></div>
+          <div class="activity-meta">Reduced complexity score 24 → 8</div>
+        </div>
+        <div class="activity-time">8m ago</div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon amber"><i class="icon icon-alert-triangle" style="font-size:13px"></i></div>
+        <div class="activity-body">
+          <div class="activity-title">Lint warning in <span>components/Editor.tsx</span></div>
+          <div class="activity-meta">no-unused-vars · line 142</div>
+        </div>
+        <div class="activity-time">15m ago</div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon red"><i class="icon icon-x-circle" style="font-size:13px"></i></div>
+        <div class="activity-body">
+          <div class="activity-title">Test failed: <span>auth.spec.ts</span> · 2 assertions</div>
+          <div class="activity-meta">Expected 200, received 401</div>
+        </div>
+        <div class="activity-time">31m ago</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 5: Tags -->
+  <div class="card card-tags">
+    <div class="card-label">Tags &amp; Badges</div>
+    <div class="tag-group">
+      <span class="tag tag-accent"><span class="tag-dot"></span>AI Active</span>
+      <span class="tag tag-blue"><span class="tag-dot"></span>TypeScript</span>
+      <span class="tag tag-purple"><span class="tag-dot"></span>Beta</span>
+      <span class="tag tag-amber"><span class="tag-dot"></span>Warning</span>
+      <span class="tag tag-error"><span class="tag-dot"></span>Failed</span>
+      <span class="tag tag-default">React 18</span>
+      <span class="tag tag-default">Node 20</span>
+      <span class="tag tag-default">v2.4.0</span>
+      <span class="tag tag-accent">✓ Passing</span>
+      <span class="tag tag-blue">main</span>
+      <span class="tag tag-purple">feat/ai</span>
+      <span class="tag tag-default">staged</span>
+    </div>
+  </div>
+
+  <!-- ROW 5: Toggles -->
+  <div class="card card-toggle">
+    <div class="card-label">Settings Toggles</div>
+    <div class="toggle-list">
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">AI Completions</div>
+          <div class="toggle-sub">Inline suggestions</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Auto-format on save</div>
+          <div class="toggle-sub">Prettier + ESLint</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Telemetry</div>
+          <div class="toggle-sub">Usage analytics</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Multi-line fills</div>
+          <div class="toggle-sub">Experimental</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 5: Token Key -->
+  <div class="card card-tokenkey">
+    <div class="card-label">Token Key — Design System Reference</div>
+    <div class="tokenkey-body">
+      <!-- Palette -->
+      <div>
+        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em">core palette</div>
+        <div style="display:flex;gap:6px">
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#171B26;border:1px solid #363B4E"></div>
+            <div class="tk-swatch-label">bg</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#262A37"></div>
+            <div class="tk-swatch-label">surf1</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#2A2E3E"></div>
+            <div class="tk-swatch-label">surf2</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#363B4E"></div>
+            <div class="tk-swatch-label">surf3</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#C9D1D9"></div>
+            <div class="tk-swatch-label">text1</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#9599A6"></div>
+            <div class="tk-swatch-label">text2</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#10B981"></div>
+            <div class="tk-swatch-label">accent</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#7563E7"></div>
+            <div class="tk-swatch-label">purple</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#387BFF"></div>
+            <div class="tk-swatch-label">blue</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#CC4B53"></div>
+            <div class="tk-swatch-label">error</div>
+          </div>
+          <div style="flex:1">
+            <div class="tk-swatch" style="background:#EB9B61"></div>
+            <div class="tk-swatch-label">warn</div>
+          </div>
+        </div>
+      </div>
+      <!-- Type + Spacing -->
+      <div style="display:flex;gap:24px;align-items:flex-start">
+        <div style="flex:1">
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em">type scale</div>
+          <div class="tk-display">Aa Display</div>
+          <div class="tk-meta">Inter 36px/600</div>
+          <div class="tk-body" style="margin-top:4px">Aa Body text</div>
+          <div class="tk-meta">Inter 14px/400</div>
+          <div class="tk-mono" style="margin-top:4px">Aa Mono</div>
+          <div class="tk-meta">JetBrains Mono 13px/400</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em">spacing unit · 8px base</div>
+          <div style="display:flex;align-items:flex-end;gap:4px;margin-bottom:4px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:8px;height:2px;background:var(--purple);opacity:0.7;border-radius:1px"></div>
+              <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text4)">2</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:8px;height:4px;background:var(--purple);opacity:0.7;border-radius:1px"></div>
+              <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text4)">4</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:8px;height:8px;background:var(--purple);opacity:0.7;border-radius:1px"></div>
+              <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text4)">8</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:8px;height:16px;background:var(--purple);opacity:0.7;border-radius:1px"></div>
+              <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text4)">16</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:8px;height:24px;background:var(--purple);opacity:0.7;border-radius:1px"></div>
+              <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text4)">24</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:8px;height:32px;background:var(--purple);opacity:0.7;border-radius:1px"></div>
+              <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text4)">32</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="width:8px;height:48px;background:var(--purple);opacity:0.5;border-radius:1px"></div>
+              <div style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text4)">48</div>
+            </div>
+          </div>
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text4)">radii: 4 · 6 · 8 · 12px · motion: ease-out 120–300ms</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 6: Code Snippet -->
+  <div class="card card-code">
+    <div class="card-label">Code — JetBrains Mono · Syntax Highlight</div>
+    <div class="code-block">
+      <div class="code-line"><span class="code-ln">1</span><span><span class="code-cm">// Trae AI completion engine</span></span></div>
+      <div class="code-line"><span class="code-ln">2</span><span><span class="code-kw">import</span> <span class="code-var">{ TraeClient }</span> <span class="code-kw">from</span> <span class="code-str">'@trae/sdk'</span></span></div>
+      <div class="code-line"><span class="code-ln">3</span><span></span></div>
+      <div class="code-line"><span class="code-ln">4</span><span><span class="code-kw">async function</span> <span class="code-fn">generateCompletion</span><span class="code-var">(</span><span class="code-ty">ctx</span><span class="code-var">: Context) {</span></span></div>
+      <div class="code-line"><span class="code-ln">5</span><span><span class="code-var">  </span><span class="code-kw">const</span> <span class="code-var">client = </span><span class="code-kw">new</span> <span class="code-fn">TraeClient</span><span class="code-var">({</span></span></div>
+      <div class="code-line"><span class="code-ln">6</span><span><span class="code-var">    model: </span><span class="code-str">'trae-v2'</span><span class="code-var">,</span></span></div>
+      <div class="code-line"><span class="code-ln">7</span><span><span class="code-var">    temperature: </span><span class="code-num">0.2</span><span class="code-var">,</span></span></div>
+      <div class="code-line"><span class="code-ln">8</span><span><span class="code-var">  })</span></span></div>
+      <div class="code-line"><span class="code-ln">9</span><span><span class="code-var">  </span><span class="code-kw">return await</span> <span class="code-var">client.</span><span class="code-fn">complete</span><span class="code-var">(ctx)</span></span></div>
+      <div class="code-line"><span class="code-ln">10</span><span><span class="code-var">}</span></span></div>
+    </div>
+  </div>
+
+  <!-- ROW 6: Sparkline -->
+  <div class="card card-spark">
+    <div class="card-label">Token Usage</div>
+    <div class="spark-wrap">
+      <svg class="spark-svg" viewBox="0 0 200 80" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#10B981" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,60 L20,52 L40,58 L60,40 L80,44 L100,30 L120,35 L140,20 L160,25 L180,12 L200,8 L200,80 L0,80 Z" fill="url(#sparkGrad)"/>
+        <path d="M0,60 L20,52 L40,58 L60,40 L80,44 L100,30 L120,35 L140,20 L160,25 L180,12 L200,8" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="200" cy="8" r="3" fill="#10B981"/>
+      </svg>
+    </div>
+    <div class="spark-stats">
+      <div>
+        <div class="spark-val">1.2M</div>
+        <div style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text4)">tokens / day</div>
+      </div>
+      <div style="text-align:right">
+        <div class="spark-delta">↑ +18%</div>
+        <div style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text4)">vs yesterday</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 6: Status -->
+  <div class="card card-status">
+    <div class="card-label">Service Status</div>
+    <div class="status-list">
+      <div class="status-item">
+        <div class="status-indicator online"></div>
+        <span class="status-name">AI Engine</span>
+        <span class="status-val">42ms</span>
+      </div>
+      <div class="status-item">
+        <div class="status-indicator online"></div>
+        <span class="status-name">LSP Server</span>
+        <span class="status-val">8ms</span>
+      </div>
+      <div class="status-item">
+        <div class="status-indicator warn"></div>
+        <span class="status-name">Git Sync</span>
+        <span class="status-val">degraded</span>
+      </div>
+      <div class="status-item">
+        <div class="status-indicator online"></div>
+        <span class="status-name">Extension Host</span>
+        <span class="status-val">active</span>
+      </div>
+      <div class="status-item">
+        <div class="status-indicator idle"></div>
+        <span class="status-name">Debug Adapter</span>
+        <span class="status-val">idle</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /grid -->
+
+<!-- Floating Mode Toggle -->
+<div class="floating-bar">
+  <button class="mode-btn" data-mode="light" aria-label="Light mode">
+    <i class="icon icon-sun" style="font-size:14px"></i> Light
+  </button>
+  <button class="mode-btn" data-mode="dark" aria-label="Dark mode">
+    <i class="icon icon-moon" style="font-size:14px"></i> Dark
+  </button>
+</div>
+
+<script>
+  // Mode toggle
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.documentElement.dataset.theme = btn.dataset.mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelector(`.mode-btn[data-mode="${document.documentElement.dataset.theme}"]`)?.classList.add('active');
+
+  // Disable all anchor clicks (mockup)
+  document.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', e => e.preventDefault());
+  });
+</script>
+</body>
+</html>

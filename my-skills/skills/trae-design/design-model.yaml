@@ -1,0 +1,251 @@
+name: "Trae"
+philosophy: "Terminal cursor on a cold-blue stage. Dense, immersive, AI-native. The design language of a tool that thinks alongside you — precision tooling where a single flash of Intelligent Green signals the machine is alive."
+primary_mode: "dark"
+brand_domain: "AI IDE / developer tooling"
+brand_type: "ui-rich"
+mono_for_code: true
+mono_for_metrics: true
+
+# ── PRIMITIVES ──
+primitives:
+  colors:
+    neutral:    # Cool-blue tinted grays, matching iCube theme temperature
+      50: "#F0F2F5"
+      100: "#E0E3EA"
+      200: "#C9D1D9"
+      300: "#9599A6"
+      400: "#737780"
+      500: "#5C6373"
+      600: "#3A3F4B"
+      700: "#363B4E"
+      800: "#2A2E3E"
+      900: "#262A37"
+      950: "#171B26"
+    brand:      # Intelligent Green
+      50: "#ECFDF5"
+      100: "#D1FAE5"
+      200: "#A7F3D0"
+      300: "#6EE7B7"
+      400: "#34D399"
+      500: "#10B981"
+      600: "#059669"
+      700: "#047857"
+      800: "#065F46"
+      900: "#064E3B"
+      950: "#022C22"
+    secondary:  # Purple accent (badges, indicators)
+      50: "#F5F3FF"
+      100: "#EDE9FE"
+      200: "#DDD6FE"
+      300: "#C4B5FD"
+      400: "#A78BFA"
+      500: "#7563E7"
+      600: "#6D28D9"
+      700: "#5B21B6"
+      800: "#4C1D95"
+      900: "#3B0764"
+      950: "#1E0038"
+    blue:       # Links, progress bars
+      50: "#EFF6FF"
+      100: "#DBEAFE"
+      200: "#BFDBFE"
+      300: "#93C5FD"
+      400: "#60A5FA"
+      500: "#387BFF"
+      600: "#2563EB"
+      700: "#1D4ED8"
+      800: "#1E40AF"
+      900: "#1E3A8A"
+      950: "#172554"
+    red:   { 50: "#FEF2F2", 500: "#CC4B53", 900: "#7F1D1D" }
+    green: { 50: "#ECFDF5", 500: "#10B981", 900: "#064E3B" }
+    amber: { 50: "#FFFBEB", 500: "#EB9B61", 900: "#78350F" }
+  spacing: [0, 1, 2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96]
+  radii: [0, 2, 4, 6, 8, 12]
+  # Trae uses sharp-to-soft corners (4-8px), never pill-shaped CTAs
+
+# ── SEMANTIC TOKENS ──
+tokens:
+  colors:
+    dark:
+      background: "{neutral.950}"       # #171B26
+      surface1: "{neutral.900}"         # #262A37
+      surface2: "{neutral.800}"         # #2A2E3E
+      surface3: "{neutral.700}"         # #363B4E
+      border: "{neutral.900}"           # #262A37
+      border_visible: "{neutral.700}"   # #363B4E
+      text1: "{neutral.200}"            # #C9D1D9
+      text2: "{neutral.300}"            # #9599A6
+      text3: "{neutral.400}"            # #737780
+      text4: "{neutral.500}"            # #5C6373
+      accent: "{brand.500}"             # #10B981
+      accent_subtle: "{brand.950}"      # #022C22
+    light:
+      background: "{neutral.50}"        # #F0F2F5
+      surface1: "#FFFFFF"
+      surface2: "{neutral.100}"         # #E0E3EA
+      surface3: "{neutral.200}"         # #C9D1D9
+      border: "{neutral.100}"           # #E0E3EA
+      border_visible: "{neutral.200}"   # #C9D1D9
+      text1: "{neutral.950}"            # #171B26
+      text2: "{neutral.500}"            # #5C6373
+      text3: "{neutral.400}"            # #737780
+      text4: "{neutral.300}"            # #9599A6
+      accent: "{brand.600}"             # #059669
+      accent_subtle: "{brand.50}"       # #ECFDF5
+    success: "{green.500}"              # #10B981
+    warning: "{amber.500}"              # #EB9B61
+    error: "{red.500}"                  # #CC4B53
+
+  spacing:
+    2xs: 2
+    xs: 4
+    sm: 8
+    md: 16
+    lg: 24
+    xl: 32
+    2xl: 48
+    3xl: 64
+    4xl: 96
+
+  radii:
+    element: 4        # checkboxes, small controls
+    control: 6        # buttons, inputs
+    component: 8      # cards, panels
+    container: 12     # modals, sheets
+
+  typography:
+    display: { family: "Inter", size: "36px", weight: 600, line_height: 1.1 }
+    body: { family: "Inter", size: "14px", weight: 400, line_height: 1.5 }
+    mono: { family: "JetBrains Mono", size: "13px", weight: 400, line_height: 1.5 }
+
+  elevation:
+    strategy: "flat"
+    level_0: "none"
+    level_1_light: "0 1px 3px rgba(0,0,0,0.08)"
+    level_1_dark: "none"
+    level_2_light: "0 4px 12px rgba(0,0,0,0.12)"
+    level_2_dark: "0 4px 12px rgba(0,0,0,0.4)"
+    level_3_light: "0 8px 24px rgba(0,0,0,0.16)"
+    level_3_dark: "0 8px 24px rgba(0,0,0,0.5)"
+
+  motion:
+    personality: "mechanical"
+    easing: "ease-out"
+    duration_fast: "120ms"
+    duration_normal: "180ms"
+    duration_slow: "300ms"
+
+  hero_stage:
+    preset: "grid-on-dark"
+    observed_style:
+      description: "Dark stage with subtle grid pattern and a centered product screenshot. The hero uses a deep blue-black background with faint geometric grid lines, text headline dominates, product UI floats as a device mockup below. Clean, technical, no glow or mesh — the emptiness is the statement."
+      where_used: ["hero", "feature sections"]
+    background:
+      medium: "pattern"
+      color_mode: "brand-tinted-neutral"
+      saturation: "flat"
+      light_source: "center"
+      falloff: "radial"
+      vignette: "subtle"
+      texture: "clean"
+      motion: "static"
+      intensity: "subtle"
+      safe_zone: "masked-for-text"
+      color_palette: ["#171B26", "#262A37", "#10B981"]
+    hero:
+      subject: "device"
+      placement: "center-below-text"
+      scale: "balanced"
+      tint: "none"
+    relation:
+      type: "shadow-only"
+      bleed: 0
+    disclaimer: "Product screenshots are simulated with CSS. The actual Trae IDE interface is proprietary."
+
+  iconography:
+    observed_style:
+      description: "Clean geometric outline icons at ~1.5px stroke, rounded terminals, consistent 24px grid. Similar to VS Code's Codicon set but cleaner. No hand-drawn quality — precise, tool-like."
+      stroke_weight: "regular"
+      corner_treatment: "soft"
+      fill_style: "outline"
+      form_language: "geometric"
+      visual_density: "minimal"
+    fallback_kit:
+      name: "Lucide"
+      weight: "default (2px)"
+      match_score: "high"
+      match_reasoning: "Lucide's geometric-clean 2px stroke with rounded caps closely matches Trae's icon style. Both are developer-tool-oriented with minimal visual density. Tabler would be second choice for breadth, but Lucide's cleaner geometry wins for this brand."
+      cdn: "https://unpkg.com/lucide-static@1.8.0/font/lucide.css"
+      icon_class_prefix: "icon icon-"
+    disclaimer: "Icons are a best-match fallback from the Lucide kit. Trae's actual icons are proprietary."
+
+components:
+  button_primary:
+    source: "observed"
+    background: "{brand.500}"          # #10B981
+    color: "#FFFFFF"
+    padding: "10px 20px"
+    radius: "{radii.control}"          # 6px
+    font_weight: 500
+    font_size: "14px"
+    hover: { background: "{brand.600}" }
+  button_secondary:
+    source: "observed"
+    background: "{neutral.900}"        # #262A37
+    color: "{neutral.200}"             # #C9D1D9
+    padding: "10px 20px"
+    radius: "{radii.control}"
+    font_weight: 500
+    border: "1px solid {neutral.700}"  # #363B4E
+    hover: { background: "{neutral.800}" }
+  button_ghost:
+    source: "derived"
+    background: "transparent"
+    color: "{neutral.200}"
+    padding: "10px 16px"
+    radius: "{radii.control}"
+    font_weight: 400
+    hover: { background: "{neutral.800}" }
+  card_standard:
+    source: "observed"
+    background: "{neutral.900}"        # #262A37
+    border: "1px solid {neutral.900}"
+    radius: "{radii.component}"        # 8px
+    padding: "16px"
+  input_text:
+    source: "observed"
+    background: "{neutral.950}"        # #171B26
+    border_default: "1px solid {neutral.900}"
+    border_focus: "1px solid {brand.500}"
+    radius: "{radii.control}"          # 6px
+    height: "36px"
+    padding: "8px 12px"
+  tag:
+    source: "observed"
+    background: "{neutral.800}"
+    color: "{neutral.200}"
+    padding: "4px 10px"
+    radius: "{radii.element}"          # 4px
+    font_size: "12px"
+  toggle:
+    source: "derived"
+    track_width: 36
+    track_height: 20
+    track_radius: 10
+    thumb_size: 16
+    track_off_bg: "{neutral.700}"
+    track_on_bg: "{brand.500}"
+
+app_screen:
+  archetype: "editor"
+  frame: "desktop"
+  frame_params:
+    title: "Trae — main.tsx"
+  content_seed: "AI-assisted code editing session with inline chat and file explorer"
+  required_tokens_checklist:
+    - "background, surface1, surface2, surface3, border, border_visible"
+    - "text1, text2, text3, text4"
+    - "accent, accent_subtle, success, warning, error"
+    - "all typography scale tokens"
+    - "all spacing tokens used in components"

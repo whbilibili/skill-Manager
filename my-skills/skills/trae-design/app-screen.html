@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trae App Screen Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#171B26;--s1:#262A37;--s2:#2A2E3E;--s3:#363B4E;
+  --t1:#C9D1D9;--t2:#9599A6;--t3:#737780;--t4:#5C6373;
+  --accent:#10B981;--accent-s:#022C22;
+  --purple:#7563E7;--blue:#387BFF;
+  --red:#CC4B53;--amber:#EB9B61;--green:#10B981;
+  --font:Inter,system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{background:#0D0F17;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px;font-family:var(--font);flex-direction:column}
+
+.window{width:100%;max-width:1200px;background:var(--bg);border-radius:12px;overflow:hidden;border:1px solid var(--s3);box-shadow:0 32px 80px rgba(0,0,0,.6)}
+.titlebar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--s1);border-bottom:1px solid var(--s3)}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot-r{background:#CC4B53}.dot-y{background:#EB9B61}.dot-g{background:#10B981}
+.title-text{font-size:12px;color:var(--t3);font-family:var(--mono);margin-left:8px}
+
+.ide-layout{display:grid;grid-template-columns:48px 220px 1fr 280px;grid-template-rows:1fr 24px;height:600px}
+
+/* Activity Bar */
+.activity-bar{background:var(--bg);border-right:1px solid var(--s3);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:4px;grid-row:1/3}
+.ab-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--t3);font-size:16px;cursor:pointer;position:relative;transition:all .12s ease-out}
+.ab-icon:hover{color:var(--t1);background:var(--s2)}
+.ab-icon.active{color:var(--t1)}
+.ab-icon.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:2px;background:var(--accent);border-radius:0 1px 1px 0}
+.ab-spacer{flex:1}
+
+/* Explorer */
+.explorer{background:var(--s1);border-right:1px solid var(--s3);overflow-y:auto;grid-row:1/2;font-size:12px}
+.explorer-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--t3)}
+.tree-item{display:flex;align-items:center;gap:4px;padding:3px 8px 3px 12px;cursor:pointer;transition:background .08s;color:var(--t2)}
+.tree-item:hover{background:var(--s2)}
+.tree-item.selected{background:var(--accent-s);color:var(--t1)}
+.tree-item .arrow{width:14px;text-align:center;font-size:10px;color:var(--t4)}
+.tree-item .ficon{font-size:11px;width:16px;text-align:center;font-family:var(--mono);font-weight:700}
+.tree-item .name{flex:1}
+.tree-item .git{font-family:var(--mono);font-size:10px;margin-left:auto}
+.git-m{color:var(--amber)}.git-a{color:var(--green)}
+.indent1 .tree-item{padding-left:24px}
+.indent2 .tree-item{padding-left:36px}
+
+/* Editor */
+.editor-area{display:flex;flex-direction:column;overflow:hidden;grid-row:1/2}
+.tabs{display:flex;background:var(--s1);border-bottom:1px solid var(--s3);height:36px;flex-shrink:0}
+.tab{display:flex;align-items:center;gap:6px;padding:0 16px;font-size:12px;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:all .12s}
+.tab:hover{background:var(--s2);color:var(--t2)}
+.tab.active{background:var(--s2);color:var(--t1);border-bottom-color:var(--accent)}
+.tab .mod{color:var(--amber);font-size:14px}
+.tab .close{font-size:9px;opacity:0;transition:opacity .12s;margin-left:4px}
+.tab:hover .close{opacity:.5}
+
+.breadcrumb{display:flex;align-items:center;gap:4px;padding:4px 16px;font-size:11px;color:var(--t4);background:var(--s2);border-bottom:1px solid var(--s3);flex-shrink:0}
+
+.code{flex:1;overflow:auto;padding:8px 0;font-family:var(--mono);font-size:13px;line-height:1.85;background:var(--bg)}
+.cl{display:flex;padding:0 16px;min-height:24px}
+.cl:hover{background:rgba(38,42,55,.5)}
+.ln{width:36px;text-align:right;padding-right:16px;color:var(--t4);user-select:none;flex-shrink:0}
+.cc{flex:1;white-space:pre}
+.ai-hl{background:var(--accent-s);margin:0 -16px;padding:0 16px;border-left:2px solid var(--accent);display:flex}
+.ai-hl .ln{color:var(--accent)}
+.kw{color:var(--purple)}.str{color:var(--accent)}.fn{color:var(--blue)}.cm{color:var(--t4);font-style:italic}
+.num{color:var(--amber)}.tp{color:#4EC9B0}.tg{color:var(--blue)}.at{color:#9CDCFE}
+.cursor-blink{display:inline-block;width:2px;height:15px;background:var(--t1);animation:blink 1s step-end infinite;vertical-align:text-bottom;margin-left:1px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* AI Panel */
+.ai-panel{background:var(--s1);border-left:1px solid var(--s3);display:flex;flex-direction:column;overflow:hidden;grid-row:1/2}
+.ai-header{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--s3);flex-shrink:0}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.ai-title{font-size:13px;font-weight:600;color:var(--accent)}
+.ai-model{font-size:11px;color:var(--t4);margin-left:auto;font-family:var(--mono)}
+.ai-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.msg{padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.6;max-width:95%}
+.msg-user{background:var(--s2);align-self:flex-end;border-bottom-right-radius:2px;color:var(--t1)}
+.msg-ai{background:var(--bg);border:1px solid var(--s3);align-self:flex-start;border-bottom-left-radius:2px;color:var(--t2)}
+.msg-ai code{font-family:var(--mono);font-size:11px;background:var(--s2);padding:1px 5px;border-radius:3px;color:var(--accent)}
+.msg-code{background:var(--bg);border:1px solid var(--s3);border-radius:6px;padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--t1);overflow-x:auto;align-self:flex-start;width:95%}
+.ai-actions{display:flex;gap:6px;padding:4px 0}
+.ai-btn{background:var(--s2);border:1px solid var(--s3);border-radius:4px;padding:4px 10px;font-size:11px;color:var(--t2);cursor:pointer;font-family:var(--font)}
+.ai-btn.pri{background:var(--accent-s);border-color:var(--accent);color:var(--accent)}
+.ai-input-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--s3);flex-shrink:0}
+.ai-input{flex:1;background:var(--bg);border:1px solid var(--s3);border-radius:6px;padding:8px 12px;color:var(--t1);font-family:var(--font);font-size:12px;outline:none}
+.ai-input:focus{border-color:var(--accent)}
+.ai-send{width:32px;height:32px;background:var(--accent);border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+
+/* Status Bar */
+.status-bar{grid-column:2/5;display:flex;align-items:center;background:var(--s1);border-top:1px solid var(--s3);padding:0 12px;font-size:11px;font-family:var(--mono);color:var(--t3);gap:16px}
+.st-item{display:flex;align-items:center;gap:4px}
+.st-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="window">
+  <div class="titlebar">
+    <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+    <span class="title-text">Trae -- main.tsx</span>
+  </div>
+
+  <div class="ide-layout">
+    <!-- Activity Bar -->
+    <div class="activity-bar">
+      <div class="ab-icon active" title="Explorer">&#128193;</div>
+      <div class="ab-icon" title="Search">&#128269;</div>
+      <div class="ab-icon" title="Git">&#9741;</div>
+      <div class="ab-icon" title="Extensions">&#9638;</div>
+      <div class="ab-spacer"></div>
+      <div class="ab-icon" style="color:var(--accent)" title="AI">&#10022;</div>
+      <div class="ab-icon" title="Settings">&#9881;</div>
+    </div>
+
+    <!-- Explorer -->
+    <div class="explorer">
+      <div class="explorer-header"><span>Explorer</span></div>
+      <div>
+        <div class="tree-item"><span class="arrow">&#9662;</span><span class="ficon" style="color:var(--blue)">&#128193;</span><span class="name" style="font-weight:600">src</span></div>
+        <div class="indent1">
+          <div class="tree-item"><span class="arrow">&#9662;</span><span class="ficon" style="color:var(--blue)">&#128193;</span><span class="name" style="font-weight:500">components</span></div>
+          <div class="indent2">
+            <div class="tree-item"><span class="arrow"> </span><span class="ficon" style="color:var(--blue)">TS</span><span class="name">Button.tsx</span><span class="git git-m">M</span></div>
+            <div class="tree-item"><span class="arrow"> </span><span class="ficon" style="color:var(--blue)">TS</span><span class="name">Card.tsx</span></div>
+            <div class="tree-item"><span class="arrow"> </span><span class="ficon" style="color:var(--blue)">TS</span><span class="name">Input.tsx</span><span class="git git-a">A</span></div>
+            <div class="tree-item"><span class="arrow"> </span><span class="ficon" style="color:var(--blue)">TS</span><span class="name">ChatPanel.tsx</span><span class="git git-a">A</span></div>
+          </div>
+          <div class="tree-item"><span class="arrow">&#9656;</span><span class="ficon" style="color:var(--blue)">&#128193;</span><span class="name" style="font-weight:500">hooks</span></div>
+          <div class="tree-item"><span class="arrow">&#9656;</span><span class="ficon" style="color:var(--blue)">&#128193;</span><span class="name" style="font-weight:500">utils</span></div>
+          <div class="tree-item selected"><span class="arrow"> </span><span class="ficon" style="color:var(--blue)">TS</span><span class="name">main.tsx</span><span class="git git-m">M</span></div>
+          <div class="tree-item"><span class="arrow"> </span><span class="ficon" style="color:var(--blue)">TS</span><span class="name">App.tsx</span></div>
+        </div>
+        <div class="tree-item"><span class="arrow"> </span><span class="ficon" style="color:var(--amber)">JS</span><span class="name">vite.config.ts</span></div>
+        <div class="tree-item"><span class="arrow"> </span><span class="ficon" style="color:var(--t3)">{}</span><span class="name">package.json</span></div>
+        <div class="tree-item"><span class="arrow"> </span><span class="ficon" style="color:var(--t3)">{}</span><span class="name">tsconfig.json</span></div>
+      </div>
+    </div>
+
+    <!-- Editor -->
+    <div class="editor-area">
+      <div class="tabs">
+        <div class="tab active">main.tsx <span class="close">x</span></div>
+        <div class="tab">App.tsx <span class="close">x</span></div>
+        <div class="tab">Button.tsx <span class="mod">&#9679;</span><span class="close">x</span></div>
+        <div class="tab">ChatPanel.tsx <span class="close">x</span></div>
+      </div>
+      <div class="breadcrumb">
+        <span>src</span><span style="color:var(--t4)"> &gt; </span><span style="color:var(--t2)">main.tsx</span>
+      </div>
+      <div class="code">
+        <div class="cl"><span class="ln">1</span><span class="cc"><span class="kw">import</span> React, { useState, useCallback } <span class="kw">from</span> <span class="str">'react'</span>;</span></div>
+        <div class="cl"><span class="ln">2</span><span class="cc"><span class="kw">import</span> { <span class="fn">createRoot</span> } <span class="kw">from</span> <span class="str">'react-dom/client'</span>;</span></div>
+        <div class="cl"><span class="ln">3</span><span class="cc"><span class="kw">import</span> { <span class="tp">ThemeProvider</span> } <span class="kw">from</span> <span class="str">'./theme'</span>;</span></div>
+        <div class="cl"><span class="ln">4</span><span class="cc"></span></div>
+        <div class="cl"><span class="ln">5</span><span class="cc"><span class="cm">/** Main application entry point */</span></span></div>
+        <div class="cl"><span class="ln">6</span><span class="cc"><span class="kw">const</span> <span class="fn">App</span>: <span class="tp">React.FC</span> = () =&gt; {</span></div>
+        <div class="cl"><span class="ln">7</span><span class="cc">  <span class="kw">const</span> [count, setCount] = <span class="fn">useState</span>(<span class="num">0</span>);</span></div>
+        <div class="cl"><span class="ln">8</span><span class="cc">  <span class="kw">const</span> [query, setQuery] = <span class="fn">useState</span>(<span class="str">''</span>);</span></div>
+        <div class="cl"><span class="ln">9</span><span class="cc"></span></div>
+        <div class="cl ai-hl"><span class="ln">10</span><span class="cc">  <span class="cm">// AI Suggestion: wrap in useCallback</span></span></div>
+        <div class="cl ai-hl"><span class="ln">11</span><span class="cc">  <span class="kw">const</span> <span class="fn">increment</span> = <span class="fn">useCallback</span>(() =&gt; {</span></div>
+        <div class="cl ai-hl"><span class="ln">12</span><span class="cc">    <span class="fn">setCount</span>(prev =&gt; prev + <span class="num">1</span>);</span></div>
+        <div class="cl ai-hl"><span class="ln">13</span><span class="cc">  }, []);</span></div>
+        <div class="cl"><span class="ln">14</span><span class="cc"></span></div>
+        <div class="cl"><span class="ln">15</span><span class="cc">  <span class="kw">const</span> <span class="fn">handleSearch</span> = <span class="kw">async</span> (q: <span class="tp">string</span>) =&gt; {</span></div>
+        <div class="cl"><span class="ln">16</span><span class="cc">    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`/api/search?q=${q}`</span>);</span></div>
+        <div class="cl"><span class="ln">17</span><span class="cc">    <span class="kw">return</span> res.<span class="fn">json</span>();</span></div>
+        <div class="cl"><span class="ln">18</span><span class="cc">  };</span></div>
+        <div class="cl"><span class="ln">19</span><span class="cc"></span></div>
+        <div class="cl"><span class="ln">20</span><span class="cc">  <span class="kw">return</span> (</span></div>
+        <div class="cl"><span class="ln">21</span><span class="cc">    &lt;<span class="tp">ThemeProvider</span>&gt;</span></div>
+        <div class="cl"><span class="ln">22</span><span class="cc">      &lt;<span class="tg">div</span> <span class="at">className</span>=<span class="str">"app"</span>&gt;</span></div>
+        <div class="cl"><span class="ln">23</span><span class="cc">        &lt;<span class="tg">h1</span>&gt;Count: {count}&lt;/<span class="tg">h1</span>&gt;</span></div>
+        <div class="cl"><span class="ln">24</span><span class="cc">        &lt;<span class="tg">button</span> <span class="at">onClick</span>={<span class="fn">increment</span>}&gt;+1&lt;/<span class="tg">button</span>&gt;<span class="cursor-blink"></span></span></div>
+        <div class="cl"><span class="ln">25</span><span class="cc">      &lt;/<span class="tg">div</span>&gt;</span></div>
+        <div class="cl"><span class="ln">26</span><span class="cc">    &lt;/<span class="tp">ThemeProvider</span>&gt;</span></div>
+        <div class="cl"><span class="ln">27</span><span class="cc">  );</span></div>
+        <div class="cl"><span class="ln">28</span><span class="cc">};</span></div>
+        <div class="cl"><span class="ln">29</span><span class="cc"></span></div>
+        <div class="cl"><span class="ln">30</span><span class="cc"><span class="kw">const</span> root = <span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)!);</span></div>
+        <div class="cl"><span class="ln">31</span><span class="cc">root.<span class="fn">render</span>(&lt;<span class="tp">App</span> /&gt;);</span></div>
+      </div>
+    </div>
+
+    <!-- AI Panel -->
+    <div class="ai-panel">
+      <div class="ai-header">
+        <div class="ai-dot"></div>
+        <span class="ai-title">Trae AI</span>
+        <span class="ai-model">claude-4-sonnet</span>
+      </div>
+      <div class="ai-messages">
+        <div class="msg msg-user">This component re-renders too often. How can I optimize it?</div>
+        <div class="msg msg-ai">I can see the issue. The <code>increment</code> function on line 11 is recreated on every render, causing unnecessary re-renders of child components.<br><br>I recommend wrapping it in <code>useCallback</code>:</div>
+        <div class="msg-code"><span class="kw">const</span> <span class="fn">increment</span> = <span class="fn">useCallback</span>(() =&gt; {
+  <span class="fn">setCount</span>(prev =&gt; prev + <span class="num">1</span>);
+}, []);</div>
+        <div class="ai-actions">
+          <button class="ai-btn pri">Apply</button>
+          <button class="ai-btn">Copy</button>
+          <button class="ai-btn">Explain</button>
+        </div>
+        <div class="msg msg-user">Apply it</div>
+        <div class="msg msg-ai">Done! I updated lines 10-13 with the <code>useCallback</code> optimization. The highlighted lines in your editor show the change.</div>
+      </div>
+      <div class="ai-input-bar">
+        <input class="ai-input" placeholder="Ask Trae...">
+        <button class="ai-send">&#8593;</button>
+      </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="st-item">main</div>
+      <div class="st-item" style="color:var(--red)">2 Errors</div>
+      <div class="st-item" style="color:var(--amber)">1 Warning</div>
+      <div style="flex:1"></div>
+      <div class="st-item">UTF-8</div>
+      <div class="st-item">TypeScript React</div>
+      <div class="st-item"><span class="st-dot"></span> Trae AI: Ready</div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:24px;text-align:center;font-size:11px;color:#5C6373;font-family:'JetBrains Mono',monospace">
+  Generated by Hue -- Trae Design Skill v1.0 -- Simulated IDE interface
+</div>
+
+</body>
+</html>
