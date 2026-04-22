@@ -1,417 +1,2250 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trae Design — Component Library</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link href="https://unpkg.com/lucide-static@1.8.0/font/lucide.css" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#171B26;--s1:#262A37;--s2:#2A2E3E;--s3:#363B4E;
-  --t1:#C9D1D9;--t2:#9599A6;--t3:#737780;--t4:#5C6373;
-  --accent:#10B981;--accent-s:#022C22;--accent-hover:#059669;
-  --purple:#7563E7;--blue:#387BFF;
-  --red:#CC4B53;--amber:#EB9B61;--green:#10B981;
-  --r-el:4px;--r-ctrl:6px;--r-comp:8px;--r-cont:12px;
-  --font:Inter,system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
-}
-body{background:var(--bg);color:var(--t1);font-family:var(--font);font-size:14px;line-height:1.5;display:flex;min-height:100vh}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trae Design — Component Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/lucide-static@1.8.0/font/lucide.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* Sidebar */
-.sidebar{width:220px;background:var(--s1);border-right:1px solid var(--s3);padding:16px 0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto}
-.sidebar h2{font-size:16px;font-weight:600;padding:0 16px 16px;border-bottom:1px solid var(--s3);margin-bottom:8px}
-.sidebar a{display:block;padding:8px 16px;color:var(--t2);text-decoration:none;font-size:13px;transition:all .12s ease-out}
-.sidebar a:hover{background:var(--s2);color:var(--t1)}
-.sidebar a.active{color:var(--accent);background:var(--accent-s);border-right:2px solid var(--accent)}
+    /* ── Primitives ── */
+    :root {
+      --n50: #F0F2F5; --n100: #E0E3EA; --n200: #C9D1D9; --n300: #9599A6;
+      --n400: #737780; --n500: #5C6373; --n600: #3A3F4B; --n700: #363B4E;
+      --n800: #2A2E3E; --n900: #262A37; --n950: #171B26;
+      --b50: #ECFDF5; --b100: #D1FAE5; --b200: #A7F3D0; --b300: #6EE7B7;
+      --b400: #34D399; --b500: #10B981; --b600: #059669; --b700: #047857;
+      --b800: #065F46; --b900: #064E3B; --b950: #022C22;
+      --blue500: #387BFF;
+      --red500: #CC4B53; --amber500: #EB9B61; --green500: #10B981;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --r-element: 4px; --r-control: 6px; --r-component: 8px; --r-container: 12px; --r-pill: 9999px;
+      --dur-fast: 120ms; --dur-normal: 180ms; --dur-slow: 300ms;
+      --ease: ease-out;
+    }
 
-/* Main */
-.main{margin-left:220px;padding:32px 40px;flex:1;max-width:900px}
-.main h1{font-size:28px;font-weight:600;margin-bottom:4px}
-.main>p{color:var(--t3);margin-bottom:32px;font-size:13px}
-section{margin-bottom:48px}
-section h2{font-size:18px;font-weight:600;margin-bottom:6px}
-section>p{color:var(--t2);font-size:13px;margin-bottom:20px}
-.demo-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-.demo-box{background:var(--s1);border:1px solid var(--s3);border-radius:var(--r-comp);padding:20px;margin-bottom:12px}
-.state-label{font-size:11px;font-family:var(--mono);color:var(--t4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+    /* ── Dark ── */
+    [data-theme="dark"] {
+      --background: #171B26; --surface1: #262A37; --surface2: #2A2E3E; --surface3: #363B4E;
+      --border: #262A37; --border-visible: #363B4E;
+      --text1: #C9D1D9; --text2: #9599A6; --text3: #737780; --text4: #5C6373;
+      --accent: #10B981; --accent-hover: #059669; --accent-subtle: #022C22;
+      --success: #10B981; --warning: #EB9B61; --error: #CC4B53; --info: #387BFF;
+      --elevation-1: none; --elevation-2: 0 4px 12px rgba(0,0,0,0.4); --elevation-3: 0 8px 24px rgba(0,0,0,0.5);
+      --info-bg: rgba(56,123,255,0.08); --info-border: rgba(56,123,255,0.2);
+      --success-bg: rgba(16,185,129,0.08); --success-border: rgba(16,185,129,0.2);
+      --warning-bg: rgba(235,155,97,0.08); --warning-border: rgba(235,155,97,0.2);
+      --error-bg: rgba(204,75,83,0.08); --error-border: rgba(204,75,83,0.2);
+    }
 
-/* Buttons */
-.btn{padding:10px 20px;border-radius:var(--r-ctrl);font-family:var(--font);font-size:14px;font-weight:500;border:none;cursor:pointer;transition:all .18s ease-out;display:inline-flex;align-items:center;gap:6px}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{background:var(--accent-hover)}
-.btn-secondary{background:var(--s1);color:var(--t1);border:1px solid var(--s3)}
-.btn-secondary:hover{background:var(--s2)}
-.btn-ghost{background:transparent;color:var(--t1)}
-.btn-ghost:hover{background:var(--s2)}
-.btn-destructive{background:var(--red);color:#fff}
-.btn-sm{padding:6px 12px;font-size:12px}
-.btn-lg{padding:14px 28px;font-size:16px}
-.btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+    /* ── Light ── */
+    [data-theme="light"] {
+      --background: #F0F2F5; --surface1: #FFFFFF; --surface2: #E0E3EA; --surface3: #C9D1D9;
+      --border: #E0E3EA; --border-visible: #C9D1D9;
+      --text1: #171B26; --text2: #5C6373; --text3: #737780; --text4: #9599A6;
+      --accent: #059669; --accent-hover: #047857; --accent-subtle: #ECFDF5;
+      --success: #059669; --warning: #EB9B61; --error: #CC4B53; --info: #387BFF;
+      --elevation-1: 0 1px 3px rgba(0,0,0,0.08); --elevation-2: 0 4px 12px rgba(0,0,0,0.12); --elevation-3: 0 8px 24px rgba(0,0,0,0.16);
+      --info-bg: rgba(56,123,255,0.06); --info-border: rgba(56,123,255,0.15);
+      --success-bg: rgba(16,185,129,0.06); --success-border: rgba(16,185,129,0.15);
+      --warning-bg: rgba(235,155,97,0.06); --warning-border: rgba(235,155,97,0.15);
+      --error-bg: rgba(204,75,83,0.06); --error-border: rgba(204,75,83,0.15);
+    }
 
-/* Input */
-.input-field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
-.input-label{font-size:12px;font-weight:500;color:var(--t2)}
-.input{background:var(--bg);border:1px solid var(--s1);border-radius:var(--r-ctrl);height:36px;padding:8px 12px;color:var(--t1);font-family:var(--font);font-size:14px;outline:none;transition:border .18s ease-out;width:100%;max-width:300px}
-.input:focus{border-color:var(--accent)}
-.input.error{border-color:var(--red)}
-.input:disabled{opacity:.4}
-.input-hint{font-size:11px;color:var(--t3)}
-.input-error-msg{font-size:11px;color:var(--red)}
-textarea.input{height:auto;min-height:80px;resize:vertical}
+    /* ── Base ── */
+    html, body {
+      font-family: var(--font-body);
+      background: var(--background);
+      color: var(--text1);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.5;
+    }
+    button { background: transparent; border: none; font: inherit; cursor: pointer; color: inherit; }
 
-/* Cards */
-.card{background:var(--s1);border:1px solid var(--s1);border-radius:var(--r-comp);padding:16px}
-.card-title{font-weight:600;margin-bottom:4px}
-.card-desc{font-size:13px;color:var(--t2)}
-.card-featured{border-color:var(--accent)}
-.card-featured .card-title{color:var(--accent)}
-.card-compact{padding:12px}
-.card-compact .card-title{font-size:13px}
+    /* ── Layout ── */
+    .cl-shell { display: flex; min-height: 100vh; }
+    .cl-toc {
+      width: 240px; flex-shrink: 0; position: sticky; top: 0; height: 100vh;
+      overflow-y: auto; padding: 32px 20px; border-right: 1px solid var(--border-visible);
+      background: var(--background);
+    }
+    .cl-toc::-webkit-scrollbar { width: 4px; }
+    .cl-toc::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+    .cl-toc h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--text1); }
+    .cl-toc .cl-subtitle { font-size: 11px; color: var(--text3); margin-bottom: 24px; letter-spacing: 0.04em; }
+    .cl-toc nav { display: flex; flex-direction: column; gap: 1px; }
+    .cl-toc-category {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text3); padding: 16px 0 4px; cursor: pointer; user-select: none;
+      transition: color var(--dur-fast) var(--ease);
+    }
+    .cl-toc-category:first-child { padding-top: 0; }
+    .cl-toc-category.active { color: var(--accent); }
+    .cl-toc-sub {
+      font-size: 13px; color: var(--text2); text-decoration: none;
+      padding: 4px 0 4px 12px; transition: color var(--dur-fast) var(--ease); display: block;
+      border-left: 2px solid transparent;
+    }
+    .cl-toc-sub:hover { color: var(--text1); }
+    .cl-toc-sub.active { color: var(--accent); border-left-color: var(--accent); }
 
-/* Tags */
-.tag{display:inline-flex;align-items:center;gap:4px;background:var(--s2);color:var(--t1);padding:4px 10px;border-radius:var(--r-el);font-size:12px;cursor:default}
-.tag-success{background:#022C22;color:var(--green)}
-.tag-warning{background:rgba(120,53,15,.2);color:var(--amber)}
-.tag-error{background:rgba(127,29,29,.2);color:var(--red)}
-.tag-purple{background:rgba(30,0,56,.2);color:var(--purple)}
-.tag-selected{background:var(--accent);color:#fff}
+    .cl-main { flex: 1; padding: 48px; max-width: 1000px; overflow-y: auto; }
 
-/* Toggle */
-.toggle{width:36px;height:20px;border-radius:10px;background:var(--s3);position:relative;cursor:pointer;transition:background .18s ease-out;flex-shrink:0}
-.toggle.on{background:var(--accent)}
-.toggle-thumb{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform .18s ease-out}
-.toggle.on .toggle-thumb{transform:translateX(16px)}
-.toggle-item{display:flex;align-items:center;gap:10px;font-size:13px}
+    /* ── Tab panels ── */
+    .cl-category-panel { display: none; }
+    .cl-category-panel.active { display: block; }
 
-/* Alerts */
-.alert{padding:12px 16px;border-radius:var(--r-comp);border-left:3px solid;font-size:13px;margin-bottom:8px}
-.alert-info{background:rgba(56,123,255,.1);border-color:var(--blue);color:var(--blue)}
-.alert-success{background:rgba(16,185,129,.1);border-color:var(--green);color:var(--green)}
-.alert-warning{background:rgba(235,155,97,.1);border-color:var(--amber);color:var(--amber)}
-.alert-error{background:rgba(204,75,83,.1);border-color:var(--red);color:var(--red)}
+    .cl-component-group { margin-bottom: 72px; scroll-margin-top: 48px; }
+    .cl-component-group h3 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+    .cl-component-group > p { font-size: 14px; color: var(--text2); margin-bottom: 24px; }
 
-/* IDE: Tab Bar */
-.tab-bar{display:flex;background:var(--s1);border-bottom:1px solid var(--s3);height:36px}
-.tab{padding:8px 16px;font-size:13px;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;transition:all .12s ease-out}
-.tab:hover{color:var(--t2);background:var(--s2)}
-.tab.active{color:var(--t1);background:var(--s2);border-bottom-color:var(--accent)}
-.tab .close{font-size:10px;opacity:0;transition:opacity .12s}
-.tab:hover .close{opacity:.6}
+    .cl-canvas {
+      background: var(--surface1); border: 1px solid var(--border-visible);
+      border-radius: var(--r-component); padding: 40px; margin-bottom: 20px;
+      display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start;
+    }
+    .cl-canvas--dark-bg { background: var(--background); }
+    .cl-variant { display: flex; flex-direction: column; gap: 10px; }
+    .cl-variant-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text3);
+    }
+    .cl-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+    .cl-col { display: flex; flex-direction: column; gap: 12px; }
 
-/* IDE: Status Bar */
-.status-bar{display:flex;align-items:center;background:var(--s1);border-top:1px solid var(--s3);height:24px;padding:0 12px;font-size:11px;font-family:var(--mono);color:var(--t3);gap:16px}
-.status-item{display:flex;align-items:center;gap:4px}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+    .cl-spec-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 8px; }
+    .cl-spec-table th, .cl-spec-table td { text-align: left; padding: 10px 0; border-bottom: 1px solid var(--border-visible); }
+    .cl-spec-table th { font-weight: 600; color: var(--text3); text-transform: uppercase; font-size: 10px; letter-spacing: 0.08em; }
+    .cl-spec-table td { color: var(--text2); }
+    .cl-spec-table .col-value { color: var(--text1); font-family: var(--font-mono); font-size: 12px; }
 
-/* IDE: Command Palette */
-.cmd-palette{background:var(--s1);border:1px solid var(--s3);border-radius:var(--r-comp);width:100%;max-width:500px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-.cmd-input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--s3);padding:12px 16px;color:var(--t1);font-family:var(--font);font-size:14px;outline:none}
-.cmd-list{max-height:200px;overflow-y:auto}
-.cmd-item{padding:8px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .12s}
-.cmd-item:hover,.cmd-item.selected{background:var(--s2)}
-.cmd-item .shortcut{font-family:var(--mono);font-size:11px;color:var(--t4)}
+    /* ── Floating bar ── */
+    .floating-bar {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--surface1); border: 1px solid var(--border-visible);
+      border-radius: var(--r-pill); padding: 4px; display: flex; gap: 2px;
+      box-shadow: var(--elevation-3); z-index: 9999;
+    }
+    .mode-btn {
+      padding: 8px 16px; border-radius: var(--r-pill); font-size: 12px; font-weight: 500;
+      color: var(--text2); transition: all var(--dur-fast) var(--ease);
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .mode-btn:hover { color: var(--text1); }
+    .mode-btn.active { background: var(--accent); color: #fff; }
 
-/* IDE: Chat Bubble */
-.chat-container{display:flex;flex-direction:column;gap:8px;max-width:400px}
-.chat-msg{padding:10px 14px;border-radius:var(--r-comp);font-size:13px;line-height:1.5}
-.chat-user{background:var(--s2);align-self:flex-end;border-bottom-right-radius:2px}
-.chat-ai{background:var(--s1);border:1px solid var(--s3);align-self:flex-start;border-bottom-left-radius:2px}
-.chat-ai code{font-family:var(--mono);font-size:12px;background:var(--bg);padding:2px 6px;border-radius:var(--r-el)}
-.chat-input-bar{display:flex;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--s3);border-radius:var(--r-ctrl);padding:8px 12px}
-.chat-input-bar input{flex:1;background:transparent;border:none;color:var(--t1);font-family:var(--font);font-size:13px;outline:none}
+    /* ═══════════════════════════════════════════════════════════
+       COMPONENT STYLES
+       ═══════════════════════════════════════════════════════════ */
 
-/* IDE: File Tree */
-.file-tree{font-size:13px}
-.file-tree-item{display:flex;align-items:center;gap:6px;padding:4px 8px 4px 16px;cursor:pointer;transition:background .12s;border-radius:var(--r-el)}
-.file-tree-item:hover{background:var(--s2)}
-.file-tree-item.selected{background:var(--accent-s)}
-.file-tree-item .icon{font-size:14px;color:var(--t3);width:16px;text-align:center}
-.file-tree-item .name{color:var(--t1)}
-.file-tree-item .git-m{color:var(--amber);font-family:var(--mono);font-size:11px;margin-left:auto}
-.file-tree-item .git-a{color:var(--green);font-family:var(--mono);font-size:11px;margin-left:auto}
-.file-tree-folder{padding-left:8px}
+    /* ── Color Swatches ── */
+    .cl-swatch-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cl-swatch {
+      width: 64px; height: 48px; border-radius: var(--r-control); display: flex;
+      align-items: flex-end; padding: 4px 6px; font-family: var(--font-mono);
+      font-size: 9px; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.06);
+    }
+    .cl-swatch--light { color: rgba(0,0,0,0.5); border-color: rgba(0,0,0,0.06); }
+    .cl-semantic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; width: 100%; }
+    .cl-semantic-swatch {
+      height: 48px; border-radius: var(--r-control); display: flex; align-items: center;
+      justify-content: center; font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
+      border: 1px solid var(--border-visible);
+    }
 
-/* Breadcrumb */
-.breadcrumb{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--t3)}
-.breadcrumb span{cursor:pointer;transition:color .12s}
-.breadcrumb span:hover{color:var(--t1)}
-.breadcrumb .sep{color:var(--t4)}
-.breadcrumb .current{color:var(--t1)}
+    /* ── Typography Samples ── */
+    .cl-type-sample { margin-bottom: 16px; }
+    .cl-type-sample .label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; font-weight: 600; }
+    .cl-type-display { font-size: 36px; font-weight: 600; line-height: 1.1; }
+    .cl-type-body { font-size: 14px; font-weight: 400; line-height: 1.5; }
+    .cl-type-mono { font-family: var(--font-mono); font-size: 13px; font-weight: 400; line-height: 1.5; }
 
-/* Tooltip */
-.tooltip-demo{position:relative;display:inline-block}
-.tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--s3);border-radius:var(--r-el);padding:6px 10px;font-size:12px;color:var(--t1);white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.4)}
-.tooltip kbd{font-family:var(--mono);font-size:10px;background:var(--s3);padding:2px 4px;border-radius:2px;margin-left:6px}
-.tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--s3)}
-</style>
+    /* ── Radii ── */
+    .cl-radius-demo {
+      width: 80px; height: 56px; background: var(--accent); display: flex;
+      align-items: center; justify-content: center; font-family: var(--font-mono);
+      font-size: 11px; color: #fff; font-weight: 500;
+    }
+
+    /* ── Elevation ── */
+    .cl-elevation-card {
+      width: 160px; height: 80px; background: var(--surface1); border-radius: var(--r-component);
+      display: flex; align-items: center; justify-content: center; font-size: 12px;
+      color: var(--text2); border: 1px solid var(--border-visible);
+    }
+
+    /* ── Spacing ── */
+    .cl-spacing-bar {
+      height: 20px; background: var(--accent); border-radius: 2px; opacity: 0.7;
+      display: flex; align-items: center; padding-left: 6px; font-family: var(--font-mono);
+      font-size: 10px; color: #fff; min-width: 20px;
+    }
+
+    /* ── Buttons ── */
+    .cl-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      height: 36px; padding: 10px 20px; border-radius: var(--r-control);
+      font-family: var(--font-body); font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+      border: none; white-space: nowrap;
+    }
+    .cl-btn--sm { height: 28px; padding: 6px 14px; font-size: 13px; }
+    .cl-btn--primary { background: var(--accent); color: #FFFFFF; }
+    .cl-btn--primary.is-hover { background: var(--accent-hover); }
+    .cl-btn--primary.is-active { background: var(--accent-hover); transform: scale(0.98); filter: brightness(0.9); }
+    .cl-btn--primary.is-focused { background: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; }
+    .cl-btn--secondary { background: var(--surface1); color: var(--text1); border: 1px solid var(--border-visible); }
+    .cl-btn--secondary.is-hover { background: var(--surface2); }
+    .cl-btn--secondary.is-active { background: var(--surface2); transform: scale(0.98); }
+    .cl-btn--secondary.is-focused { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .cl-btn--ghost { background: transparent; color: var(--text1); font-weight: 400; padding: 10px 16px; }
+    .cl-btn--ghost.is-hover { background: var(--surface2); }
+    .cl-btn--ghost.is-active { background: var(--surface2); transform: scale(0.98); }
+    .cl-btn--ghost.is-focused { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .cl-btn--destructive { background: var(--error); color: #FFFFFF; }
+    .cl-btn--destructive.is-hover { background: #B8434A; }
+    .cl-btn--destructive.is-active { background: #B8434A; transform: scale(0.98); filter: brightness(0.9); }
+    .cl-btn--destructive.is-focused { outline: 2px solid var(--error); outline-offset: 2px; }
+    .cl-btn.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Cards ── */
+    .cl-card {
+      background: var(--surface1); border: 1px solid var(--border); border-radius: var(--r-component);
+      padding: 16px; min-width: 200px; max-width: 260px;
+    }
+    .cl-card--featured { border-left: 2px solid var(--accent); box-shadow: var(--elevation-2); }
+    .cl-card--compact { border-radius: var(--r-control); padding: 8px 16px; }
+    .cl-card__title { font-size: 14px; font-weight: 600; color: var(--text1); margin-bottom: 4px; }
+    .cl-card__desc { font-size: 13px; color: var(--text2); margin-bottom: 8px; line-height: 1.4; }
+    .cl-card__meta { font-size: 12px; color: var(--text3); font-family: var(--font-mono); }
+    .cl-card.is-hover { background: var(--surface2); }
+
+    /* ── Inputs ── */
+    .cl-input-group { display: flex; flex-direction: column; gap: 6px; min-width: 220px; }
+    .cl-input-label { font-size: 13px; color: var(--text2); }
+    .cl-input {
+      width: 100%; height: 36px; background: var(--background); border: 1px solid var(--border);
+      border-radius: var(--r-control); padding: 8px 12px; font-family: var(--font-body);
+      font-size: 14px; color: var(--text1); outline: none;
+      transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    }
+    .cl-input::placeholder { color: var(--text3); }
+    .cl-input.is-focused { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(16,185,129,0.15); }
+    .cl-input.is-error { border-color: var(--error); }
+    .cl-input.is-disabled { opacity: 0.4; pointer-events: none; }
+    .cl-input-error { font-size: 12px; color: var(--error); }
+
+    /* ── Tags ── */
+    .cl-tag {
+      display: inline-flex; align-items: center; padding: 4px 10px;
+      border-radius: var(--r-element); font-family: var(--font-body); font-size: 12px;
+      font-weight: 500; background: var(--surface2); color: var(--text1);
+      white-space: nowrap; line-height: 1;
+    }
+    .cl-tag--selected { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); }
+    .cl-tag--success { background: rgba(16,185,129,0.1); color: var(--success); }
+    .cl-tag--warning { background: rgba(235,155,97,0.1); color: var(--warning); }
+    .cl-tag--error { background: rgba(204,75,83,0.1); color: var(--error); }
+
+    /* ── Toggle ── */
+    .cl-toggle { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+    .cl-toggle__input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .cl-toggle__track {
+      position: relative; width: 36px; height: 20px; background: var(--surface3);
+      border-radius: 10px; transition: background var(--dur-fast) var(--ease); flex-shrink: 0;
+    }
+    .cl-toggle__thumb {
+      position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+      background: #FFFFFF; border-radius: 50%; transition: transform var(--dur-fast) var(--ease);
+    }
+    .cl-toggle--on .cl-toggle__track { background: var(--accent); }
+    .cl-toggle--on .cl-toggle__thumb { transform: translateX(16px); }
+    .cl-toggle--disabled { opacity: 0.4; pointer-events: none; }
+    .cl-toggle--focused .cl-toggle__track { box-shadow: 0 0 0 2px var(--accent); }
+    .cl-toggle__label { font-size: 14px; color: var(--text1); }
+
+    /* ── Alerts ── */
+    .cl-alert {
+      display: flex; gap: 10px; padding: 12px 16px; border-radius: var(--r-component);
+      font-size: 13px; line-height: 1.5; align-items: flex-start; position: relative;
+    }
+    .cl-alert__icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+    .cl-alert__content { flex: 1; }
+    .cl-alert__title { font-weight: 500; margin-bottom: 2px; color: var(--text1); }
+    .cl-alert__desc { color: var(--text2); }
+    .cl-alert__dismiss {
+      position: absolute; top: 10px; right: 10px; color: var(--text3);
+      font-size: 14px; padding: 2px;
+    }
+    .cl-alert--info { background: var(--info-bg); border: 1px solid var(--info-border); }
+    .cl-alert--info .cl-alert__icon { color: var(--info); }
+    .cl-alert--success { background: var(--success-bg); border: 1px solid var(--success-border); }
+    .cl-alert--success .cl-alert__icon { color: var(--success); }
+    .cl-alert--warning { background: var(--warning-bg); border: 1px solid var(--warning-border); }
+    .cl-alert--warning .cl-alert__icon { color: var(--warning); }
+    .cl-alert--error { background: var(--error-bg); border: 1px solid var(--error-border); }
+    .cl-alert--error .cl-alert__icon { color: var(--error); }
+
+    /* ── Tab Bar (IDE) ── */
+    .cl-tab-bar {
+      display: flex; height: 36px; background: var(--background);
+      border-bottom: 1px solid var(--border); overflow-x: auto; flex-shrink: 0; width: 100%;
+    }
+    .cl-tab {
+      display: inline-flex; align-items: center; gap: 4px; padding: 0 12px;
+      font-size: 13px; color: var(--text3); cursor: pointer;
+      border-top: 2px solid transparent; white-space: nowrap;
+      transition: background var(--dur-fast) var(--ease);
+    }
+    .cl-tab--active { background: var(--surface1); color: var(--text1); border-top-color: var(--accent); }
+    .cl-tab.is-hover { background: var(--surface2); }
+    .cl-tab__close { display: none; font-size: 12px; color: var(--text3); padding: 2px; margin-left: 4px; }
+    .cl-tab.is-hover .cl-tab__close, .cl-tab--active .cl-tab__close { display: inline-flex; }
+    .cl-tab__modified { width: 6px; height: 6px; border-radius: 50%; background: var(--text2); margin-left: 4px; }
+
+    /* ── Status Bar ── */
+    .cl-statusbar {
+      display: flex; justify-content: space-between; align-items: center;
+      height: 24px; background: var(--background); border-top: 1px solid var(--border);
+      font-family: var(--font-body); font-size: 11px; color: var(--text3);
+      user-select: none; width: 100%;
+    }
+    .cl-statusbar__left, .cl-statusbar__right { display: flex; align-items: center; height: 100%; }
+    .cl-statusbar__item {
+      display: flex; align-items: center; gap: 4px; padding: 0 8px; height: 100%;
+      font: inherit; color: inherit;
+    }
+    .cl-statusbar__item:hover { background: rgba(255,255,255,0.06); }
+    .cl-statusbar__item--error { color: var(--error); }
+    .cl-statusbar__item--warning { color: var(--warning); }
+    .cl-statusbar__item--accent { color: var(--accent); }
+
+    /* ── Command Palette ── */
+    .cl-palette {
+      background: var(--surface1); border: 1px solid var(--border-visible);
+      border-radius: var(--r-container); width: 100%; max-width: 480px;
+      box-shadow: var(--elevation-3); overflow: hidden;
+    }
+    .cl-palette__input-wrap {
+      display: flex; align-items: center; padding: 0 16px; height: 44px;
+      border-bottom: 1px solid var(--border-visible); gap: 8px;
+    }
+    .cl-palette__icon { color: var(--text3); font-size: 14px; }
+    .cl-palette__input {
+      flex: 1; background: transparent; border: none; outline: none;
+      color: var(--text1); font-family: var(--font-body); font-size: 15px;
+    }
+    .cl-palette__input::placeholder { color: var(--text3); }
+    .cl-palette__list { list-style: none; padding: 4px; }
+    .cl-palette__item {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 36px; padding: 0 12px; border-radius: var(--r-control);
+      cursor: pointer; color: var(--text1); font-size: 13px;
+    }
+    .cl-palette__item:hover, .cl-palette__item--active { background: var(--surface2); }
+    .cl-palette__shortcut { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
+
+    /* ── Chat Bubble ── */
+    .cl-chat-bubble {
+      padding: 12px 16px; border-radius: var(--r-component);
+      font-size: 13px; color: var(--text1); line-height: 1.5; max-width: 420px;
+    }
+    .cl-chat-bubble--user { background: var(--surface2); }
+    .cl-chat-bubble--ai { background: var(--surface1); border-left: 2px solid var(--accent); }
+    .cl-chat-bubble__indicator {
+      display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+      font-size: 12px; color: var(--accent); font-weight: 500;
+    }
+    .cl-chat-bubble__code {
+      background: var(--background); border-radius: var(--r-element); padding: 8px 12px;
+      font-family: var(--font-mono); font-size: 13px; overflow-x: auto; margin: 8px 0;
+      line-height: 1.5;
+    }
+    .cl-chat-bubble__time { font-family: var(--font-mono); font-size: 11px; color: var(--text3); margin-top: 6px; display: block; }
+
+    /* ── File Tree ── */
+    .cl-file-tree { font-size: 13px; color: var(--text1); width: 100%; }
+    .cl-file-tree__item {
+      display: flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px;
+      cursor: pointer; border-left: 2px solid transparent;
+      transition: background var(--dur-fast) var(--ease);
+    }
+    .cl-file-tree__item:hover, .cl-file-tree__item.is-hover { background: var(--surface2); }
+    .cl-file-tree__item--selected { background: var(--surface2); border-left-color: var(--accent); }
+    .cl-file-tree__item--active { background: var(--accent-subtle); color: var(--accent); border-left-color: var(--accent); }
+    .cl-file-tree__item.is-disabled { opacity: 0.4; pointer-events: none; }
+    .cl-file-tree__chevron { font-size: 12px; color: var(--text3); width: 12px; text-align: center; }
+    .cl-file-tree__icon { font-size: 16px; color: var(--text3); }
+    .cl-file-tree__name { flex: 1; }
+    .cl-file-tree__name--modified { color: var(--warning); }
+    .cl-file-tree__name--untracked { color: var(--accent); }
+    .cl-file-tree__indent { width: 16px; flex-shrink: 0; }
+
+    /* ── Breadcrumb ── */
+    .cl-breadcrumb ol {
+      display: flex; align-items: center; list-style: none;
+      font-family: var(--font-mono); font-size: 12px;
+    }
+    .cl-breadcrumb a { color: var(--text2); text-decoration: none; padding: 2px 0; }
+    .cl-breadcrumb a:hover { color: var(--text1); text-decoration: underline; }
+    .cl-breadcrumb li[aria-hidden] { color: var(--text3); margin: 0 6px; user-select: none; }
+    .cl-breadcrumb [aria-current="page"] { color: var(--text1); font-weight: 500; }
+
+    /* ── Tooltip ── */
+    .cl-tooltip-demo { position: relative; display: inline-block; }
+    .cl-tooltip {
+      position: absolute; background: var(--surface3); color: var(--text1);
+      font-size: 12px; line-height: 1.4; padding: 4px 8px; border-radius: var(--r-element);
+      max-width: 240px; box-shadow: var(--elevation-2); pointer-events: none;
+      white-space: nowrap;
+    }
+    .cl-tooltip--top { bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); }
+    .cl-tooltip--bottom { top: calc(100% + 8px); left: 50%; transform: translateX(-50%); }
+    .cl-tooltip--left { right: calc(100% + 8px); top: 50%; transform: translateY(-50%); }
+    .cl-tooltip--right { left: calc(100% + 8px); top: 50%; transform: translateY(-50%); }
+    .cl-tooltip__arrow {
+      position: absolute; border-left: 5px solid transparent; border-right: 5px solid transparent;
+    }
+    .cl-tooltip--top .cl-tooltip__arrow {
+      bottom: -5px; left: 50%; transform: translateX(-50%);
+      border-top: 5px solid var(--surface3);
+    }
+    .cl-tooltip--bottom .cl-tooltip__arrow {
+      top: -5px; left: 50%; transform: translateX(-50%);
+      border-bottom: 5px solid var(--surface3);
+    }
+    .cl-tooltip kbd { font-family: var(--font-mono); font-size: 11px; color: var(--text2); margin-left: 8px; }
+
+    /* ── Progress ── */
+    .cl-progress { width: 100%; }
+    .cl-progress__track { height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+    .cl-progress__fill { height: 100%; border-radius: 2px; transition: width var(--dur-normal) var(--ease); }
+    .cl-progress__fill--accent { background: var(--accent); }
+    .cl-progress__fill--warning { background: var(--warning); }
+    .cl-progress__fill--error { background: var(--error); }
+    .cl-progress__label { font-family: var(--font-mono); font-size: 11px; color: var(--text3); text-align: right; margin-bottom: 4px; }
+    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+    .cl-progress__fill--indeterminate {
+      width: 40% !important; animation: shimmer 1.5s ease-in-out infinite;
+    }
+
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .cl-spinner {
+      border: 2px solid var(--surface3); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    .cl-spinner--sm { width: 16px; height: 16px; }
+    .cl-spinner--md { width: 24px; height: 24px; border-width: 3px; }
+    .cl-spinner--lg { width: 36px; height: 36px; border-width: 3px; }
+
+    /* ── Skeleton ── */
+    @keyframes skeleton-shimmer {
+      0% { background-position: -200px 0; }
+      100% { background-position: calc(200px + 100%) 0; }
+    }
+    .cl-skeleton {
+      background: var(--surface2);
+      background-image: linear-gradient(90deg, var(--surface2), var(--surface3), var(--surface2));
+      background-size: 200px 100%; background-repeat: no-repeat;
+      animation: skeleton-shimmer 1.5s ease-in-out infinite; border-radius: var(--r-element);
+    }
+    .cl-skeleton--text { height: 14px; width: 80%; margin-bottom: 8px; }
+    .cl-skeleton--text-short { height: 14px; width: 50%; margin-bottom: 8px; }
+    .cl-skeleton--circle { width: 40px; height: 40px; border-radius: 50%; }
+    .cl-skeleton--card { height: 120px; border-radius: var(--r-component); }
+
+    /* ── Checkbox ── */
+    .cl-checkbox { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text1); }
+    .cl-checkbox__box {
+      width: 18px; height: 18px; border: 1px solid var(--border-visible); border-radius: var(--r-element);
+      background: var(--background); display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all var(--dur-fast) var(--ease); position: relative;
+    }
+    .cl-checkbox--checked .cl-checkbox__box { background: var(--accent); border-color: var(--accent); }
+    .cl-checkbox--checked .cl-checkbox__box::after {
+      content: ''; width: 10px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+      transform: rotate(-45deg); position: absolute; top: 4px;
+    }
+    .cl-checkbox--indeterminate .cl-checkbox__box { background: var(--accent); border-color: var(--accent); }
+    .cl-checkbox--indeterminate .cl-checkbox__box::after {
+      content: ''; width: 8px; height: 2px; background: #fff; position: absolute;
+    }
+    .cl-checkbox.is-hover .cl-checkbox__box { border-color: var(--accent); }
+    .cl-checkbox.is-focused .cl-checkbox__box { box-shadow: 0 0 0 2px rgba(16,185,129,0.3); }
+    .cl-checkbox.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Radio ── */
+    .cl-radio { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text1); }
+    .cl-radio__circle {
+      width: 18px; height: 18px; border: 1px solid var(--border-visible); border-radius: 50%;
+      background: var(--background); display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all var(--dur-fast) var(--ease);
+    }
+    .cl-radio--selected .cl-radio__circle { border-color: var(--accent); }
+    .cl-radio--selected .cl-radio__circle::after {
+      content: ''; width: 8px; height: 8px; background: var(--accent); border-radius: 50%;
+    }
+    .cl-radio.is-hover .cl-radio__circle { border-color: var(--accent); }
+    .cl-radio.is-focused .cl-radio__circle { box-shadow: 0 0 0 2px rgba(16,185,129,0.3); }
+    .cl-radio.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Switch (alias for toggle in Inputs) ── */
+    /* reuses .cl-toggle styles */
+
+    /* ── Select ── */
+    .cl-select {
+      display: flex; align-items: center; height: 36px; background: var(--background);
+      border: 1px solid var(--border); border-radius: var(--r-control); padding: 8px 12px;
+      font-size: 14px; color: var(--text1); cursor: pointer; min-width: 220px;
+      justify-content: space-between;
+    }
+    .cl-select.is-focused { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(16,185,129,0.15); }
+    .cl-select.is-error { border-color: var(--error); }
+    .cl-select.is-disabled { opacity: 0.4; pointer-events: none; }
+    .cl-select__chevron { font-size: 14px; color: var(--text3); }
+    .cl-select__dropdown {
+      background: var(--surface1); border: 1px solid var(--border-visible);
+      border-radius: var(--r-control); padding: 4px; margin-top: 4px;
+      box-shadow: var(--elevation-2); min-width: 220px;
+    }
+    .cl-select__option {
+      padding: 8px 12px; border-radius: var(--r-element); font-size: 13px;
+      color: var(--text1); cursor: pointer;
+    }
+    .cl-select__option:hover, .cl-select__option--selected { background: var(--surface2); }
+
+    /* ── Data Table ── */
+    .cl-data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .cl-data-table th {
+      text-align: left; padding: 8px 12px; font-weight: 600; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3);
+      border-bottom: 1px solid var(--border-visible);
+    }
+    .cl-data-table td {
+      padding: 10px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text1);
+    }
+    .cl-data-table tr:hover td { background: var(--surface1); }
+    .cl-data-table tr.is-selected td { background: var(--surface2); }
+
+    /* ── Badge ── */
+    .cl-badge {
+      display: inline-flex; align-items: center; padding: 3px 8px;
+      border-radius: var(--r-pill); font-size: 11px; font-weight: 500;
+      line-height: 1; white-space: nowrap;
+    }
+    .cl-badge--neutral { background: var(--surface2); color: var(--text2); }
+    .cl-badge--info { background: var(--info-bg); color: var(--info); }
+    .cl-badge--success { background: var(--success-bg); color: var(--success); }
+    .cl-badge--warning { background: var(--warning-bg); color: var(--warning); }
+    .cl-badge--error { background: var(--error-bg); color: var(--error); }
+
+    /* ── Avatar ── */
+    .cl-avatar {
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 50%; background: var(--surface3); color: var(--text1);
+      font-weight: 600; flex-shrink: 0; overflow: hidden;
+    }
+    .cl-avatar--sm { width: 24px; height: 24px; font-size: 10px; }
+    .cl-avatar--md { width: 32px; height: 32px; font-size: 12px; }
+    .cl-avatar--lg { width: 40px; height: 40px; font-size: 14px; }
+    .cl-avatar-group { display: flex; }
+    .cl-avatar-group .cl-avatar { margin-left: -8px; border: 2px solid var(--background); }
+    .cl-avatar-group .cl-avatar:first-child { margin-left: 0; }
+
+    /* ── Tabs (Navigation) ── */
+    .cl-nav-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border-visible); }
+    .cl-nav-tab {
+      padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--text2);
+      border-bottom: 2px solid transparent; cursor: pointer;
+      transition: all var(--dur-fast) var(--ease);
+    }
+    .cl-nav-tab--active { color: var(--accent); border-bottom-color: var(--accent); }
+    .cl-nav-tab:hover { color: var(--text1); }
+    .cl-nav-tab.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    .cl-pill-tabs { display: flex; gap: 4px; background: var(--surface1); padding: 4px; border-radius: var(--r-control); }
+    .cl-pill-tab {
+      padding: 6px 14px; font-size: 13px; font-weight: 500; color: var(--text2);
+      border-radius: var(--r-element); cursor: pointer;
+      transition: all var(--dur-fast) var(--ease);
+    }
+    .cl-pill-tab--active { background: var(--surface2); color: var(--text1); }
+    .cl-pill-tab:hover { color: var(--text1); }
+
+    /* ── Pagination ── */
+    .cl-pagination { display: flex; gap: 4px; align-items: center; }
+    .cl-pagination__btn {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border-radius: var(--r-control); font-size: 13px; color: var(--text2);
+      transition: all var(--dur-fast) var(--ease);
+    }
+    .cl-pagination__btn:hover { background: var(--surface2); color: var(--text1); }
+    .cl-pagination__btn--active { background: var(--accent); color: #fff; }
+    .cl-pagination__btn.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Link ── */
+    .cl-link { color: var(--accent); text-decoration: none; font-size: 14px; transition: color var(--dur-fast) var(--ease); }
+    .cl-link:hover { text-decoration: underline; }
+    .cl-link.is-hover { text-decoration: underline; }
+    .cl-link.is-visited { color: var(--text3); }
+
+    /* ── Toast ── */
+    .cl-toast {
+      display: flex; gap: 10px; padding: 12px 16px; border-radius: var(--r-component);
+      font-size: 13px; background: var(--surface1); border: 1px solid var(--border-visible);
+      box-shadow: var(--elevation-3); align-items: center; min-width: 300px; max-width: 420px;
+    }
+    .cl-toast__icon { flex-shrink: 0; font-size: 16px; }
+    .cl-toast__content { flex: 1; color: var(--text1); }
+    .cl-toast__action { font-size: 13px; font-weight: 500; color: var(--accent); cursor: pointer; white-space: nowrap; }
+    .cl-toast--info .cl-toast__icon { color: var(--info); }
+    .cl-toast--success .cl-toast__icon { color: var(--success); }
+    .cl-toast--warning .cl-toast__icon { color: var(--warning); }
+    .cl-toast--error .cl-toast__icon { color: var(--error); }
+
+    /* ── Modal ── */
+    .cl-modal-demo { position: relative; min-height: 200px; display: flex; align-items: center; justify-content: center; width: 100%; }
+    .cl-modal-backdrop {
+      position: absolute; inset: 0; background: rgba(23,27,38,0.6);
+      border-radius: var(--r-component); display: flex; align-items: center; justify-content: center;
+    }
+    .cl-modal {
+      background: var(--surface1); border: 1px solid var(--border-visible);
+      border-radius: var(--r-container); padding: 24px; width: 360px;
+      box-shadow: var(--elevation-3);
+    }
+    .cl-modal__title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .cl-modal__desc { font-size: 13px; color: var(--text2); margin-bottom: 20px; line-height: 1.5; }
+    .cl-modal__actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+    /* ── Accordion ── */
+    .cl-accordion { width: 100%; max-width: 400px; }
+    .cl-accordion__item { border-bottom: 1px solid var(--border-visible); }
+    .cl-accordion__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; font-size: 14px; font-weight: 500; color: var(--text1);
+      cursor: pointer; width: 100%;
+    }
+    .cl-accordion__header:hover { color: var(--accent); }
+    .cl-accordion__chevron { font-size: 14px; color: var(--text3); transition: transform var(--dur-fast) var(--ease); }
+    .cl-accordion__item--expanded .cl-accordion__chevron { transform: rotate(180deg); }
+    .cl-accordion__body { padding: 0 0 12px; font-size: 13px; color: var(--text2); line-height: 1.5; display: none; }
+    .cl-accordion__item--expanded .cl-accordion__body { display: block; }
+    .cl-accordion__item.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Empty State ── */
+    .cl-empty-state {
+      display: flex; flex-direction: column; align-items: center; padding: 48px 24px;
+      text-align: center;
+    }
+    .cl-empty-state__icon { font-size: 48px; color: var(--text3); margin-bottom: 16px; }
+    .cl-empty-state__title { font-size: 16px; font-weight: 500; color: var(--text2); margin-bottom: 8px; }
+    .cl-empty-state__desc { font-size: 14px; color: var(--text3); margin-bottom: 20px; max-width: 320px; }
+
+    /* ── Slider ── */
+    .cl-slider { position: relative; width: 200px; height: 20px; display: flex; align-items: center; }
+    .cl-slider__track { width: 100%; height: 4px; background: var(--surface3); border-radius: 2px; position: relative; }
+    .cl-slider__fill { height: 100%; background: var(--accent); border-radius: 2px; }
+    .cl-slider__thumb {
+      width: 16px; height: 16px; background: var(--accent); border-radius: 50%;
+      position: absolute; top: 50%; transform: translateY(-50%); cursor: pointer;
+      border: 2px solid var(--background);
+    }
+    .cl-slider.is-hover .cl-slider__thumb { transform: translateY(-50%) scale(1.15); }
+    .cl-slider.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Popover ── */
+    .cl-popover {
+      background: var(--surface1); border: 1px solid var(--border-visible);
+      border-radius: var(--r-component); padding: 12px 16px; box-shadow: var(--elevation-2);
+      font-size: 13px; color: var(--text1); max-width: 240px; position: relative;
+    }
+    .cl-popover__arrow {
+      position: absolute; width: 10px; height: 10px; background: var(--surface1);
+      border: 1px solid var(--border-visible); transform: rotate(45deg);
+    }
+    .cl-popover__arrow--top { bottom: -6px; left: 50%; margin-left: -5px; border-top: none; border-left: none; }
+
+    /* ── Nav Menu ── */
+    .cl-nav-menu { display: flex; gap: 4px; }
+    .cl-nav-menu__item {
+      padding: 8px 12px; font-size: 13px; font-weight: 500; color: var(--text2);
+      border-radius: var(--r-control); cursor: pointer;
+      transition: all var(--dur-fast) var(--ease);
+    }
+    .cl-nav-menu__item--active { background: var(--surface2); color: var(--text1); }
+    .cl-nav-menu__item:hover { color: var(--text1); background: var(--surface1); }
+
+    /* ── Textarea ── */
+    .cl-textarea {
+      width: 100%; min-height: 80px; background: var(--background); border: 1px solid var(--border);
+      border-radius: var(--r-control); padding: 8px 12px; font-family: var(--font-body);
+      font-size: 14px; color: var(--text1); outline: none; resize: vertical;
+      transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    }
+    .cl-textarea::placeholder { color: var(--text3); }
+    .cl-textarea.is-focused { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(16,185,129,0.15); }
+    .cl-textarea.is-error { border-color: var(--error); }
+    .cl-textarea.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Segmented Control ── */
+    .cl-segmented { display: inline-flex; background: var(--surface1); border-radius: var(--r-control); padding: 2px; border: 1px solid var(--border-visible); }
+    .cl-segmented__item {
+      padding: 6px 16px; font-size: 13px; font-weight: 500; color: var(--text2);
+      border-radius: var(--r-element); cursor: pointer;
+      transition: all var(--dur-fast) var(--ease);
+    }
+    .cl-segmented__item--active { background: var(--surface2); color: var(--text1); }
+    .cl-segmented__item:hover { color: var(--text1); }
+    .cl-segmented__item.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Icon Button ── */
+    .cl-icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--r-control); cursor: pointer;
+      transition: background var(--dur-fast) var(--ease);
+    }
+    .cl-icon-btn--sm { width: 28px; height: 28px; font-size: 14px; }
+    .cl-icon-btn--md { width: 36px; height: 36px; font-size: 16px; }
+    .cl-icon-btn--lg { width: 44px; height: 44px; font-size: 18px; }
+    .cl-icon-btn--primary { background: var(--accent); color: #fff; }
+    .cl-icon-btn--primary.is-hover { background: var(--accent-hover); }
+    .cl-icon-btn--secondary { background: var(--surface1); color: var(--text1); border: 1px solid var(--border-visible); }
+    .cl-icon-btn--secondary.is-hover { background: var(--surface2); }
+    .cl-icon-btn--ghost { background: transparent; color: var(--text2); }
+    .cl-icon-btn--ghost.is-hover { background: var(--surface2); color: var(--text1); }
+    .cl-icon-btn.is-focused { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .cl-icon-btn.is-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* ── Dropdown Menu ── */
+    .cl-dropdown {
+      background: var(--surface1); border: 1px solid var(--border-visible);
+      border-radius: var(--r-component); padding: 4px; box-shadow: var(--elevation-2);
+      min-width: 180px;
+    }
+    .cl-dropdown__item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px; border-radius: var(--r-element); font-size: 13px;
+      color: var(--text1); cursor: pointer;
+    }
+    .cl-dropdown__item:hover, .cl-dropdown__item.is-hover { background: var(--surface2); }
+    .cl-dropdown__item.is-focused { background: var(--surface2); outline: 1px solid var(--accent); }
+    .cl-dropdown__item.is-disabled { opacity: 0.4; pointer-events: none; }
+    .cl-dropdown__item--checked::before { content: ''; width: 4px; height: 4px; background: var(--accent); border-radius: 50%; margin-right: 8px; }
+    .cl-dropdown__divider { height: 1px; background: var(--border-visible); margin: 4px 0; }
+    .cl-dropdown__shortcut { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
+
+    /* ── Combobox ── */
+    .cl-combobox { position: relative; min-width: 220px; }
+    .cl-combobox__input {
+      width: 100%; height: 36px; background: var(--background); border: 1px solid var(--border);
+      border-radius: var(--r-control); padding: 8px 12px; font-size: 14px; color: var(--text1);
+      outline: none;
+    }
+    .cl-combobox__input.is-focused { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(16,185,129,0.15); }
+    .cl-combobox__dropdown {
+      background: var(--surface1); border: 1px solid var(--border-visible);
+      border-radius: var(--r-control); padding: 4px; margin-top: 4px;
+      box-shadow: var(--elevation-2);
+    }
+    .cl-combobox__option { padding: 8px 12px; border-radius: var(--r-element); font-size: 13px; color: var(--text1); cursor: pointer; }
+    .cl-combobox__option:hover { background: var(--surface2); }
+    .cl-combobox__empty { padding: 12px; text-align: center; font-size: 13px; color: var(--text3); }
+
+    /* ── Date Picker ── */
+    .cl-datepicker {
+      background: var(--surface1); border: 1px solid var(--border-visible);
+      border-radius: var(--r-component); padding: 16px; width: 280px;
+      box-shadow: var(--elevation-2);
+    }
+    .cl-datepicker__header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px; font-size: 14px; font-weight: 500;
+    }
+    .cl-datepicker__nav { font-size: 16px; color: var(--text3); cursor: pointer; padding: 4px; }
+    .cl-datepicker__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+    .cl-datepicker__day-label { font-size: 11px; color: var(--text3); padding: 4px; font-weight: 600; }
+    .cl-datepicker__day {
+      padding: 6px; font-size: 13px; color: var(--text1); border-radius: var(--r-element);
+      cursor: pointer; transition: background var(--dur-fast) var(--ease);
+    }
+    .cl-datepicker__day:hover { background: var(--surface2); }
+    .cl-datepicker__day--today { color: var(--accent); font-weight: 600; }
+    .cl-datepicker__day--selected { background: var(--accent); color: #fff; }
+    .cl-datepicker__day--range { background: var(--accent-subtle); }
+    .cl-datepicker__day--disabled { opacity: 0.3; pointer-events: none; }
+    .cl-datepicker__day--other { color: var(--text4); }
+  </style>
 </head>
 <body>
+  <div class="cl-shell">
+    <aside class="cl-toc">
+      <h1>Trae Design</h1>
+      <div class="cl-subtitle">Component Library</div>
+      <nav>
+        <div class="cl-toc-category active" data-cat="foundations">Foundations</div>
+        <a class="cl-toc-sub" href="#colors" data-cat="foundations">Colors</a>
+        <a class="cl-toc-sub" href="#typography" data-cat="foundations">Typography</a>
+        <a class="cl-toc-sub" href="#radii" data-cat="foundations">Radii</a>
+        <a class="cl-toc-sub" href="#elevation" data-cat="foundations">Elevation</a>
+        <a class="cl-toc-sub" href="#spacing" data-cat="foundations">Spacing</a>
+        <a class="cl-toc-sub" href="#iconography" data-cat="foundations">Iconography</a>
 
-<nav class="sidebar">
-  <h2>Components</h2>
-  <a href="#buttons" class="active">Buttons</a>
-  <a href="#inputs">Inputs</a>
-  <a href="#cards">Cards</a>
-  <a href="#tags">Tags</a>
-  <a href="#toggles">Toggles</a>
-  <a href="#alerts">Alerts</a>
-  <a href="#tabs">Tab Bar</a>
-  <a href="#status">Status Bar</a>
-  <a href="#cmd">Command Palette</a>
-  <a href="#chat">Inline Chat</a>
-  <a href="#filetree">File Tree</a>
-  <a href="#breadcrumb">Breadcrumb</a>
-  <a href="#tooltip">Tooltip</a>
-</nav>
+        <div class="cl-toc-category" data-cat="actions">Actions</div>
+        <a class="cl-toc-sub" href="#button" data-cat="actions">Button</a>
+        <a class="cl-toc-sub" href="#icon-button" data-cat="actions">Icon Button</a>
+        <a class="cl-toc-sub" href="#toggle-button" data-cat="actions">Toggle Button</a>
+        <a class="cl-toc-sub" href="#segmented-control" data-cat="actions">Segmented Control</a>
+        <a class="cl-toc-sub" href="#dropdown-menu" data-cat="actions">Dropdown Menu</a>
 
-<main class="main">
-<h1>Trae Component Library</h1>
-<p>Living reference of all design components — dark mode primary</p>
+        <div class="cl-toc-category" data-cat="inputs">Inputs</div>
+        <a class="cl-toc-sub" href="#text-input" data-cat="inputs">Text Input</a>
+        <a class="cl-toc-sub" href="#textarea" data-cat="inputs">Textarea</a>
+        <a class="cl-toc-sub" href="#select" data-cat="inputs">Select</a>
+        <a class="cl-toc-sub" href="#checkbox" data-cat="inputs">Checkbox</a>
+        <a class="cl-toc-sub" href="#radio-group" data-cat="inputs">Radio Group</a>
+        <a class="cl-toc-sub" href="#switch" data-cat="inputs">Switch</a>
+        <a class="cl-toc-sub" href="#slider" data-cat="inputs">Slider</a>
+        <a class="cl-toc-sub" href="#date-picker" data-cat="inputs">Date Picker</a>
+        <a class="cl-toc-sub" href="#combobox" data-cat="inputs">Combobox</a>
 
-<!-- BUTTONS -->
-<section id="buttons">
-<h2>Buttons</h2>
-<p>Four variants, three sizes. Mechanical 180ms transitions.</p>
-<div class="demo-box">
-  <div class="state-label">Default</div>
-  <div class="demo-row">
-    <button class="btn btn-primary">Primary</button>
-    <button class="btn btn-secondary">Secondary</button>
-    <button class="btn btn-ghost">Ghost</button>
-    <button class="btn btn-destructive">Destructive</button>
-  </div>
-  <div class="state-label">Sizes</div>
-  <div class="demo-row">
-    <button class="btn btn-primary btn-sm">Small</button>
-    <button class="btn btn-primary">Medium</button>
-    <button class="btn btn-primary btn-lg">Large</button>
-  </div>
-  <div class="state-label">Disabled</div>
-  <div class="demo-row">
-    <button class="btn btn-primary" disabled>Primary</button>
-    <button class="btn btn-secondary" disabled>Secondary</button>
-  </div>
-</div>
-</section>
+        <div class="cl-toc-category" data-cat="data-display">Data Display</div>
+        <a class="cl-toc-sub" href="#card" data-cat="data-display">Card</a>
+        <a class="cl-toc-sub" href="#avatar" data-cat="data-display">Avatar</a>
+        <a class="cl-toc-sub" href="#badge" data-cat="data-display">Badge</a>
+        <a class="cl-toc-sub" href="#tag" data-cat="data-display">Tag</a>
+        <a class="cl-toc-sub" href="#data-table" data-cat="data-display">Data Table</a>
+        <a class="cl-toc-sub" href="#skeleton" data-cat="data-display">Skeleton</a>
 
-<!-- INPUTS -->
-<section id="inputs">
-<h2>Inputs</h2>
-<p>Text fields with label, hint, error, and disabled states.</p>
-<div class="demo-box" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-  <div class="input-field">
-    <label class="input-label">Default</label>
-    <input class="input" placeholder="Enter text...">
-    <span class="input-hint">Helper text goes here</span>
-  </div>
-  <div class="input-field">
-    <label class="input-label">Focused</label>
-    <input class="input" value="Focused state" style="border-color:var(--accent)">
-  </div>
-  <div class="input-field">
-    <label class="input-label">Error</label>
-    <input class="input error" value="Invalid value">
-    <span class="input-error-msg">This field is required</span>
-  </div>
-  <div class="input-field">
-    <label class="input-label">Disabled</label>
-    <input class="input" disabled placeholder="Cannot edit">
-  </div>
-  <div class="input-field" style="grid-column:1/3">
-    <label class="input-label">Multiline</label>
-    <textarea class="input" placeholder="Describe your issue..."></textarea>
-  </div>
-</div>
-</section>
+        <div class="cl-toc-category" data-cat="navigation">Navigation</div>
+        <a class="cl-toc-sub" href="#tabs" data-cat="navigation">Tabs</a>
+        <a class="cl-toc-sub" href="#breadcrumb" data-cat="navigation">Breadcrumb</a>
+        <a class="cl-toc-sub" href="#pagination" data-cat="navigation">Pagination</a>
+        <a class="cl-toc-sub" href="#nav-menu" data-cat="navigation">Nav Menu</a>
+        <a class="cl-toc-sub" href="#link" data-cat="navigation">Link</a>
 
-<!-- CARDS -->
-<section id="cards">
-<h2>Cards</h2>
-<p>Standard, featured, and compact variants.</p>
-<div class="demo-row">
-  <div class="card" style="width:220px"><div class="card-title">Standard</div><div class="card-desc">Default card with surface1 background and 8px radius.</div></div>
-  <div class="card card-featured" style="width:220px"><div class="card-title">Featured</div><div class="card-desc">Accent border highlights important content.</div></div>
-  <div class="card card-compact" style="width:220px"><div class="card-title">Compact</div><div class="card-desc">Tighter for list contexts.</div></div>
-</div>
-</section>
+        <div class="cl-toc-category" data-cat="feedback">Feedback</div>
+        <a class="cl-toc-sub" href="#alert" data-cat="feedback">Alert</a>
+        <a class="cl-toc-sub" href="#toast" data-cat="feedback">Toast</a>
+        <a class="cl-toc-sub" href="#progress" data-cat="feedback">Progress</a>
+        <a class="cl-toc-sub" href="#spinner" data-cat="feedback">Spinner</a>
+        <a class="cl-toc-sub" href="#empty-state" data-cat="feedback">Empty State</a>
 
-<!-- TAGS -->
-<section id="tags">
-<h2>Tags</h2>
-<p>Status and category indicators.</p>
-<div class="demo-box">
-  <div class="demo-row">
-    <span class="tag">Default</span>
-    <span class="tag tag-success">Success</span>
-    <span class="tag tag-warning">Warning</span>
-    <span class="tag tag-error">Error</span>
-    <span class="tag tag-purple">AI Feature</span>
-    <span class="tag tag-selected">Selected</span>
-  </div>
-</div>
-</section>
+        <div class="cl-toc-category" data-cat="overlays">Overlays</div>
+        <a class="cl-toc-sub" href="#modal" data-cat="overlays">Modal</a>
+        <a class="cl-toc-sub" href="#popover" data-cat="overlays">Popover</a>
+        <a class="cl-toc-sub" href="#tooltip" data-cat="overlays">Tooltip</a>
+        <a class="cl-toc-sub" href="#accordion" data-cat="overlays">Accordion</a>
 
-<!-- TOGGLES -->
-<section id="toggles">
-<h2>Toggles</h2>
-<p>36×20 track, 16px thumb. On = brand green.</p>
-<div class="demo-box">
-  <div class="toggle-item" style="margin-bottom:8px">
-    <div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div>
-    <span>Auto-complete</span>
-  </div>
-  <div class="toggle-item" style="margin-bottom:8px">
-    <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-thumb"></div></div>
-    <span>AI Suggestions</span>
-  </div>
-  <div class="toggle-item">
-    <div class="toggle" style="opacity:.4;pointer-events:none"><div class="toggle-thumb"></div></div>
-    <span style="color:var(--t4)">Disabled</span>
-  </div>
-</div>
-</section>
+        <div class="cl-toc-category" data-cat="ide">IDE Components</div>
+        <a class="cl-toc-sub" href="#tab-bar" data-cat="ide">Tab Bar</a>
+        <a class="cl-toc-sub" href="#status-bar" data-cat="ide">Status Bar</a>
+        <a class="cl-toc-sub" href="#command-palette" data-cat="ide">Command Palette</a>
+        <a class="cl-toc-sub" href="#chat-bubble" data-cat="ide">Inline Chat Bubble</a>
+        <a class="cl-toc-sub" href="#file-tree" data-cat="ide">File Tree Item</a>
+      </nav>
+    </aside>
 
-<!-- ALERTS -->
-<section id="alerts">
-<h2>Alerts / Banners</h2>
-<p>Four semantic variants with left accent border.</p>
-<div class="demo-box">
-  <div class="alert alert-info">Info: Your workspace is syncing with the remote server.</div>
-  <div class="alert alert-success">Success: All tests passed. 42 assertions verified.</div>
-  <div class="alert alert-warning">Warning: Node.js 16 reaches EOL next month.</div>
-  <div class="alert alert-error">Error: Build failed — 3 TypeScript errors found.</div>
-</div>
-</section>
+    <main class="cl-main">
 
-<!-- TAB BAR -->
-<section id="tabs">
-<h2>Tab Bar</h2>
-<p>Editor tabs with active indicator and close button.</p>
-<div class="demo-box" style="padding:0;overflow:hidden;border-radius:var(--r-comp)">
-  <div class="tab-bar">
-    <div class="tab active">main.tsx <span class="close">✕</span></div>
-    <div class="tab">utils.ts <span class="close">✕</span></div>
-    <div class="tab">styles.css <span class="close">✕</span></div>
-    <div class="tab" style="color:var(--amber)">config.ts ● <span class="close">✕</span></div>
+      <!-- ═══════════════════════════════════════════════════════
+           FOUNDATIONS
+           ═══════════════════════════════════════════════════════ -->
+      <section id="cat-foundations" class="cl-category-panel active">
+
+        <!-- Colors -->
+        <div id="colors" class="cl-component-group">
+          <h3>Colors</h3>
+          <p>Primitive ramps and semantic token grid from the Trae design system.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">Neutral Ramp</div>
+              <div class="cl-swatch-grid">
+                <div class="cl-swatch cl-swatch--light" style="background:#F0F2F5">50</div>
+                <div class="cl-swatch cl-swatch--light" style="background:#E0E3EA">100</div>
+                <div class="cl-swatch cl-swatch--light" style="background:#C9D1D9">200</div>
+                <div class="cl-swatch" style="background:#9599A6">300</div>
+                <div class="cl-swatch" style="background:#737780">400</div>
+                <div class="cl-swatch" style="background:#5C6373">500</div>
+                <div class="cl-swatch" style="background:#3A3F4B">600</div>
+                <div class="cl-swatch" style="background:#363B4E">700</div>
+                <div class="cl-swatch" style="background:#2A2E3E">800</div>
+                <div class="cl-swatch" style="background:#262A37">900</div>
+                <div class="cl-swatch" style="background:#171B26">950</div>
+              </div>
+            </div>
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">Brand (Intelligent Green)</div>
+              <div class="cl-swatch-grid">
+                <div class="cl-swatch cl-swatch--light" style="background:#ECFDF5">50</div>
+                <div class="cl-swatch cl-swatch--light" style="background:#D1FAE5">100</div>
+                <div class="cl-swatch cl-swatch--light" style="background:#A7F3D0">200</div>
+                <div class="cl-swatch" style="background:#6EE7B7">300</div>
+                <div class="cl-swatch" style="background:#34D399">400</div>
+                <div class="cl-swatch" style="background:#10B981">500</div>
+                <div class="cl-swatch" style="background:#059669">600</div>
+                <div class="cl-swatch" style="background:#047857">700</div>
+                <div class="cl-swatch" style="background:#065F46">800</div>
+                <div class="cl-swatch" style="background:#064E3B">900</div>
+                <div class="cl-swatch" style="background:#022C22">950</div>
+              </div>
+            </div>
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">Semantic Tokens</div>
+              <div class="cl-semantic-grid">
+                <div class="cl-semantic-swatch" style="background:var(--background);color:var(--text1)">bg</div>
+                <div class="cl-semantic-swatch" style="background:var(--surface1);color:var(--text1)">surface1</div>
+                <div class="cl-semantic-swatch" style="background:var(--surface2);color:var(--text1)">surface2</div>
+                <div class="cl-semantic-swatch" style="background:var(--surface3);color:var(--text1)">surface3</div>
+                <div class="cl-semantic-swatch" style="background:var(--accent);color:#fff">accent</div>
+                <div class="cl-semantic-swatch" style="background:var(--success);color:#fff">success</div>
+                <div class="cl-semantic-swatch" style="background:var(--warning);color:#171B26">warning</div>
+                <div class="cl-semantic-swatch" style="background:var(--error);color:#fff">error</div>
+                <div class="cl-semantic-swatch" style="background:var(--info);color:#fff">info</div>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Token</th><th>Dark</th><th>Light</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td class="col-value">--background</td><td class="col-value">#171B26</td><td class="col-value">#F0F2F5</td><td>Page background</td></tr>
+              <tr><td class="col-value">--surface1</td><td class="col-value">#262A37</td><td class="col-value">#FFFFFF</td><td>Cards, panels</td></tr>
+              <tr><td class="col-value">--surface2</td><td class="col-value">#2A2E3E</td><td class="col-value">#E0E3EA</td><td>Hover, selected</td></tr>
+              <tr><td class="col-value">--surface3</td><td class="col-value">#363B4E</td><td class="col-value">#C9D1D9</td><td>Elevated surfaces</td></tr>
+              <tr><td class="col-value">--accent</td><td class="col-value">#10B981</td><td class="col-value">#059669</td><td>Primary actions, AI indicator</td></tr>
+              <tr><td class="col-value">--text1</td><td class="col-value">#C9D1D9</td><td class="col-value">#171B26</td><td>Primary text</td></tr>
+              <tr><td class="col-value">--text2</td><td class="col-value">#9599A6</td><td class="col-value">#5C6373</td><td>Secondary text</td></tr>
+              <tr><td class="col-value">--text3</td><td class="col-value">#737780</td><td class="col-value">#737780</td><td>Tertiary, labels</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Typography -->
+        <div id="typography" class="cl-component-group">
+          <h3>Typography</h3>
+          <p>Type scale using Inter for UI and JetBrains Mono for code.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%">
+              <div class="cl-type-sample">
+                <div class="label">Display — Inter 36px / 600 / 1.1</div>
+                <div class="cl-type-display">Terminal cursor on a cold-blue stage</div>
+              </div>
+              <div class="cl-type-sample">
+                <div class="label">Subheading — Inter 14px / 600 / 1.4</div>
+                <div style="font-size:14px;font-weight:600;line-height:1.4">AI-native developer tooling</div>
+              </div>
+              <div class="cl-type-sample">
+                <div class="label">Body — Inter 14px / 400 / 1.5</div>
+                <div class="cl-type-body">The design language of a tool that thinks alongside you — precision tooling where a single flash of Intelligent Green signals the machine is alive.</div>
+              </div>
+              <div class="cl-type-sample">
+                <div class="label">Body Small — Inter 13px / 400 / 1.5</div>
+                <div style="font-size:13px;line-height:1.5;color:var(--text2)">Secondary descriptions and metadata text.</div>
+              </div>
+              <div class="cl-type-sample">
+                <div class="label">Caption — Inter 12px / 400 / 1.4</div>
+                <div style="font-size:12px;line-height:1.4;color:var(--text3)">Timestamps, file sizes, and auxiliary info.</div>
+              </div>
+              <div class="cl-type-sample">
+                <div class="label">Mono — JetBrains Mono 13px / 400 / 1.5</div>
+                <div class="cl-type-mono">const result = await trae.analyze(code);</div>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Token</th><th>Font</th><th>Size</th><th>Weight</th><th>Line Height</th></tr></thead>
+            <tbody>
+              <tr><td class="col-value">display</td><td>Inter</td><td class="col-value">36px</td><td class="col-value">600</td><td class="col-value">1.1</td></tr>
+              <tr><td class="col-value">body</td><td>Inter</td><td class="col-value">14px</td><td class="col-value">400</td><td class="col-value">1.5</td></tr>
+              <tr><td class="col-value">mono</td><td>JetBrains Mono</td><td class="col-value">13px</td><td class="col-value">400</td><td class="col-value">1.5</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Radii -->
+        <div id="radii" class="cl-component-group">
+          <h3>Radii</h3>
+          <p>Sharp-to-soft corners. Trae never uses pill-shaped CTAs.</p>
+          <div class="cl-canvas">
+            <div class="cl-variant">
+              <div class="cl-variant-label">Element — 4px</div>
+              <div class="cl-radius-demo" style="border-radius:4px">4px</div>
+            </div>
+            <div class="cl-variant">
+              <div class="cl-variant-label">Control — 6px</div>
+              <div class="cl-radius-demo" style="border-radius:6px">6px</div>
+            </div>
+            <div class="cl-variant">
+              <div class="cl-variant-label">Component — 8px</div>
+              <div class="cl-radius-demo" style="border-radius:8px">8px</div>
+            </div>
+            <div class="cl-variant">
+              <div class="cl-variant-label">Container — 12px</div>
+              <div class="cl-radius-demo" style="border-radius:12px">12px</div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Token</th><th>Value</th><th>Use</th></tr></thead>
+            <tbody>
+              <tr><td class="col-value">--r-element</td><td class="col-value">4px</td><td>Checkboxes, tags, small controls</td></tr>
+              <tr><td class="col-value">--r-control</td><td class="col-value">6px</td><td>Buttons, inputs</td></tr>
+              <tr><td class="col-value">--r-component</td><td class="col-value">8px</td><td>Cards, panels, alerts</td></tr>
+              <tr><td class="col-value">--r-container</td><td class="col-value">12px</td><td>Modals, command palette</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Elevation -->
+        <div id="elevation" class="cl-component-group">
+          <h3>Elevation</h3>
+          <p>Flat strategy in dark mode. Shadows appear in light mode and for overlays.</p>
+          <div class="cl-canvas">
+            <div class="cl-variant">
+              <div class="cl-variant-label">Level 0</div>
+              <div class="cl-elevation-card" style="box-shadow:none">No shadow</div>
+            </div>
+            <div class="cl-variant">
+              <div class="cl-variant-label">Level 1</div>
+              <div class="cl-elevation-card" style="box-shadow:var(--elevation-1)">Subtle</div>
+            </div>
+            <div class="cl-variant">
+              <div class="cl-variant-label">Level 2</div>
+              <div class="cl-elevation-card" style="box-shadow:var(--elevation-2)">Medium</div>
+            </div>
+            <div class="cl-variant">
+              <div class="cl-variant-label">Level 3</div>
+              <div class="cl-elevation-card" style="box-shadow:var(--elevation-3)">Overlay</div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Level</th><th>Dark</th><th>Light</th><th>Use</th></tr></thead>
+            <tbody>
+              <tr><td class="col-value">0</td><td class="col-value">none</td><td class="col-value">none</td><td>Default surfaces</td></tr>
+              <tr><td class="col-value">1</td><td class="col-value">none</td><td class="col-value">0 1px 3px rgba(0,0,0,0.08)</td><td>Cards</td></tr>
+              <tr><td class="col-value">2</td><td class="col-value">0 4px 12px rgba(0,0,0,0.4)</td><td class="col-value">0 4px 12px rgba(0,0,0,0.12)</td><td>Dropdowns, popovers</td></tr>
+              <tr><td class="col-value">3</td><td class="col-value">0 8px 24px rgba(0,0,0,0.5)</td><td class="col-value">0 8px 24px rgba(0,0,0,0.16)</td><td>Modals, command palette</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Spacing -->
+        <div id="spacing" class="cl-component-group">
+          <h3>Spacing</h3>
+          <p>Consistent spacing scale from 2px to 96px.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%;gap:6px">
+              <div class="cl-row" style="align-items:center;gap:12px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);width:32px;text-align:right">2xs</span><div class="cl-spacing-bar" style="width:2px">&nbsp;</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">2px</span></div>
+              <div class="cl-row" style="align-items:center;gap:12px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);width:32px;text-align:right">xs</span><div class="cl-spacing-bar" style="width:4px">&nbsp;</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">4px</span></div>
+              <div class="cl-row" style="align-items:center;gap:12px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);width:32px;text-align:right">sm</span><div class="cl-spacing-bar" style="width:8px">&nbsp;</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">8px</span></div>
+              <div class="cl-row" style="align-items:center;gap:12px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);width:32px;text-align:right">md</span><div class="cl-spacing-bar" style="width:16px">&nbsp;</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">16px</span></div>
+              <div class="cl-row" style="align-items:center;gap:12px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);width:32px;text-align:right">lg</span><div class="cl-spacing-bar" style="width:24px">&nbsp;</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">24px</span></div>
+              <div class="cl-row" style="align-items:center;gap:12px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);width:32px;text-align:right">xl</span><div class="cl-spacing-bar" style="width:32px">&nbsp;</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">32px</span></div>
+              <div class="cl-row" style="align-items:center;gap:12px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);width:32px;text-align:right">2xl</span><div class="cl-spacing-bar" style="width:48px">&nbsp;</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">48px</span></div>
+              <div class="cl-row" style="align-items:center;gap:12px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);width:32px;text-align:right">3xl</span><div class="cl-spacing-bar" style="width:64px">&nbsp;</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">64px</span></div>
+              <div class="cl-row" style="align-items:center;gap:12px"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);width:32px;text-align:right">4xl</span><div class="cl-spacing-bar" style="width:96px">&nbsp;</div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">96px</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Iconography -->
+        <div id="iconography" class="cl-component-group">
+          <h3>Iconography</h3>
+          <p>Lucide icons — geometric-clean 2px stroke with rounded caps.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">16px / 20px / 24px</div>
+              <div class="cl-row" style="gap:24px;flex-wrap:wrap">
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-file" style="font-size:16px"></i><i class="icon icon-file" style="font-size:20px"></i><i class="icon icon-file" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">file</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-folder" style="font-size:16px"></i><i class="icon icon-folder" style="font-size:20px"></i><i class="icon icon-folder" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">folder</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-search" style="font-size:16px"></i><i class="icon icon-search" style="font-size:20px"></i><i class="icon icon-search" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">search</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-settings" style="font-size:16px"></i><i class="icon icon-settings" style="font-size:20px"></i><i class="icon icon-settings" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">settings</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-git-branch" style="font-size:16px"></i><i class="icon icon-git-branch" style="font-size:20px"></i><i class="icon icon-git-branch" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">git-branch</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-terminal" style="font-size:16px"></i><i class="icon icon-terminal" style="font-size:20px"></i><i class="icon icon-terminal" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">terminal</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-sparkles" style="font-size:16px"></i><i class="icon icon-sparkles" style="font-size:20px"></i><i class="icon icon-sparkles" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">sparkles</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-copy" style="font-size:16px"></i><i class="icon icon-copy" style="font-size:20px"></i><i class="icon icon-copy" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">copy</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-check" style="font-size:16px"></i><i class="icon icon-check" style="font-size:20px"></i><i class="icon icon-check" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">check</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-x" style="font-size:16px"></i><i class="icon icon-x" style="font-size:20px"></i><i class="icon icon-x" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">x</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-alert-triangle" style="font-size:16px"></i><i class="icon icon-alert-triangle" style="font-size:20px"></i><i class="icon icon-alert-triangle" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">alert</span></div>
+                <div class="cl-col" style="align-items:center;gap:6px"><i class="icon icon-info" style="font-size:16px"></i><i class="icon icon-info" style="font-size:20px"></i><i class="icon icon-info" style="font-size:24px"></i><span style="font-size:10px;color:var(--text3)">info</span></div>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Kit</td><td class="col-value">Lucide</td></tr>
+              <tr><td>Weight</td><td class="col-value">default (2px stroke)</td></tr>
+              <tr><td>CDN</td><td class="col-value">unpkg.com/lucide-static@1.8.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════
+           ACTIONS
+           ═══════════════════════════════════════════════════════ -->
+      <section id="cat-actions" class="cl-category-panel">
+
+        <!-- Button -->
+        <div id="button" class="cl-component-group">
+          <h3>Button</h3>
+          <p>Primary, secondary, ghost, and destructive variants with all interactive states.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">Primary</div>
+              <div class="cl-row">
+                <div class="cl-variant"><div class="cl-variant-label">Default</div><button class="cl-btn cl-btn--primary">Primary</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Hover</div><button class="cl-btn cl-btn--primary is-hover">Primary</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Focus</div><button class="cl-btn cl-btn--primary is-focused">Primary</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Active</div><button class="cl-btn cl-btn--primary is-active">Primary</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Disabled</div><button class="cl-btn cl-btn--primary is-disabled">Primary</button></div>
+              </div>
+            </div>
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">Secondary</div>
+              <div class="cl-row">
+                <div class="cl-variant"><div class="cl-variant-label">Default</div><button class="cl-btn cl-btn--secondary">Secondary</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Hover</div><button class="cl-btn cl-btn--secondary is-hover">Secondary</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Focus</div><button class="cl-btn cl-btn--secondary is-focused">Secondary</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Active</div><button class="cl-btn cl-btn--secondary is-active">Secondary</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Disabled</div><button class="cl-btn cl-btn--secondary is-disabled">Secondary</button></div>
+              </div>
+            </div>
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">Ghost</div>
+              <div class="cl-row">
+                <div class="cl-variant"><div class="cl-variant-label">Default</div><button class="cl-btn cl-btn--ghost">Ghost</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Hover</div><button class="cl-btn cl-btn--ghost is-hover">Ghost</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Focus</div><button class="cl-btn cl-btn--ghost is-focused">Ghost</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Active</div><button class="cl-btn cl-btn--ghost is-active">Ghost</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Disabled</div><button class="cl-btn cl-btn--ghost is-disabled">Ghost</button></div>
+              </div>
+            </div>
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">Destructive</div>
+              <div class="cl-row">
+                <div class="cl-variant"><div class="cl-variant-label">Default</div><button class="cl-btn cl-btn--destructive">Delete</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Hover</div><button class="cl-btn cl-btn--destructive is-hover">Delete</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Focus</div><button class="cl-btn cl-btn--destructive is-focused">Delete</button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Disabled</div><button class="cl-btn cl-btn--destructive is-disabled">Delete</button></div>
+              </div>
+            </div>
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">Sizes</div>
+              <div class="cl-row" style="align-items:center">
+                <button class="cl-btn cl-btn--primary cl-btn--sm">Small</button>
+                <button class="cl-btn cl-btn--primary">Medium</button>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Height (md / sm)</td><td class="col-value">36px / 28px</td></tr>
+              <tr><td>Padding (md / sm)</td><td class="col-value">10px 20px / 6px 14px</td></tr>
+              <tr><td>Radius</td><td class="col-value">var(--r-control) 6px</td></tr>
+              <tr><td>Font</td><td class="col-value">Inter 500, 14px</td></tr>
+              <tr><td>Primary bg</td><td class="col-value">var(--accent) #10B981</td></tr>
+              <tr><td>Primary hover</td><td class="col-value">var(--accent-hover) #059669</td></tr>
+              <tr><td>Focus ring</td><td class="col-value">2px solid var(--accent), 2px offset</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Icon Button -->
+        <div id="icon-button" class="cl-component-group">
+          <h3>Icon Button</h3>
+          <p>Square icon-only buttons in three variants and sizes.</p>
+          <div class="cl-canvas">
+            <div class="cl-col">
+              <div class="cl-variant-label">Primary</div>
+              <div class="cl-row">
+                <div class="cl-variant"><div class="cl-variant-label">SM</div><button class="cl-icon-btn cl-icon-btn--sm cl-icon-btn--primary"><i class="icon icon-plus"></i></button></div>
+                <div class="cl-variant"><div class="cl-variant-label">MD</div><button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--primary"><i class="icon icon-plus"></i></button></div>
+                <div class="cl-variant"><div class="cl-variant-label">LG</div><button class="cl-icon-btn cl-icon-btn--lg cl-icon-btn--primary"><i class="icon icon-plus"></i></button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Hover</div><button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--primary is-hover"><i class="icon icon-plus"></i></button></div>
+                <div class="cl-variant"><div class="cl-variant-label">Disabled</div><button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--primary is-disabled"><i class="icon icon-plus"></i></button></div>
+              </div>
+            </div>
+            <div class="cl-col">
+              <div class="cl-variant-label">Secondary</div>
+              <div class="cl-row">
+                <button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--secondary"><i class="icon icon-settings"></i></button>
+                <button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--secondary is-hover"><i class="icon icon-settings"></i></button>
+                <button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--secondary is-focused"><i class="icon icon-settings"></i></button>
+              </div>
+            </div>
+            <div class="cl-col">
+              <div class="cl-variant-label">Ghost</div>
+              <div class="cl-row">
+                <button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--ghost"><i class="icon icon-x"></i></button>
+                <button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--ghost is-hover"><i class="icon icon-x"></i></button>
+                <button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--ghost is-focused"><i class="icon icon-x"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle Button -->
+        <div id="toggle-button" class="cl-component-group">
+          <h3>Toggle Button</h3>
+          <p>On/off toggle buttons for binary actions like word wrap or minimap.</p>
+          <div class="cl-canvas">
+            <div class="cl-row">
+              <div class="cl-variant"><div class="cl-variant-label">Off</div><button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--secondary"><i class="icon icon-wrap-text"></i></button></div>
+              <div class="cl-variant"><div class="cl-variant-label">On</div><button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--primary"><i class="icon icon-wrap-text"></i></button></div>
+              <div class="cl-variant"><div class="cl-variant-label">Hover</div><button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--secondary is-hover"><i class="icon icon-wrap-text"></i></button></div>
+              <div class="cl-variant"><div class="cl-variant-label">Disabled</div><button class="cl-icon-btn cl-icon-btn--md cl-icon-btn--secondary is-disabled"><i class="icon icon-wrap-text"></i></button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Segmented Control -->
+        <div id="segmented-control" class="cl-component-group">
+          <h3>Segmented Control</h3>
+          <p>Mutually exclusive option groups for view switching.</p>
+          <div class="cl-canvas">
+            <div class="cl-col">
+              <div class="cl-variant-label">Default</div>
+              <div class="cl-segmented">
+                <button class="cl-segmented__item cl-segmented__item--active">Editor</button>
+                <button class="cl-segmented__item">Terminal</button>
+                <button class="cl-segmented__item">Output</button>
+              </div>
+            </div>
+            <div class="cl-col">
+              <div class="cl-variant-label">With Disabled</div>
+              <div class="cl-segmented">
+                <button class="cl-segmented__item cl-segmented__item--active">Code</button>
+                <button class="cl-segmented__item">Preview</button>
+                <button class="cl-segmented__item is-disabled">Debug</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div id="dropdown-menu" class="cl-component-group">
+          <h3>Dropdown Menu</h3>
+          <p>Contextual action menus with keyboard shortcuts and dividers.</p>
+          <div class="cl-canvas">
+            <div class="cl-dropdown">
+              <div class="cl-dropdown__item is-hover"><span>New File</span><span class="cl-dropdown__shortcut">⌘N</span></div>
+              <div class="cl-dropdown__item"><span>New Folder</span><span class="cl-dropdown__shortcut">⇧⌘N</span></div>
+              <div class="cl-dropdown__divider"></div>
+              <div class="cl-dropdown__item cl-dropdown__item--checked"><span>Auto Save</span></div>
+              <div class="cl-dropdown__item"><span>Preferences</span><span class="cl-dropdown__shortcut">⌘,</span></div>
+              <div class="cl-dropdown__divider"></div>
+              <div class="cl-dropdown__item is-disabled"><span>Close All</span><span class="cl-dropdown__shortcut">⌘K ⌘W</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════
+           INPUTS
+           ═══════════════════════════════════════════════════════ -->
+      <section id="cat-inputs" class="cl-category-panel">
+
+        <!-- Text Input -->
+        <div id="text-input" class="cl-component-group">
+          <h3>Text Input</h3>
+          <p>Standard text fields with label, placeholder, and validation states.</p>
+          <div class="cl-canvas">
+            <div class="cl-input-group">
+              <label class="cl-input-label">Default</label>
+              <input class="cl-input" type="text" placeholder="Enter text…">
+            </div>
+            <div class="cl-input-group">
+              <label class="cl-input-label">Focused</label>
+              <input class="cl-input is-focused" type="text" value="Typing here…">
+            </div>
+            <div class="cl-input-group">
+              <label class="cl-input-label">Error</label>
+              <input class="cl-input is-error" type="text" value="Invalid input">
+              <span class="cl-input-error">This field is required</span>
+            </div>
+            <div class="cl-input-group">
+              <label class="cl-input-label">Disabled</label>
+              <input class="cl-input is-disabled" type="text" value="Read only" disabled>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Height</td><td class="col-value">36px</td></tr>
+              <tr><td>Background</td><td class="col-value">var(--background) #171B26</td></tr>
+              <tr><td>Border (default)</td><td class="col-value">1px solid var(--border)</td></tr>
+              <tr><td>Border (focus)</td><td class="col-value">1px solid var(--accent)</td></tr>
+              <tr><td>Focus glow</td><td class="col-value">0 0 0 2px rgba(16,185,129,0.15)</td></tr>
+              <tr><td>Radius</td><td class="col-value">var(--r-control) 6px</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Textarea -->
+        <div id="textarea" class="cl-component-group">
+          <h3>Textarea</h3>
+          <p>Multi-line text input with auto-grow behavior.</p>
+          <div class="cl-canvas">
+            <div class="cl-input-group" style="min-width:280px">
+              <label class="cl-input-label">Default</label>
+              <textarea class="cl-textarea" placeholder="Write something…"></textarea>
+            </div>
+            <div class="cl-input-group" style="min-width:280px">
+              <label class="cl-input-label">Focused</label>
+              <textarea class="cl-textarea is-focused">Some content being edited…</textarea>
+            </div>
+            <div class="cl-input-group" style="min-width:280px">
+              <label class="cl-input-label">Error</label>
+              <textarea class="cl-textarea is-error">Invalid content</textarea>
+              <span class="cl-input-error">Content exceeds maximum length</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Select -->
+        <div id="select" class="cl-component-group">
+          <h3>Select</h3>
+          <p>Single-select dropdown with open state preview.</p>
+          <div class="cl-canvas">
+            <div class="cl-col">
+              <div class="cl-variant-label">Default</div>
+              <div class="cl-select"><span>Select option…</span><span class="cl-select__chevron"><i class="icon icon-chevron-down"></i></span></div>
+            </div>
+            <div class="cl-col">
+              <div class="cl-variant-label">Focused</div>
+              <div class="cl-select is-focused"><span>TypeScript</span><span class="cl-select__chevron"><i class="icon icon-chevron-down"></i></span></div>
+            </div>
+            <div class="cl-col">
+              <div class="cl-variant-label">Open</div>
+              <div>
+                <div class="cl-select is-focused"><span>TypeScript</span><span class="cl-select__chevron"><i class="icon icon-chevron-up"></i></span></div>
+                <div class="cl-select__dropdown">
+                  <div class="cl-select__option cl-select__option--selected">TypeScript</div>
+                  <div class="cl-select__option">JavaScript</div>
+                  <div class="cl-select__option">Python</div>
+                  <div class="cl-select__option">Rust</div>
+                </div>
+              </div>
+            </div>
+            <div class="cl-col">
+              <div class="cl-variant-label">Disabled</div>
+              <div class="cl-select is-disabled"><span>Disabled</span><span class="cl-select__chevron"><i class="icon icon-chevron-down"></i></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkbox -->
+        <div id="checkbox" class="cl-component-group">
+          <h3>Checkbox</h3>
+          <p>Standalone and group checkboxes with indeterminate state.</p>
+          <div class="cl-canvas">
+            <div class="cl-row" style="gap:24px">
+              <div class="cl-variant"><div class="cl-variant-label">Unchecked</div><label class="cl-checkbox"><span class="cl-checkbox__box"></span><span>Option</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Checked</div><label class="cl-checkbox cl-checkbox--checked"><span class="cl-checkbox__box"></span><span>Option</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Indeterminate</div><label class="cl-checkbox cl-checkbox--indeterminate"><span class="cl-checkbox__box"></span><span>Select all</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Hover</div><label class="cl-checkbox is-hover"><span class="cl-checkbox__box"></span><span>Option</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Focus</div><label class="cl-checkbox is-focused"><span class="cl-checkbox__box"></span><span>Option</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Disabled</div><label class="cl-checkbox is-disabled cl-checkbox--checked"><span class="cl-checkbox__box"></span><span>Option</span></label></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Radio Group -->
+        <div id="radio-group" class="cl-component-group">
+          <h3>Radio Group</h3>
+          <p>Mutually exclusive selection within a group.</p>
+          <div class="cl-canvas">
+            <div class="cl-row" style="gap:24px">
+              <div class="cl-variant"><div class="cl-variant-label">Unselected</div><label class="cl-radio"><span class="cl-radio__circle"></span><span>Option A</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Selected</div><label class="cl-radio cl-radio--selected"><span class="cl-radio__circle"></span><span>Option B</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Hover</div><label class="cl-radio is-hover"><span class="cl-radio__circle"></span><span>Option C</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Focus</div><label class="cl-radio is-focused cl-radio--selected"><span class="cl-radio__circle"></span><span>Option D</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Disabled</div><label class="cl-radio is-disabled"><span class="cl-radio__circle"></span><span>Option E</span></label></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Switch -->
+        <div id="switch" class="cl-component-group">
+          <h3>Switch</h3>
+          <p>Toggle switch for binary settings with label.</p>
+          <div class="cl-canvas">
+            <div class="cl-row" style="gap:32px">
+              <div class="cl-variant"><div class="cl-variant-label">Off</div><label class="cl-toggle"><span class="cl-toggle__track"><span class="cl-toggle__thumb"></span></span><span class="cl-toggle__label">Disabled feature</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">On</div><label class="cl-toggle cl-toggle--on"><span class="cl-toggle__track"><span class="cl-toggle__thumb"></span></span><span class="cl-toggle__label">AI suggestions</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Focus</div><label class="cl-toggle cl-toggle--focused"><span class="cl-toggle__track"><span class="cl-toggle__thumb"></span></span><span class="cl-toggle__label">Focus state</span></label></div>
+              <div class="cl-variant"><div class="cl-variant-label">Disabled</div><label class="cl-toggle cl-toggle--disabled cl-toggle--on"><span class="cl-toggle__track"><span class="cl-toggle__thumb"></span></span><span class="cl-toggle__label">Locked on</span></label></div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Track</td><td class="col-value">36×20px, radius 10px</td></tr>
+              <tr><td>Thumb</td><td class="col-value">16px circle, 2px offset</td></tr>
+              <tr><td>Off bg</td><td class="col-value">var(--surface3) #363B4E</td></tr>
+              <tr><td>On bg</td><td class="col-value">var(--accent) #10B981</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Slider -->
+        <div id="slider" class="cl-component-group">
+          <h3>Slider</h3>
+          <p>Range selection with track, fill, and thumb.</p>
+          <div class="cl-canvas">
+            <div class="cl-row" style="gap:32px">
+              <div class="cl-variant">
+                <div class="cl-variant-label">Default (60%)</div>
+                <div class="cl-slider">
+                  <div class="cl-slider__track"><div class="cl-slider__fill" style="width:60%"></div></div>
+                  <div class="cl-slider__thumb" style="left:calc(60% - 8px)"></div>
+                </div>
+              </div>
+              <div class="cl-variant">
+                <div class="cl-variant-label">Hover</div>
+                <div class="cl-slider is-hover">
+                  <div class="cl-slider__track"><div class="cl-slider__fill" style="width:40%"></div></div>
+                  <div class="cl-slider__thumb" style="left:calc(40% - 8px)"></div>
+                </div>
+              </div>
+              <div class="cl-variant">
+                <div class="cl-variant-label">Disabled</div>
+                <div class="cl-slider is-disabled">
+                  <div class="cl-slider__track"><div class="cl-slider__fill" style="width:30%"></div></div>
+                  <div class="cl-slider__thumb" style="left:calc(30% - 8px)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date Picker -->
+        <div id="date-picker" class="cl-component-group">
+          <h3>Date Picker</h3>
+          <p>Inline calendar with today, selected, range, and disabled states.</p>
+          <div class="cl-canvas">
+            <div class="cl-datepicker">
+              <div class="cl-datepicker__header">
+                <button class="cl-datepicker__nav"><i class="icon icon-chevron-left"></i></button>
+                <span>April 2026</span>
+                <button class="cl-datepicker__nav"><i class="icon icon-chevron-right"></i></button>
+              </div>
+              <div class="cl-datepicker__grid">
+                <div class="cl-datepicker__day-label">Mo</div><div class="cl-datepicker__day-label">Tu</div><div class="cl-datepicker__day-label">We</div><div class="cl-datepicker__day-label">Th</div><div class="cl-datepicker__day-label">Fr</div><div class="cl-datepicker__day-label">Sa</div><div class="cl-datepicker__day-label">Su</div>
+                <div class="cl-datepicker__day cl-datepicker__day--other">30</div><div class="cl-datepicker__day cl-datepicker__day--other">31</div><div class="cl-datepicker__day">1</div><div class="cl-datepicker__day">2</div><div class="cl-datepicker__day">3</div><div class="cl-datepicker__day">4</div><div class="cl-datepicker__day">5</div>
+                <div class="cl-datepicker__day">6</div><div class="cl-datepicker__day">7</div><div class="cl-datepicker__day">8</div><div class="cl-datepicker__day">9</div><div class="cl-datepicker__day">10</div><div class="cl-datepicker__day">11</div><div class="cl-datepicker__day">12</div>
+                <div class="cl-datepicker__day">13</div><div class="cl-datepicker__day">14</div><div class="cl-datepicker__day">15</div><div class="cl-datepicker__day">16</div><div class="cl-datepicker__day">17</div><div class="cl-datepicker__day">18</div><div class="cl-datepicker__day">19</div>
+                <div class="cl-datepicker__day cl-datepicker__day--range">20</div><div class="cl-datepicker__day cl-datepicker__day--range">21</div><div class="cl-datepicker__day cl-datepicker__day--today">22</div><div class="cl-datepicker__day cl-datepicker__day--selected">23</div><div class="cl-datepicker__day">24</div><div class="cl-datepicker__day">25</div><div class="cl-datepicker__day">26</div>
+                <div class="cl-datepicker__day">27</div><div class="cl-datepicker__day">28</div><div class="cl-datepicker__day">29</div><div class="cl-datepicker__day">30</div><div class="cl-datepicker__day cl-datepicker__day--disabled">1</div><div class="cl-datepicker__day cl-datepicker__day--disabled">2</div><div class="cl-datepicker__day cl-datepicker__day--disabled">3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Combobox -->
+        <div id="combobox" class="cl-component-group">
+          <h3>Combobox</h3>
+          <p>Searchable dropdown with filtering and empty state.</p>
+          <div class="cl-canvas">
+            <div class="cl-col">
+              <div class="cl-variant-label">Open with results</div>
+              <div class="cl-combobox">
+                <input class="cl-combobox__input is-focused" type="text" value="Type" placeholder="Search…">
+                <div class="cl-combobox__dropdown">
+                  <div class="cl-combobox__option">TypeScript</div>
+                  <div class="cl-combobox__option">TypeORM</div>
+                  <div class="cl-combobox__option">Typedoc</div>
+                </div>
+              </div>
+            </div>
+            <div class="cl-col">
+              <div class="cl-variant-label">No results</div>
+              <div class="cl-combobox">
+                <input class="cl-combobox__input is-focused" type="text" value="zzz" placeholder="Search…">
+                <div class="cl-combobox__dropdown">
+                  <div class="cl-combobox__empty">No results found</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════
+           DATA DISPLAY
+           ═══════════════════════════════════════════════════════ -->
+      <section id="cat-data-display" class="cl-category-panel">
+
+        <!-- Card -->
+        <div id="card" class="cl-component-group">
+          <h3>Card</h3>
+          <p>Standard, featured, and compact card surfaces for content grouping.</p>
+          <div class="cl-canvas">
+            <div class="cl-variant">
+              <div class="cl-variant-label">Standard</div>
+              <div class="cl-card">
+                <div class="cl-card__title">API Configuration</div>
+                <div class="cl-card__desc">Configure your API endpoints and authentication settings for the project.</div>
+                <div class="cl-card__meta">Updated 2h ago</div>
+              </div>
+            </div>
+            <div class="cl-variant">
+              <div class="cl-variant-label">Featured</div>
+              <div class="cl-card cl-card--featured">
+                <div class="cl-card__title">AI Code Review</div>
+                <div class="cl-card__desc">Automated code analysis powered by Trae's intelligent engine.</div>
+                <div class="cl-card__meta">3 suggestions found</div>
+              </div>
+            </div>
+            <div class="cl-variant">
+              <div class="cl-variant-label">Compact</div>
+              <div class="cl-card cl-card--compact">
+                <div class="cl-card__title">Quick Action</div>
+                <div class="cl-card__meta">⌘K</div>
+              </div>
+            </div>
+            <div class="cl-variant">
+              <div class="cl-variant-label">Hover</div>
+              <div class="cl-card is-hover">
+                <div class="cl-card__title">Hovered Card</div>
+                <div class="cl-card__desc">Interactive card with hover state applied.</div>
+                <div class="cl-card__meta">Click to open</div>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Background</td><td class="col-value">var(--surface1) #262A37</td></tr>
+              <tr><td>Border</td><td class="col-value">1px solid var(--border)</td></tr>
+              <tr><td>Radius</td><td class="col-value">var(--r-component) 8px</td></tr>
+              <tr><td>Padding</td><td class="col-value">16px (standard) / 8px 16px (compact)</td></tr>
+              <tr><td>Featured accent</td><td class="col-value">2px left border var(--accent)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Avatar -->
+        <div id="avatar" class="cl-component-group">
+          <h3>Avatar</h3>
+          <p>User avatars with initials at three sizes, plus avatar groups.</p>
+          <div class="cl-canvas">
+            <div class="cl-row" style="gap:24px;align-items:center">
+              <div class="cl-variant">
+                <div class="cl-variant-label">Small</div>
+                <div class="cl-avatar cl-avatar--sm">A</div>
+              </div>
+              <div class="cl-variant">
+                <div class="cl-variant-label">Medium</div>
+                <div class="cl-avatar cl-avatar--md">BK</div>
+              </div>
+              <div class="cl-variant">
+                <div class="cl-variant-label">Large</div>
+                <div class="cl-avatar cl-avatar--lg">CL</div>
+              </div>
+              <div class="cl-variant">
+                <div class="cl-variant-label">Group</div>
+                <div class="cl-avatar-group">
+                  <div class="cl-avatar cl-avatar--md" style="background:var(--accent);color:#fff">A</div>
+                  <div class="cl-avatar cl-avatar--md" style="background:var(--info);color:#fff">B</div>
+                  <div class="cl-avatar cl-avatar--md" style="background:var(--warning);color:#171B26">C</div>
+                  <div class="cl-avatar cl-avatar--md">+3</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badge -->
+        <div id="badge" class="cl-component-group">
+          <h3>Badge</h3>
+          <p>Status badges for labeling items with semantic colors.</p>
+          <div class="cl-canvas">
+            <div class="cl-row">
+              <div class="cl-variant"><div class="cl-variant-label">Neutral</div><span class="cl-badge cl-badge--neutral">Draft</span></div>
+              <div class="cl-variant"><div class="cl-variant-label">Info</div><span class="cl-badge cl-badge--info">In Review</span></div>
+              <div class="cl-variant"><div class="cl-variant-label">Success</div><span class="cl-badge cl-badge--success">Active</span></div>
+              <div class="cl-variant"><div class="cl-variant-label">Warning</div><span class="cl-badge cl-badge--warning">Away</span></div>
+              <div class="cl-variant"><div class="cl-variant-label">Error</div><span class="cl-badge cl-badge--error">Suspended</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tag -->
+        <div id="tag" class="cl-component-group">
+          <h3>Tag</h3>
+          <p>Inline tags for categorization and filtering with status variants.</p>
+          <div class="cl-canvas">
+            <div class="cl-row">
+              <div class="cl-variant"><div class="cl-variant-label">Default</div><span class="cl-tag">TypeScript</span></div>
+              <div class="cl-variant"><div class="cl-variant-label">Selected</div><span class="cl-tag cl-tag--selected">React</span></div>
+              <div class="cl-variant"><div class="cl-variant-label">Success</div><span class="cl-tag cl-tag--success">Passing</span></div>
+              <div class="cl-variant"><div class="cl-variant-label">Warning</div><span class="cl-tag cl-tag--warning">Pending</span></div>
+              <div class="cl-variant"><div class="cl-variant-label">Error</div><span class="cl-tag cl-tag--error">Failed</span></div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Padding</td><td class="col-value">4px 10px</td></tr>
+              <tr><td>Radius</td><td class="col-value">var(--r-element) 4px</td></tr>
+              <tr><td>Font</td><td class="col-value">Inter 500, 12px</td></tr>
+              <tr><td>Default bg</td><td class="col-value">var(--surface2) #2A2E3E</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Data Table -->
+        <div id="data-table" class="cl-component-group">
+          <h3>Data Table</h3>
+          <p>Sortable, selectable data table with hover and status badges.</p>
+          <div class="cl-canvas" style="padding:0;overflow:hidden">
+            <table class="cl-data-table" style="width:100%">
+              <thead>
+                <tr><th>Name</th><th>Status</th><th>Role</th><th>Last Active</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Sarah Chen</td><td><span class="cl-badge cl-badge--success">Active</span></td><td>Engineer</td><td style="font-family:var(--font-mono);font-size:12px;color:var(--text3)">2m ago</td></tr>
+                <tr><td>Marcus Webb</td><td><span class="cl-badge cl-badge--success">Active</span></td><td>Designer</td><td style="font-family:var(--font-mono);font-size:12px;color:var(--text3)">5m ago</td></tr>
+                <tr class="is-selected"><td>Aiko Tanaka</td><td><span class="cl-badge cl-badge--warning">Away</span></td><td>PM</td><td style="font-family:var(--font-mono);font-size:12px;color:var(--text3)">1h ago</td></tr>
+                <tr><td>David Park</td><td><span class="cl-badge cl-badge--neutral">Offline</span></td><td>Engineer</td><td style="font-family:var(--font-mono);font-size:12px;color:var(--text3)">3h ago</td></tr>
+                <tr><td>Elena Volkov</td><td><span class="cl-badge cl-badge--error">Suspended</span></td><td>Admin</td><td style="font-family:var(--font-mono);font-size:12px;color:var(--text3)">2d ago</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Skeleton -->
+        <div id="skeleton" class="cl-component-group">
+          <h3>Skeleton</h3>
+          <p>Loading placeholders with shimmer animation.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%;gap:16px">
+              <div class="cl-variant-label">Text Lines</div>
+              <div class="cl-skeleton cl-skeleton--text"></div>
+              <div class="cl-skeleton cl-skeleton--text-short"></div>
+              <div style="display:flex;gap:12px;align-items:center;margin-top:8px">
+                <div class="cl-variant-label" style="margin:0">Circle</div>
+                <div class="cl-skeleton cl-skeleton--circle"></div>
+              </div>
+              <div class="cl-variant-label">Card</div>
+              <div class="cl-skeleton cl-skeleton--card" style="width:260px"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════
+           NAVIGATION
+           ═══════════════════════════════════════════════════════ -->
+      <section id="cat-navigation" class="cl-category-panel">
+
+        <!-- Tabs -->
+        <div id="tabs" class="cl-component-group">
+          <h3>Tabs</h3>
+          <p>Underline and pill tab variants for content switching.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%">
+              <div class="cl-variant-label">Underline</div>
+              <div class="cl-nav-tabs">
+                <button class="cl-nav-tab cl-nav-tab--active">Overview</button>
+                <button class="cl-nav-tab">Activity</button>
+                <button class="cl-nav-tab">Settings</button>
+                <button class="cl-nav-tab is-disabled">Billing</button>
+              </div>
+            </div>
+            <div class="cl-col" style="width:100%;margin-top:16px">
+              <div class="cl-variant-label">Pill</div>
+              <div class="cl-pill-tabs">
+                <button class="cl-pill-tab cl-pill-tab--active">All</button>
+                <button class="cl-pill-tab">Errors</button>
+                <button class="cl-pill-tab">Warnings</button>
+                <button class="cl-pill-tab">Info</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div id="breadcrumb" class="cl-component-group">
+          <h3>Breadcrumb</h3>
+          <p>File path navigation with forward-slash separators (IDE convention).</p>
+          <div class="cl-canvas">
+            <nav class="cl-breadcrumb" aria-label="Breadcrumb">
+              <ol>
+                <li><a href="#">src</a></li>
+                <li aria-hidden="true">/</li>
+                <li><a href="#">components</a></li>
+                <li aria-hidden="true">/</li>
+                <li><a href="#">ui</a></li>
+                <li aria-hidden="true">/</li>
+                <li aria-current="page">Button.tsx</li>
+              </ol>
+            </nav>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Font</td><td class="col-value">JetBrains Mono, 12px</td></tr>
+              <tr><td>Link color</td><td class="col-value">var(--text2) #9599A6</td></tr>
+              <tr><td>Current page</td><td class="col-value">var(--text1), weight 500</td></tr>
+              <tr><td>Separator</td><td class="col-value">/ in var(--text3), 6px margin</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="cl-component-group">
+          <h3>Pagination</h3>
+          <p>Numbered page navigation with prev/next controls.</p>
+          <div class="cl-canvas">
+            <div class="cl-pagination">
+              <button class="cl-pagination__btn is-disabled"><i class="icon icon-chevron-left"></i></button>
+              <button class="cl-pagination__btn cl-pagination__btn--active">1</button>
+              <button class="cl-pagination__btn">2</button>
+              <button class="cl-pagination__btn">3</button>
+              <button class="cl-pagination__btn">4</button>
+              <button class="cl-pagination__btn">5</button>
+              <button class="cl-pagination__btn"><i class="icon icon-chevron-right"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nav Menu -->
+        <div id="nav-menu" class="cl-component-group">
+          <h3>Nav Menu</h3>
+          <p>Horizontal navigation menu for top-level sections.</p>
+          <div class="cl-canvas">
+            <div class="cl-nav-menu">
+              <button class="cl-nav-menu__item cl-nav-menu__item--active">Dashboard</button>
+              <button class="cl-nav-menu__item">Projects</button>
+              <button class="cl-nav-menu__item">Settings</button>
+              <button class="cl-nav-menu__item">Help</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Link -->
+        <div id="link" class="cl-component-group">
+          <h3>Link</h3>
+          <p>Inline and standalone links with interactive states.</p>
+          <div class="cl-canvas">
+            <div class="cl-row" style="gap:24px">
+              <div class="cl-variant"><div class="cl-variant-label">Default</div><a class="cl-link" href="#">View documentation</a></div>
+              <div class="cl-variant"><div class="cl-variant-label">Hover</div><a class="cl-link is-hover" href="#">View documentation</a></div>
+              <div class="cl-variant"><div class="cl-variant-label">Visited</div><a class="cl-link is-visited" href="#">View documentation</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════
+           FEEDBACK
+           ═══════════════════════════════════════════════════════ -->
+      <section id="cat-feedback" class="cl-category-panel">
+
+        <!-- Alert -->
+        <div id="alert" class="cl-component-group">
+          <h3>Alert</h3>
+          <p>Contextual banners for info, success, warning, and error messages.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%;gap:16px">
+              <div class="cl-alert cl-alert--info">
+                <span class="cl-alert__icon"><i class="icon icon-info"></i></span>
+                <div class="cl-alert__content">
+                  <div class="cl-alert__title">New update available</div>
+                  <div class="cl-alert__desc">Trae v2.4 includes improved AI suggestions and faster indexing.</div>
+                </div>
+              </div>
+              <div class="cl-alert cl-alert--success">
+                <span class="cl-alert__icon"><i class="icon icon-check-circle"></i></span>
+                <div class="cl-alert__content">
+                  <div class="cl-alert__title">Build successful</div>
+                  <div class="cl-alert__desc">All 142 tests passed. Bundle size: 1.2MB.</div>
+                </div>
+                <button class="cl-alert__dismiss"><i class="icon icon-x"></i></button>
+              </div>
+              <div class="cl-alert cl-alert--warning">
+                <span class="cl-alert__icon"><i class="icon icon-alert-triangle"></i></span>
+                <div class="cl-alert__content">
+                  <div class="cl-alert__title">Deprecation notice</div>
+                  <div class="cl-alert__desc">The legacy API will be removed in v3.0. Please migrate.</div>
+                </div>
+              </div>
+              <div class="cl-alert cl-alert--error">
+                <span class="cl-alert__icon"><i class="icon icon-alert-circle"></i></span>
+                <div class="cl-alert__content">
+                  <div class="cl-alert__title">Connection failed</div>
+                  <div class="cl-alert__desc">Unable to reach the language server. Check your network.</div>
+                </div>
+                <button class="cl-alert__dismiss"><i class="icon icon-x"></i></button>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Variant</th><th>Background</th><th>Border</th><th>Icon Color</th></tr></thead>
+            <tbody>
+              <tr><td>Info</td><td class="col-value">rgba(56,123,255,0.08)</td><td class="col-value">rgba(56,123,255,0.2)</td><td class="col-value">#387BFF</td></tr>
+              <tr><td>Success</td><td class="col-value">rgba(16,185,129,0.08)</td><td class="col-value">rgba(16,185,129,0.2)</td><td class="col-value">#10B981</td></tr>
+              <tr><td>Warning</td><td class="col-value">rgba(235,155,97,0.08)</td><td class="col-value">rgba(235,155,97,0.2)</td><td class="col-value">#EB9B61</td></tr>
+              <tr><td>Error</td><td class="col-value">rgba(204,75,83,0.08)</td><td class="col-value">rgba(204,75,83,0.2)</td><td class="col-value">#CC4B53</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Toast -->
+        <div id="toast" class="cl-component-group">
+          <h3>Toast</h3>
+          <p>Transient notifications with optional action buttons.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="gap:12px">
+              <div class="cl-toast cl-toast--info">
+                <span class="cl-toast__icon"><i class="icon icon-info"></i></span>
+                <span class="cl-toast__content">File saved to workspace.</span>
+              </div>
+              <div class="cl-toast cl-toast--success">
+                <span class="cl-toast__icon"><i class="icon icon-check-circle"></i></span>
+                <span class="cl-toast__content">Changes deployed successfully.</span>
+                <span class="cl-toast__action">View</span>
+              </div>
+              <div class="cl-toast cl-toast--warning">
+                <span class="cl-toast__icon"><i class="icon icon-alert-triangle"></i></span>
+                <span class="cl-toast__content">Unsaved changes detected.</span>
+                <span class="cl-toast__action">Save</span>
+              </div>
+              <div class="cl-toast cl-toast--error">
+                <span class="cl-toast__icon"><i class="icon icon-alert-circle"></i></span>
+                <span class="cl-toast__content">Failed to connect to server.</span>
+                <span class="cl-toast__action">Retry</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div id="progress" class="cl-component-group">
+          <h3>Progress</h3>
+          <p>Determinate and indeterminate progress bars with semantic colors.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%;gap:24px">
+              <div class="cl-progress">
+                <div class="cl-progress__label">72%</div>
+                <div class="cl-progress__track"><div class="cl-progress__fill cl-progress__fill--accent" style="width:72%"></div></div>
+              </div>
+              <div class="cl-progress">
+                <div class="cl-progress__label">45%</div>
+                <div class="cl-progress__track"><div class="cl-progress__fill cl-progress__fill--warning" style="width:45%"></div></div>
+              </div>
+              <div class="cl-progress">
+                <div class="cl-progress__label">Error</div>
+                <div class="cl-progress__track"><div class="cl-progress__fill cl-progress__fill--error" style="width:88%"></div></div>
+              </div>
+              <div class="cl-progress">
+                <div class="cl-progress__label">Loading…</div>
+                <div class="cl-progress__track"><div class="cl-progress__fill cl-progress__fill--accent cl-progress__fill--indeterminate"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spinner -->
+        <div id="spinner" class="cl-component-group">
+          <h3>Spinner</h3>
+          <p>Loading spinners at three sizes.</p>
+          <div class="cl-canvas">
+            <div class="cl-row" style="gap:32px;align-items:center">
+              <div class="cl-variant"><div class="cl-variant-label">Small</div><div class="cl-spinner cl-spinner--sm"></div></div>
+              <div class="cl-variant"><div class="cl-variant-label">Medium</div><div class="cl-spinner cl-spinner--md"></div></div>
+              <div class="cl-variant"><div class="cl-variant-label">Large</div><div class="cl-spinner cl-spinner--lg"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="cl-component-group">
+          <h3>Empty State</h3>
+          <p>Placeholder for empty views with icon, description, and CTA.</p>
+          <div class="cl-canvas">
+            <div class="cl-empty-state" style="width:100%">
+              <div class="cl-empty-state__icon"><i class="icon icon-inbox"></i></div>
+              <div class="cl-empty-state__title">No results found</div>
+              <div class="cl-empty-state__desc">Try adjusting your search or filter criteria to find what you're looking for.</div>
+              <button class="cl-btn cl-btn--primary">Clear Filters</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════
+           OVERLAYS
+           ═══════════════════════════════════════════════════════ -->
+      <section id="cat-overlays" class="cl-category-panel">
+
+        <!-- Modal -->
+        <div id="modal" class="cl-component-group">
+          <h3>Modal</h3>
+          <p>Dialog overlay with backdrop for confirmations and forms.</p>
+          <div class="cl-canvas" style="padding:0;overflow:hidden">
+            <div class="cl-modal-demo">
+              <div class="cl-modal-backdrop">
+                <div class="cl-modal">
+                  <div class="cl-modal__title">Delete file?</div>
+                  <div class="cl-modal__desc">This will permanently delete <strong>main.tsx</strong> from your workspace. This action cannot be undone.</div>
+                  <div class="cl-modal__actions">
+                    <button class="cl-btn cl-btn--ghost">Cancel</button>
+                    <button class="cl-btn cl-btn--destructive">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Radius</td><td class="col-value">var(--r-container) 12px</td></tr>
+              <tr><td>Shadow</td><td class="col-value">var(--elevation-3)</td></tr>
+              <tr><td>Backdrop</td><td class="col-value">rgba(23,27,38,0.6) blur(4px)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Popover -->
+        <div id="popover" class="cl-component-group">
+          <h3>Popover</h3>
+          <p>Contextual floating content with arrow pointer.</p>
+          <div class="cl-canvas" style="padding:64px 40px">
+            <div style="position:relative;display:inline-block">
+              <div class="cl-popover">
+                <div style="font-weight:500;margin-bottom:4px">Quick Info</div>
+                <div style="color:var(--text2)">This component renders a floating panel anchored to a trigger element.</div>
+                <div class="cl-popover__arrow cl-popover__arrow--top"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tooltip -->
+        <div id="tooltip" class="cl-component-group">
+          <h3>Tooltip</h3>
+          <p>Contextual hints with keyboard shortcut support.</p>
+          <div class="cl-canvas" style="padding:64px 48px">
+            <div class="cl-row" style="gap:64px">
+              <div class="cl-tooltip-demo">
+                <button class="cl-btn cl-btn--secondary">Hover me</button>
+                <div class="cl-tooltip cl-tooltip--top">Open Settings<kbd>⌘,</kbd><span class="cl-tooltip__arrow"></span></div>
+              </div>
+              <div class="cl-tooltip-demo">
+                <button class="cl-btn cl-btn--secondary">Another</button>
+                <div class="cl-tooltip cl-tooltip--bottom">Copy to clipboard<span class="cl-tooltip__arrow"></span></div>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Background</td><td class="col-value">var(--surface3) #363B4E</td></tr>
+              <tr><td>Radius</td><td class="col-value">4px</td></tr>
+              <tr><td>Padding</td><td class="col-value">4px 8px</td></tr>
+              <tr><td>Font</td><td class="col-value">Inter, 12px</td></tr>
+              <tr><td>Shadow</td><td class="col-value">var(--elevation-2)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Accordion -->
+        <div id="accordion" class="cl-component-group">
+          <h3>Accordion</h3>
+          <p>Collapsible content sections with expand/collapse states.</p>
+          <div class="cl-canvas">
+            <div class="cl-accordion">
+              <div class="cl-accordion__item cl-accordion__item--expanded">
+                <button class="cl-accordion__header">
+                  <span>What is Trae?</span>
+                  <span class="cl-accordion__chevron"><i class="icon icon-chevron-down"></i></span>
+                </button>
+                <div class="cl-accordion__body">Trae is an AI-native IDE designed for developers who want intelligent code assistance built directly into their editing workflow.</div>
+              </div>
+              <div class="cl-accordion__item">
+                <button class="cl-accordion__header">
+                  <span>How does AI assist work?</span>
+                  <span class="cl-accordion__chevron"><i class="icon icon-chevron-down"></i></span>
+                </button>
+                <div class="cl-accordion__body">AI assist provides inline suggestions, code review, and refactoring powered by large language models.</div>
+              </div>
+              <div class="cl-accordion__item is-disabled">
+                <button class="cl-accordion__header">
+                  <span>Enterprise features (coming soon)</span>
+                  <span class="cl-accordion__chevron"><i class="icon icon-chevron-down"></i></span>
+                </button>
+                <div class="cl-accordion__body">Enterprise features are currently in development.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════
+           IDE COMPONENTS
+           ═══════════════════════════════════════════════════════ -->
+      <section id="cat-ide" class="cl-category-panel">
+
+        <!-- Tab Bar -->
+        <div id="tab-bar" class="cl-component-group">
+          <h3>Tab Bar</h3>
+          <p>Editor tab strip with active, inactive, hover, and modified states.</p>
+          <div class="cl-canvas cl-canvas--dark-bg" style="padding:0;overflow:hidden;flex-direction:column;gap:0">
+            <div class="cl-tab-bar">
+              <div class="cl-tab cl-tab--active">
+                <i class="icon icon-file-code" style="font-size:14px"></i>
+                <span>main.tsx</span>
+                <button class="cl-tab__close"><i class="icon icon-x" style="font-size:12px"></i></button>
+              </div>
+              <div class="cl-tab is-hover">
+                <span>utils.ts</span>
+                <button class="cl-tab__close"><i class="icon icon-x" style="font-size:12px"></i></button>
+              </div>
+              <div class="cl-tab">
+                <span>config.json</span>
+                <span class="cl-tab__modified"></span>
+              </div>
+              <div class="cl-tab">
+                <span>README.md</span>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Height</td><td class="col-value">36px</td></tr>
+              <tr><td>Active bg</td><td class="col-value">var(--surface1) #262A37</td></tr>
+              <tr><td>Active indicator</td><td class="col-value">2px top border var(--accent)</td></tr>
+              <tr><td>Font</td><td class="col-value">Inter, 13px</td></tr>
+              <tr><td>Modified dot</td><td class="col-value">6px circle var(--text2)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Status Bar -->
+        <div id="status-bar" class="cl-component-group">
+          <h3>Status Bar</h3>
+          <p>Bottom bar showing branch, errors, encoding, and AI status.</p>
+          <div class="cl-canvas cl-canvas--dark-bg" style="padding:0;overflow:hidden;flex-direction:column;gap:0">
+            <div class="cl-statusbar">
+              <div class="cl-statusbar__left">
+                <button class="cl-statusbar__item"><i class="icon icon-git-branch" style="font-size:14px"></i><span>main</span></button>
+                <button class="cl-statusbar__item cl-statusbar__item--error"><i class="icon icon-circle-x" style="font-size:14px"></i><span>2</span></button>
+                <button class="cl-statusbar__item cl-statusbar__item--warning"><i class="icon icon-alert-triangle" style="font-size:14px"></i><span>5</span></button>
+              </div>
+              <div class="cl-statusbar__right">
+                <button class="cl-statusbar__item">Ln 42, Col 18</button>
+                <button class="cl-statusbar__item">UTF-8</button>
+                <button class="cl-statusbar__item">TypeScript</button>
+                <button class="cl-statusbar__item cl-statusbar__item--accent"><i class="icon icon-sparkles" style="font-size:14px"></i><span>Trae AI</span></button>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Height</td><td class="col-value">24px</td></tr>
+              <tr><td>Background</td><td class="col-value">var(--background) #171B26</td></tr>
+              <tr><td>Font</td><td class="col-value">Inter, 11px, var(--text3)</td></tr>
+              <tr><td>Hover</td><td class="col-value">rgba(255,255,255,0.06)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Command Palette -->
+        <div id="command-palette" class="cl-component-group">
+          <h3>Command Palette</h3>
+          <p>Global fuzzy-search overlay triggered by ⌘⇧P.</p>
+          <div class="cl-canvas">
+            <div class="cl-palette">
+              <div class="cl-palette__input-wrap">
+                <span class="cl-palette__icon"><i class="icon icon-search"></i></span>
+                <input class="cl-palette__input" type="text" placeholder="Type a command…" value="toggle">
+              </div>
+              <ul class="cl-palette__list">
+                <li class="cl-palette__item cl-palette__item--active"><span>Toggle Terminal</span><span class="cl-palette__shortcut">⌃`</span></li>
+                <li class="cl-palette__item"><span>Toggle Sidebar</span><span class="cl-palette__shortcut">⌘B</span></li>
+                <li class="cl-palette__item"><span>Toggle Word Wrap</span><span class="cl-palette__shortcut">⌥Z</span></li>
+                <li class="cl-palette__item"><span>Toggle Minimap</span><span class="cl-palette__shortcut"></span></li>
+              </ul>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Width</td><td class="col-value">560px</td></tr>
+              <tr><td>Radius</td><td class="col-value">var(--r-container) 12px</td></tr>
+              <tr><td>Shadow</td><td class="col-value">var(--elevation-3)</td></tr>
+              <tr><td>Input font</td><td class="col-value">Inter, 15px</td></tr>
+              <tr><td>Item height</td><td class="col-value">36px</td></tr>
+              <tr><td>Shortcut font</td><td class="col-value">JetBrains Mono, 11px</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Inline Chat Bubble -->
+        <div id="chat-bubble" class="cl-component-group">
+          <h3>Inline Chat Bubble</h3>
+          <p>AI conversation surface embedded within the editor canvas.</p>
+          <div class="cl-canvas">
+            <div class="cl-col" style="width:100%;gap:12px">
+              <div class="cl-chat-bubble cl-chat-bubble--user">
+                <p>How do I optimize this function?</p>
+                <span class="cl-chat-bubble__time">12:34</span>
+              </div>
+              <div class="cl-chat-bubble cl-chat-bubble--ai">
+                <div class="cl-chat-bubble__indicator">
+                  <span style="font-size:14px">✦</span>
+                  <span>Trae</span>
+                </div>
+                <p>Here's a refactored version using memoization:</p>
+                <pre class="cl-chat-bubble__code"><code>const memo = useMemo(() =&gt; compute(data), [data]);</code></pre>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>User bg</td><td class="col-value">var(--surface2) #2A2E3E</td></tr>
+              <tr><td>AI bg</td><td class="col-value">var(--surface1) #262A37</td></tr>
+              <tr><td>AI accent</td><td class="col-value">2px left border var(--accent)</td></tr>
+              <tr><td>Code block bg</td><td class="col-value">var(--background) #171B26</td></tr>
+              <tr><td>Radius</td><td class="col-value">var(--r-component) 8px</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- File Tree -->
+        <div id="file-tree" class="cl-component-group">
+          <h3>File Tree Item</h3>
+          <p>Tree-view rows in the sidebar explorer with git status indicators.</p>
+          <div class="cl-canvas cl-canvas--dark-bg" style="padding:16px 0">
+            <div class="cl-file-tree">
+              <div class="cl-file-tree__item cl-file-tree__item--selected">
+                <span class="cl-file-tree__chevron"><i class="icon icon-chevron-down" style="font-size:12px"></i></span>
+                <i class="icon icon-folder" style="font-size:16px;color:var(--text3)"></i>
+                <span class="cl-file-tree__name">src</span>
+              </div>
+              <div class="cl-file-tree__item" style="padding-left:24px">
+                <span class="cl-file-tree__chevron"><i class="icon icon-chevron-right" style="font-size:12px"></i></span>
+                <i class="icon icon-folder" style="font-size:16px;color:var(--text3)"></i>
+                <span class="cl-file-tree__name">components</span>
+              </div>
+              <div class="cl-file-tree__item cl-file-tree__item--active" style="padding-left:24px">
+                <span class="cl-file-tree__chevron" style="visibility:hidden"><i class="icon icon-chevron-right" style="font-size:12px"></i></span>
+                <i class="icon icon-file-code" style="font-size:16px;color:var(--text3)"></i>
+                <span class="cl-file-tree__name">main.tsx</span>
+              </div>
+              <div class="cl-file-tree__item is-hover" style="padding-left:24px">
+                <span class="cl-file-tree__chevron" style="visibility:hidden"><i class="icon icon-chevron-right" style="font-size:12px"></i></span>
+                <i class="icon icon-file" style="font-size:16px;color:var(--text3)"></i>
+                <span class="cl-file-tree__name cl-file-tree__name--modified">config.ts</span>
+              </div>
+              <div class="cl-file-tree__item" style="padding-left:24px">
+                <span class="cl-file-tree__chevron" style="visibility:hidden"><i class="icon icon-chevron-right" style="font-size:12px"></i></span>
+                <i class="icon icon-file" style="font-size:16px;color:var(--text3)"></i>
+                <span class="cl-file-tree__name cl-file-tree__name--untracked">newFile.ts</span>
+              </div>
+              <div class="cl-file-tree__item is-disabled" style="padding-left:24px">
+                <span class="cl-file-tree__chevron" style="visibility:hidden"><i class="icon icon-chevron-right" style="font-size:12px"></i></span>
+                <i class="icon icon-file" style="font-size:16px;color:var(--text3)"></i>
+                <span class="cl-file-tree__name">locked.ts</span>
+              </div>
+            </div>
+          </div>
+          <table class="cl-spec-table">
+            <thead><tr><th>State</th><th>Treatment</th></tr></thead>
+            <tbody>
+              <tr><td>Default</td><td class="col-value">transparent bg</td></tr>
+              <tr><td>Hover</td><td class="col-value">var(--surface2) bg</td></tr>
+              <tr><td>Selected</td><td class="col-value">var(--surface2) bg + 2px left accent</td></tr>
+              <tr><td>Active</td><td class="col-value">var(--accent-subtle) bg + accent text</td></tr>
+              <tr><td>Modified</td><td class="col-value">filename in var(--warning)</td></tr>
+              <tr><td>Untracked</td><td class="col-value">filename in var(--accent)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
   </div>
-</div>
-</section>
 
-<!-- STATUS BAR -->
-<section id="status">
-<h2>Status Bar</h2>
-<p>Bottom bar with branch, diagnostics, encoding, AI status.</p>
-<div class="demo-box" style="padding:0;overflow:hidden;border-radius:var(--r-comp)">
-  <div class="status-bar">
-    <div class="status-item">main</div>
-    <div class="status-item" style="color:var(--red)">2 Errors</div>
-    <div class="status-item" style="color:var(--amber)">1 Warning</div>
-    <div style="flex:1"></div>
-    <div class="status-item">UTF-8</div>
-    <div class="status-item">TypeScript</div>
-    <div class="status-item"><div class="status-dot"></div> Trae AI: Ready</div>
+  <!-- Floating bar -->
+  <div class="floating-bar">
+    <button class="mode-btn active" data-mode="dark"><i class="icon icon-moon" style="font-size:14px"></i> Dark</button>
+    <button class="mode-btn" data-mode="light"><i class="icon icon-sun" style="font-size:14px"></i> Light</button>
   </div>
-</div>
-</section>
 
-<!-- COMMAND PALETTE -->
-<section id="cmd">
-<h2>Command Palette</h2>
-<p>Overlay search with fuzzy matching and keyboard shortcuts.</p>
-<div class="demo-box" style="display:flex;justify-content:center">
-  <div class="cmd-palette">
-    <input class="cmd-input" placeholder="> Type a command..." value="> format">
-    <div class="cmd-list">
-      <div class="cmd-item selected"><span>Format Document</span><span class="shortcut">⇧⌥F</span></div>
-      <div class="cmd-item"><span>Format Selection</span><span class="shortcut">⌘K ⌘F</span></div>
-      <div class="cmd-item"><span>Format On Save: Toggle</span><span class="shortcut"></span></div>
-    </div>
-  </div>
-</div>
-</section>
+  <script>
+    // 1. Dark/light mode toggle
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.documentElement.dataset.theme = btn.dataset.mode;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
 
-<!-- INLINE CHAT -->
-<section id="chat">
-<h2>Inline Chat</h2>
-<p>AI conversation panel with user and assistant messages.</p>
-<div class="demo-box">
-  <div class="chat-container">
-    <div class="chat-msg chat-user">How do I optimize this React component?</div>
-    <div class="chat-msg chat-ai">You can wrap the expensive computation in <code>useMemo</code> and the callback in <code>useCallback</code>. This avoids re-renders when parent state changes.</div>
-    <div class="chat-msg chat-user">Show me the code</div>
-    <div class="chat-msg chat-ai" style="font-family:var(--mono);font-size:12px;background:var(--bg);border:1px solid var(--s3)">const value = useMemo(() =&gt; compute(data), [data]);</div>
-    <div class="chat-input-bar">
-      <input placeholder="Ask Trae...">
-      <button class="btn btn-primary btn-sm" style="padding:6px 10px">Send</button>
-    </div>
-  </div>
-</div>
-</section>
+    // 2. Category tab switching
+    function switchCategory(cat) {
+      document.querySelectorAll('.cl-category-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.cl-toc-category').forEach(h => h.classList.remove('active'));
+      document.querySelectorAll('.cl-toc-sub').forEach(a => { if (a.dataset.cat !== cat) a.classList.remove('active'); });
+      const panel = document.getElementById('cat-' + cat);
+      const header = document.querySelector('.cl-toc-category[data-cat="' + cat + '"]');
+      if (panel) panel.classList.add('active');
+      if (header) header.classList.add('active');
+    }
 
-<!-- FILE TREE -->
-<section id="filetree">
-<h2>File Tree</h2>
-<p>Explorer sidebar with git status indicators.</p>
-<div class="demo-box" style="max-width:280px">
-  <div class="file-tree">
-    <div class="file-tree-item"><span class="icon">▾</span><span class="name" style="font-weight:600">src</span></div>
-    <div class="file-tree-folder">
-      <div class="file-tree-item"><span class="icon">▾</span><span class="name" style="font-weight:500">components</span></div>
-      <div class="file-tree-folder">
-        <div class="file-tree-item selected"><span class="icon">◇</span><span class="name">Button.tsx</span><span class="git-m">M</span></div>
-        <div class="file-tree-item"><span class="icon">◇</span><span class="name">Card.tsx</span></div>
-        <div class="file-tree-item"><span class="icon">◇</span><span class="name">Input.tsx</span><span class="git-a">A</span></div>
-      </div>
-      <div class="file-tree-item"><span class="icon">▸</span><span class="name" style="font-weight:500">utils</span></div>
-      <div class="file-tree-item"><span class="icon">◇</span><span class="name">main.tsx</span><span class="git-m">M</span></div>
-      <div class="file-tree-item"><span class="icon">◇</span><span class="name">App.tsx</span></div>
-    </div>
-    <div class="file-tree-item"><span class="icon">◇</span><span class="name">package.json</span></div>
-    <div class="file-tree-item"><span class="icon">◇</span><span class="name">tsconfig.json</span></div>
-  </div>
-</div>
-</section>
+    document.querySelectorAll('.cl-toc-category').forEach(h => {
+      h.addEventListener('click', () => switchCategory(h.dataset.cat));
+    });
 
-<!-- BREADCRUMB -->
-<section id="breadcrumb">
-<h2>Breadcrumb</h2>
-<p>Slash-separated path navigation for editor context.</p>
-<div class="demo-box">
-  <div class="breadcrumb">
-    <span>src</span><span class="sep">/</span>
-    <span>components</span><span class="sep">/</span>
-    <span class="current">Button.tsx</span>
-  </div>
-</div>
-</section>
+    // 3. Sub-item deep-linking (switch tab + scroll)
+    document.querySelectorAll('.cl-toc-sub').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchCategory(a.dataset.cat);
+        document.querySelectorAll('.cl-toc-sub').forEach(s => s.classList.remove('active'));
+        a.classList.add('active');
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: 'smooth' }));
+      });
+    });
 
-<!-- TOOLTIP -->
-<section id="tooltip">
-<h2>Tooltip</h2>
-<p>Informational popup with optional keyboard shortcut.</p>
-<div class="demo-box" style="padding:48px 20px 20px;display:flex;gap:48px">
-  <div class="tooltip-demo">
-    <button class="btn btn-secondary">Hover me</button>
-    <div class="tooltip">Save file<kbd>⌘S</kbd></div>
-  </div>
-  <div class="tooltip-demo">
-    <button class="btn btn-ghost">Info</button>
-    <div class="tooltip">Show quick documentation</div>
-  </div>
-</div>
-</section>
+    // 4. Scroll-tracking: highlight active TOC link on scroll
+    const mainEl = document.querySelector('.cl-main');
+    mainEl.addEventListener('scroll', () => {
+      const activePanel = document.querySelector('.cl-category-panel.active');
+      if (!activePanel) return;
+      const groups = activePanel.querySelectorAll('.cl-component-group');
+      let activeId = null;
+      groups.forEach(g => { if (g.getBoundingClientRect().top <= 120) activeId = g.id; });
+      if (activeId) {
+        document.querySelectorAll('.cl-toc-sub').forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + activeId);
+        });
+      }
+    }, { passive: true });
 
-</main>
-
-<script>
-document.querySelectorAll('.sidebar a').forEach(a=>{
-  a.addEventListener('click',()=>{
-    document.querySelectorAll('.sidebar a').forEach(x=>x.classList.remove('active'));
-    a.classList.add('active');
-  });
-});
-</script>
+    // 5. Disable all non-TOC anchor clicks (mockup protection)
+    document.querySelectorAll('a').forEach(a => {
+      if (a.closest('.cl-toc')) return;
+      a.addEventListener('click', e => e.preventDefault());
+    });
+  </script>
 </body>
 </html>

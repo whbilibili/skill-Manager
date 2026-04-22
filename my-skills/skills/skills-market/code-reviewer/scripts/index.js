@@ -101,7 +101,7 @@ async function main() {
   };
 
   // 必须执行的检查
-  // 注：安全扫描已迁移到 steps/scan-security.md（AI 用 Grep 工具执行，避开 node 权限拦截）
+  // 注：安全扫描已迁移到 SKILL.md § 2.1（AI 用 Grep 工具执行，避开 node 权限拦截）
   // 这里只保留依赖扫描 + bundle 分析
   const checks = [
     { script: 'check-dependencies.js', name: '依赖检查', required: true },

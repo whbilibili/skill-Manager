@@ -1,8 +1,8 @@
 {
   "source": "market",
   "id": 14902,
-  "updateTime": 1776758932000,
-  "downloadTime": 1776759433534,
+  "updateTime": 1776844748000,
+  "downloadTime": 1776845071905,
   "alias": "fsd",
   "intro": "通过 fsd CLI 管理部署（骨干/备机/泳道）、交付自测流水线、自动化测试、代码覆盖率、需求/任务/测试计划/缺陷管理及上线准备全流程。"
 }
