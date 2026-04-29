@@ -1,11 +1,11 @@
 skill-manifest-version: 1
-skill-id: 78c07a7b974c4dba8bc32393f4f2c62a90abc85b2536ac9b5020b2e2e36aa0d7
+skill-id: c184e0b2eaf25191a39fb0a5c35d7b4607881d7999be4f9f24a9da1d49b21613
 
 files:
-  b8cbdd3195facff916c0b37ebf0fdd7571b1f7083cc4e6d63afcac6301916635  SKILL.md
+  cefb2bd81381f53e45002b66088e3bef03f5c2851011e226c00563414e71689c  SKILL.md
   12a815c73eae636a7fb058d8eb965831fa9f665edcdccb41627f18de855cb993  references/best-practices.md
   6bcd42e7d6d65d4745c3af23d2a47fbb420b0282f583511cb837b31f3f52ba8b  references/commands/cmd-code.md
-  0a8e33b88e1b0177629e87115167ae96862e3d661e64b42a9a1182b78d4d1fc0  references/commands/cmd-create-send.md
+  a951e140e47f241054e4842461ac463b2943998dc8b826b36e6746d8e0c380e7  references/commands/cmd-create-send.md
   51a55b7e1a15ad95fea77f494d1edf10fbedd9a234cef05237417735b517af8c  references/commands/cmd-d2c.md
   4c2bf185ee4d8c7e471da8a3e5056827900c36a9aa49cfa0dad8658b15af75b7  references/commands/cmd-database.md
   94edfdf16998878fd5eca05302a3a3068bc0a771d1c31056865a84601e71f671  references/commands/cmd-deploy.md
@@ -13,6 +13,6 @@ files:
   2268876e7d0b13dda3b4862cdfe7908c8302cc12ec5daa00b5154eeeae587759  references/commands/cmd-files.md
   d087e3d871926eaac767e2bacd08cbde3deb6ab243c48fe70b51e8991cdf0dba  references/commands/cmd-screenshot.md
   e23ac714b5e54beddd3c29c46270671e4b907e46fbd9450f8667c1aaa238331d  references/nocode-agent-capabilities.md
-  a70efe0b18bc73446c9e383fb885b1b052ba0e24ec03ee566c99d0394cd23cda  references/project-architecture.md
+  580f28d4ac3497c8e16d1cb5f1bf9acf1c497324c5bf642fe5b27d446b73370f  references/project-architecture.md
   cd4feed248f5c70f4f720b5879793b028f0138203a0ed8c4d2d7728e9d48b197  references/workflows/poll-workflow.md
   88eecab9ccd0b50f9b68ce46f20db3b9cffa375dce6e377f1855013b23344416  references/workflows/workflow-local-dev.md

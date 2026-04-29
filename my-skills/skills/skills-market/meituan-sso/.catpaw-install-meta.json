@@ -1,8 +1,8 @@
 {
   "source": "market",
   "id": 1691,
-  "updateTime": 1776827372000,
-  "downloadTime": 1776828886185,
+  "updateTime": 1777022264000,
+  "downloadTime": 1777029365590,
   "alias": "SSO登录",
   "intro": "美团内网 SSO 统一认证 Skill。处理 CatClaw/OpenClaw 沙箱中访问 sankuai.com 内网时的 SSO 登录全流程。\r\n触发场景：(1) 访问 .sankuai.com 被 SSO 拦截 (2) browser 返回 401/SSO 页面 (3) 其他 skill 内网访问前置认证 (4) 需要获取内网 API 的 access token\r\n关键词：MOA 登录、SSO 扫码、内网认证、401、sankuai.com 拦截、access token、ssoid"
 }

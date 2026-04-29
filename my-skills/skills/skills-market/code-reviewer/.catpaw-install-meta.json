@@ -1,8 +1,8 @@
 {
   "source": "market",
   "id": 166,
-  "updateTime": 1776843874000,
-  "downloadTime": 1776845071451,
+  "updateTime": 1776998554000,
+  "downloadTime": 1777000565088,
   "alias": "前端CodeReviewer",
   "intro": "React / TypeScript / JavaScript 前端代码审查专家。自动生成当前分支与 master 的 diff，按 P0/P1/P2 分级输出结构化审查报告。重点覆盖：Promise 陷阱与异步安全、TypeScript 类型滥用、React Hooks 规范、XSS 与硬编码密钥、Mobx Store 设计、金额浮点精度、架构跨层依赖、团队专项积分规则。diff > 3000 行自动切换多 Agent 并行模式。当用户说\"review\"、\"审查\"、\"CR\"、\"检查代码\"、\"帮我看看这个 PR\"、\"这段代码有没有问题\"时触发。"
 }

@@ -75,11 +75,18 @@ def send_personal_msg(token, mis_id, text):
         return json.loads(resp.read())
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
         print("用法: python3 notify.py '消息' [mis_id]", file=sys.stderr)
+        print("  消息内容不能以 '-' 开头（防止误将命令行参数当作消息发送）", file=sys.stderr)
         sys.exit(0)
 
     text   = sys.argv[1]
+
+    # 安全校验：以 "-" 开头的参数不允许作为消息内容直接发送
+    if text.startswith("-"):
+        print(f"[notify] ❌ 拒绝发送：消息内容以 '-' 开头（\"{text}\"），疑似命令行参数误传", file=sys.stderr)
+        sys.exit(1)
+
     mis_id = sys.argv[2] if len(sys.argv) > 2 else None
 
     try:

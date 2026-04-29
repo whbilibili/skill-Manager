@@ -1,12 +1,14 @@
 skill-manifest-version: 1
-skill-id: 38d6271e0d4989fcf3ee6c6a4cdd8ff548474ad62a078253f276085eb29df4d3
+skill-id: 249ea950b5aa6cb9ea685e17fa82e58a93d7b07fd5011f5e8be4b3d8d91926c1
 
 files:
-  8414199b66650e65ac76c5dcb6742c4578ad9485ad276de0d19aca8aa93d019e  SKILL.md
+  626288501866134431699f8d609f52872b1f613bf9f444246f488572bbc511f2  SKILL.md
   5c44b0276f4f3c0088fb2f793e31570c0a56d5f90c59cdb86265e35ebe4ed3f3  references/cli-reference.md
+  6e3c63b88cfc01cddc2277bff5e9e1c4a0a1d47c367ae12d08a861dfe3f216cb  references/discussion-comment.md
   7e842d652be756336fae3592c80b97f54eb1841377d6bff8568f04cc88c7cc52  references/doc-insert.md
   a86c0008c46406090dcf72d98e739f0e509701b6c8dcf6064d16d79f0ac3cccd  references/doc-summary.md
   e9ba11b929799c3f5d3755746be7dd5e2a9eebd16dfc692d9ef0c59702fba58c  references/doc-syntax.md
   420e776620ad0f2961dcf2e8a2354722c781cdee9a70dee356be13861b2374a1  references/doc-update.md
-  7667a95cb52cfa9da1bc6c0689f41dd8c3a23316ab393dca051ed9e4b7639aa0  references/doc-view.md
-  7b37cc0057e00fa6cce2cb7ca9888fecc40ef028b6e7cdc0134c265bfc80a18a  references/permission-management.md
+  24466810890ee2e4189295d809d9620b3cf151d07f1d7c6132241099a02e3c74  references/doc-view.md
+  24a0fbb6a09775c72f271f460fda1e063f7ac255e0edfde3ddde1954a0045e9e  references/generate-drawio.md
+  b810f7626b49132b242d632ea06b8b1822320ff009a1ce6947060004211d3978  references/permission-management.md

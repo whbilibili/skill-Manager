@@ -14,7 +14,7 @@
 
 ### 受限修改
 
-- `index.html` — 注入了 NoCode Web SDK（`nocode-web-sdk.js`）和 工程入口（`/src/main.jsx`）。允许修改 `<title>`、添加业务 JS/CSS 引用等；禁止删除或修改文件中原有的 `<script>` 标签（删除会导致 SDK 无法初始化、平台能力失效）；禁止将其替换为纯静态 HTML
+- `index.html` — 注入了 NoCode Web SDK（`nocode-web-sdk.js`）和 React 入口（`/src/main.jsx`）。允许修改 `<title>`、添加业务 JS/CSS 引用等；禁止删除或修改文件中原有的 `<script>` 标签（删除会导致 SDK 无法初始化、平台能力失效）；禁止将其替换为纯静态 HTML
 - `package.json` — 仅允许在 `dependencies`/`devDependencies` 中新增业务依赖；`scripts`、工程配置字段禁止修改（改动会导致构建/启动脚本异常）
 
 ## 允许的改动

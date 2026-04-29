@@ -134,9 +134,9 @@
 
 | 行为                    | 说明                                        |
 | --------------------- | ----------------------------------------- |
-| 默认                    | 「与我相关」的最近 30 天（预计上线时间在最近 30 天内） |
-| `--team`              | 「我团队」的最近 30 天（预计上线时间在最近 30 天内）  |
-| `--online-time-days`  | 指定最近 N 天（1-30，默认 30）                   |
+| 默认                    | 「与我相关」的前后各 30 天（预计上线时间在 30 天前至 30 天后） |
+| `--team`              | 「我团队」的前后各 30 天（预计上线时间在 30 天前至 30 天后）  |
+| `--online-time-days`  | 指定前后 N 天（正整数，默认 30）                   |
 | `--card-not-pass all` | 任意卡片未通过；逐条 summary，耗时长，`--page-size` 不宜过大 |
 
 ### CLI 参数
@@ -146,7 +146,7 @@
 | --page-num / --page-size                       | 1 / 10 |                                 |
 | --name / --type / --status                     | —      | type：0 全部；1～4 见原语义；status 支持中文  |
 | --qa / --cc                                    | —      | MIS                             |
-| --online-time-start / end / --online-time-days | 最近30天 | 默认最近 30 天，最大 30 天          |
+| --online-time-start / end / --online-time-days | 前后各30天 | 默认前后各 30 天；支持更大时间范围      |
 | --team                                         | —      | 我团队（自动用当前用户 orgId，查团队所有计划）|
 | --fst-not-pass                                 | —      | 等价 `--card-not-pass fstPlan`    |
 | --card-not-pass keys                           | —      | fstPlan,coverage,defect,…；`all` |
@@ -162,10 +162,10 @@
     └─ fsd test list [--online-time-days N] [--pretty]
 ```
 
-**时间范围限制**：
-- 默认查询最近 30 天（预计上线时间在最近 30 天内）
-- 可通过 `--online-time-days N` 指定（1-30 天，默认 30）
-- 手动指定 `--online-time-start/end` 时，范围不能超过 30 天
+**时间范围说明**：
+- 默认查询前后各 30 天（预计上线时间在 30 天前至 30 天后）
+- 可通过 `--online-time-days N` 指定（N 为正整数，默认 30）
+- 也可手动指定 `--online-time-start/end` 查询任意时间范围
 
 **权限说明**：
 - 默认只查「与我相关」的测试计划（QA/创建人/负责人/抄送人等）

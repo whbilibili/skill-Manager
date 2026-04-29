@@ -10,6 +10,7 @@
   - [createDatabase](#createdatabase)
   - [createTable](#createtable)
   - [copyTable](#copytable)
+    - [场景说明](#场景说明)
   - [listTables](#listtables)
   - [getTableMeta](#gettablemeta)
   - [queryTableData](#querytabledata)
@@ -21,6 +22,8 @@
   - [recoveryTable](#recoverytable)
   - [renameTable](#renametable)
   - [sortTable](#sorttable)
+  - [addTableColumns](#addtablecolumns)
+  - [updateColumnConfig](#updatecolumnconfig)
   - [copyTable](#copytable-1)
     - [使用场景](#使用场景)
     - [使用示例](#使用示例)
@@ -57,6 +60,10 @@
     - [使用示例](#使用示例-2)
     - [注意事项](#注意事项-2)
   - [getTableMeta 实用技巧：jq 提取列配置](#gettablemeta-实用技巧jq-提取列配置)
+    - [提取单选/多选列的可选项](#提取单选多选列的可选项)
+    - [检查人员列是否支持多人](#检查人员列是否支持多人)
+    - [查看数字/日期列的格式化规则](#查看数字日期列的格式化规则)
+    - [获取所有列 ID 和名称（用于构造 --columnIds）](#获取所有列-id-和名称用于构造---columnids)
 
 ## 通用选项
 
@@ -97,6 +104,17 @@ oa-skills citadel-database createDatabase \
     {"columnName":"负责人","columnType":1},
     {"columnName":"状态","columnType":3,"selectOptions":["待处理","进行中","已完成"]}
   ]'
+
+# 复制已有多维表格文档（仅复制结构，不含数据）
+oa-skills citadel-database createDatabase \
+  --contentTitle "项目管理（副本）" \
+  --sourceContentId "2750138424"
+
+# 复制已有多维表格文档（同时保留数据）
+oa-skills citadel-database createDatabase \
+  --contentTitle "项目管理（副本）" \
+  --sourceContentId "2750138424" \
+  --keepData true
 ```
 
 **输出**：文档 ID、表格 ID，以及后端实际返回的非空标题（若有）。
@@ -184,9 +202,53 @@ oa-skills citadel-database copyTable \
   --rowIds "100,101,102"
 ```
 
-**输出**：新表格 ID、标题、视图 ID、表格类型。复制成功后，如需在学城文档正文中展示该表格，应在 `citadel` 文档内容里插入 `:::xtable{xtableId="<tableId>"}:::`；新增节点时 `nodeId` 可省略，若编辑已有节点则保留原值。
+**输出**：新表格 ID、标题、视图 ID、表格类型。
 
 > 说明：不传 `--targetType` 时，CLI 会优先自动识别常见目标类型（`3=学城文档`、`4=多维表格`）；若目标是模板，请显式传 `--targetType 2` 或 `--targetType 5`。
+
+### 场景说明
+
+**场景 A：复制整个多维表格文档**（使用 `createDatabase`，见上方章节）
+
+```bash
+# 仅复制结构
+oa-skills citadel-database createDatabase \
+  --contentTitle "新文档标题" \
+  --sourceContentId "<原多维表格 contentId>"
+
+# 同时保留数据
+oa-skills citadel-database createDatabase \
+  --contentTitle "新文档标题" \
+  --sourceContentId "<原多维表格 contentId>" \
+  --keepData true
+```
+
+**场景 B：将数据表复制到学城文档**（目标是已有学城文档，需额外插入 `:::xtable`）
+
+```bash
+# 步骤 1：复制数据表到目标学城文档
+oa-skills citadel-database copyTable \
+  --sourceTableId "<源 tableId>" \
+  --targetParentId "<目标学城文档 contentId>" \
+  --targetType 3
+# → 得到新 tableId
+
+# 步骤 2：将表格嵌入到学城文档正文（citadel skill）
+# CitadelMD 中使用以下语法：
+# :::xtable{xtableId="<新 tableId>"}:::
+oa-skills citadel updateDocumentByMd \
+  --contentId "<目标学城文档 contentId>" \
+  --file <citadelmd文件路径>
+```
+
+**场景 C：复制数据表到另一个多维表格文档**
+
+```bash
+oa-skills citadel-database copyTable \
+  --sourceTableId "<源 tableId>" \
+  --targetParentId "<目标多维表格 contentId>" \
+  --targetType 4
+```
 
 ## listTables
 
@@ -225,9 +287,10 @@ oa-skills citadel-database getTableMeta --tableId "2750248577"
 | `--tableId` | string | ✅ | — | 表格 ID |
 | `--columnIds` | string/JSON | ❌ | 前10列 | 要查询的列 ID（逗号分隔或 JSON 数组） |
 | `--filter` | JSON | ❌ | — | 筛选条件 |
-| `--sort` | JSON | ❌ | — | 排序配置 |
+| `--sort` | JSON | ❌ | — | 排序配置，格式：`[{"columnId": 1, "desc": false}]`，**注意是 `desc` 字段（boolean），不是 `order` 字段** |
 | `--pageSize` | number | ❌ | 100 | 每页返回的行数 |
-| `--pageToken` | string | ❌ | — | 分页令牌（用于获取下一页） |
+| `--pageToken` | string | ❌ | — | 分页令牌（指定后只取该单页，不自动翻页） |
+| `--max-pages` | number | ❌ | — | 最多自动翻页页数（不指定时获取全量数据） |
 
 ```bash
 # 基础查询
@@ -245,6 +308,11 @@ oa-skills citadel-database queryTableData \
   --columnIds "1,2,3" \
   --filter '{"conjunction":"and","conditions":[{"columnId":1,"operator":"==","filterValue":["值"]}]}' \
   --sort '[{"columnId":2,"desc":true}]'
+
+# 只取前 2 页（每页 100 行，最多 200 行），不获取全量数据
+oa-skills citadel-database queryTableData \
+  --tableId "2750248577" \
+  --max-pages 2
 ```
 
 **输出**：总行数、返回行数、数据行（包含 rowId 和 cellData）。
@@ -560,6 +628,75 @@ oa-skills citadel-database copyTable \
 - `viewIds` 参数未提供时会自动使用默认值 `[1000]`（通常为表格的默认视图）
 
 **输出**：成功状态、新表格 ID、新视图 ID、复制的行数。
+
+## addTableColumns
+
+为数据表新增列。
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|---|---|---|---|---|
+| `--tableId` | string | ✅ | — | 表格 ID |
+| `--columnMetas`| JSON | ✅ | — | 新增列信息的 JSON 数组 |
+
+### `columnMetas` 格式说明
+JSON 数组，每一个元素代表一个需要新增的列，包含以下属性：
+- `columnName`: string (必填) 列名,长度限制 1-100 字符
+- `columnType`: number (必填) 列类型，取值范围：
+  - `1`: 文本
+  - `2`: 数字
+  - `3`: 单选
+  - `4`: 人员
+  - `5`: 多选
+  - `6`: 附件
+  - `7`: 日期
+  - `8`: 货币
+  - `201`: 创建人
+  - `202`: 创建时间
+  - `203`: 最后修改人
+  - `204`: 最后修改时间
+- `columnConfig`: object (可选) 列的额外配置。根据列类型不同，支持以下配置：
+  - **选项配置（单选 columnType:3、多选 columnType:5）**：`{"options": ["选项1", "选项2"]}`
+  - **人员列是否支持多选（人员 columnType:4）**：`{"multiple": true}`（默认 `false`）
+  - **日期格式化（日期 columnType:7）**：`{"formatter": "YYYY-MM-DD"}`
+    - 可选值：`YYYY/MM/DD`, `YYYY/MM/DD HH:mm`, `YYYY-MM-DD`, `YYYY-MM-DD HH:mm`, `MM-DD`, `MM/DD/YYYY`, `DD/MM/YYYY`
+  - **数字格式化（数字 columnType:2、货币 columnType :8）**：`{"formatter": "0.00"}`
+    - 可选值：`""` (无格式), `"0"` (整数), `"0.0"`, `"0.00"`, `"0.000"`, `"0.0000"`, `"0,0"`, `"0,0.0"`, `"0,0.00"`, `"0,0.000"`, `"0,0.0000"`, `"0%"`, `"0.00%"`
+  - **货币代码（货币 columnType:8）**：`{"currencyCode": "CNY"}`
+    - `currencyCode` 可选值：`CNY`, `USD`, `EUR`, `GBP`, `AED`, `AUD`, `BHD`, `BRL`, `CAD`, `CHF`, `HKD`, `INR`, `IDR`, `JPY`, `KRW`, `KWD`, `MOP`, `MXN`, `MYR`, `OMR`, `PHP`, `PLN`, `QAR`, `RUB`, `SAR`, `SGD`, `THB`, `TRY`, `TWD`, `VND`
+
+```bash
+# 新增一个普通文本列、带选项的单选列、以及日期列和货币列
+oa-skills citadel-database addTableColumns \
+  --tableId "1234567890" \
+  --columnMetas '[
+  {"columnName": "备注", "columnType": 1}, 
+  {"columnName": "状态", "columnType": 3, "columnConfig": {"options": ["未开始", "进行中"]}}, 
+  {"columnName": "日期", "columnType": 7, "columnConfig": {"formatter": "YYYY-MM-DD"}}, 
+  {"columnName": "金额", "columnType": 8, "columnConfig": {"currencyCode": "CNY"}}]
+'
+```
+
+**输出**：成功状态、版本号、新列的 ID 列表。
+
+## updateColumnConfig
+
+修改数据表中已有列的配置，当前只支持修改列名，暂不支持修改列类型和列配置。
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|---|---|---|---|---|
+| `--tableId` | string | ✅ | — | 表格 ID |
+| `--columnId` | string | ✅ | — | 列 ID |
+| `--columnName`| string | ❌ | — | 要修改成的新列名 |
+
+```bash
+# 重命名已有列
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "3" \
+  --columnName "新状态名"
+```
+
+**输出**：成功状态、版本号。
 
 ## 列类型说明
 

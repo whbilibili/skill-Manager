@@ -8,9 +8,9 @@ description: >-
   不适用于：前端项目规划（使用 frontend-architect）、代码审查（使用 coding-reviewer）、
   Bug 记录与分析（使用 issue-triage）、已有文档的同步对齐（使用 doc-sync）。
 metadata:
-  version: "2.1.0"
+  version: "3.0.0"
   author: "wanghong52"
-  changelog: "v2.1.0 — 重新定义 active/ 为按需并行工作区（串行为主+并行可选）；新增并行模式触发规则和 plan_path 启用条件；明确串行模式下不使用 active/ 目录"
+  changelog: "v3.0.0 — 新增 Step 0 规模评估与模块分治决策；支持模块级 feature-list 分片（modules/ 目录）；支持跨会话分轮拆解；全局索引瘦身"
 ---
 
 # Backend Architect Skill
@@ -35,7 +35,9 @@ metadata:
 │
 └── docs/
     ├── exec-plans/
-    │   ├── feature-list.json          ← 全局任务状态机（含 plan_path 字段）
+    │   ├── feature-list.json          ← 全局任务状态机（单体模式为完整清单，模块化模式为索引）
+    │   ├── modules/                   ← 模块级任务清单目录（仅模块化模式时启用）
+    │   │   └── [module-name].json     ← 每个模块的完整 Task 列表（含 contracts）
     │   ├── progress.txt               ← 会话交接棒 ≤200 行
     │   ├── issues.json                ← 全局 Bug 池（含 related_task 字段）
     │   ├── tech-debt-tracker.md       ← 技术债追踪
@@ -66,7 +68,114 @@ metadata:
 
 ## 执行工作流
 
-收到需求后，**严格按 Step 1 → 6 顺序执行**，每步输出对应产物后再推进到下一步。
+收到需求后，**严格按 Step 0 → 6 顺序执行**，每步输出对应产物后再推进到下一步。
+
+### Step 0：规模评估与模块分治决策（前置于所有产物生成）
+
+在开始技术栈决策和任务拆解之前，先对需求规模做快速评估，决定使用**单体模式**还是**模块化模式**。
+
+#### 0-A：快速规模评估
+
+阅读完整需求后，按以下维度打分（每项 0-3 分）：
+
+| 维度 | 0 分 | 1 分 | 2 分 | 3 分 |
+|------|------|------|------|------|
+| **业务域数量** | 1 个 | 2-3 个 | 4-5 个 | 6+ 个 |
+| **预估 Task 数** | ≤5 | 6-12 | 13-25 | 26+ |
+| **数据库表数** | ≤3 | 4-8 | 9-15 | 16+ |
+| **独立 API 模块数** | 1 | 2-3 | 4-5 | 6+ |
+| **团队/会话并行需求** | 无 | 可能 | 明确要求 | 强制要求 |
+
+**总分判定：**
+
+| 总分 | 模式 | 行为 |
+|------|------|------|
+| 0-5 | **单体模式** | 与现有流程完全一致，feature-list.json 为单文件完整清单 |
+| 6-9 | **建议模块化** | 向用户说明模块化的收益，**询问用户是否采用模块化模式** |
+| 10+ | **强制模块化** | 直接采用模块化模式，通知用户分治方案 |
+
+> **询问话术模板**（6-9 分时使用）：
+> "该需求涉及 N 个业务域、预估 M 个 Task。我建议按业务域拆分为 X 个模块（[模块A]、[模块B]、...），每个模块独立一个 feature-list 文件。好处是：(1) 降低 Coding Agent 每次读取的 token 消耗；(2) 支持多会话并行开发不同模块；(3) 架构师可以分轮拆解，避免上下文溢出。你觉得这样拆分合适吗？还是有其他划分方式的偏好？"
+
+#### 0-B：模块划分原则（模块化模式时执行）
+
+1. **按业务域切，不按技术层切**。"用户认证" 是好的模块，"所有 Controller" 不是
+2. **单模块 Task 数控制在 5-10 个**。超过 10 个说明粒度不够细，继续拆；不到 3 个考虑合并
+3. **跨模块依赖最小化**。如果两个模块之间有 5 个以上依赖，它们可能应该是同一个模块
+4. **公共基础设施单独成模块**。数据库初始化、认证配置、中间件等放在 `infra` 模块，其他模块依赖它但互不依赖
+5. **每个模块必须能独立验证**。模块内的 Task 组合起来应构成一个可独立测试的业务流程
+
+#### 0-C：模块化模式的产物调整
+
+**全局索引 feature-list.json 瘦身为索引文件**，只保留元数据和状态摘要，不含 contracts 细节：
+
+```json
+{
+  "project": "项目名称",
+  "prd": "docs/product-specs/PRD.md",
+  "created_at": "YYYY-MM-DD",
+  "mode": "modular",
+  "module_index": [
+    {
+      "module": "模块名",
+      "file": "docs/exec-plans/modules/模块名.json",
+      "description": "模块描述（一句话）",
+      "task_count": 5,
+      "completed": 0,
+      "depends_on": ["infra"]
+    }
+  ],
+  "tasks_summary": [
+    {
+      "task_id": "AUTH-001",
+      "module": "user-auth",
+      "description": "简短描述",
+      "status": "pending",
+      "priority": "1-High"
+    }
+  ],
+  "cross_module_dependencies": [
+    { "from": "ORDER-003", "to": "AUTH-002", "reason": "下单需要鉴权 Token" }
+  ]
+}
+```
+
+**模块级文件** `docs/exec-plans/modules/[module-name].json` 的 Schema 与单体模式的 feature-list.json 完全一致（包含完整的 tasks 数组和 contracts），只是范围限定在本模块。
+
+> **单体模式下**：`feature-list.json` 保持原有完整 Schema 不变，`modules/` 目录为空或不创建。`mode` 字段填 `"monolithic"` 或省略。
+
+#### 0-D：跨会话分轮拆解协议（模块化模式时生效）
+
+当模块数量较多（≥4 个）时，架构师**不需要在一个会话中完成所有模块的拆解**。分轮拆解协议如下：
+
+**第一轮（全局视角，当前会话完成）：**
+1. 完成 Step 0 规模评估
+2. 完成 Step 1 技术栈决策
+3. 输出全局索引 feature-list.json（含所有模块的 module_index，但 tasks_summary 中只有骨架——task_id + description + status，无 contracts）
+4. 完成 `infra` 基础设施模块的完整拆解（因为其他模块都依赖它）
+5. 输出 progress.txt，在 [Next Steps] 中明确列出「下一轮需要拆解的模块名」
+6. 完成 AGENTS.md、ARCHITECTURE.md 等文档骨架
+
+**后续轮次（每轮一个会话，每次拆解 1-3 个模块）：**
+1. 读取全局索引 feature-list.json + ARCHITECTURE.md（获取架构约束）
+2. 拆解目标模块，输出 `docs/exec-plans/modules/[module-name].json`
+3. 同步更新全局索引中对应模块的 task_count 和 tasks_summary
+4. 更新 progress.txt 的 [Current Focus] 和 [Next Steps]
+
+> **关键约束**：后续轮次只需要加载全局索引 + ARCHITECTURE.md + 目标模块文件，**不需要读取其他模块的详细 Task**。这确保了每轮拆解的上下文消耗可控。
+
+#### 0-E：Coding Agent 的模块化加载协议
+
+模块化模式下，AGENTS.md 的「上下文加载顺序」区块中 feature-list.json 的加载方式变更为：
+
+```
+| 5 | `docs/exec-plans/feature-list.json`（全局索引） | 定位当前 Task 所属模块 | ≤200 行 |
+| 5.1 | `docs/exec-plans/modules/[module].json` 当前 Task 的 `contracts` | 模块级任务契约 | 按需 |
+```
+
+**规则**：Coding Agent 读取全局索引后，**只加载当前 in_progress Task 所属模块的文件**，不读取其他模块的 JSON。如需跨模块信息（如依赖另一个模块的 API），通过 `cross_module_dependencies` 定位后，只读目标模块中被依赖的那一个 Task 的 contracts。
+
+---
 
 ### Step 1：技术栈决策与目录规约
 
@@ -76,6 +185,14 @@ metadata:
 2. **项目目录树摘要**（只展示 Controller、Service、DAO、Model、Config、Middleware 等后端分层骨架）
 
 ### Step 2：产物 A — `docs/exec-plans/feature-list.json`
+
+根据 Step 0 的决策结果选择产物模式：
+
+- **单体模式**：直接输出完整的 feature-list.json，Schema 与下方定义一致
+- **模块化模式**：
+  1. 先输出全局索引 feature-list.json（Step 0-C 中定义的瘦身 Schema）
+  2. 再逐模块输出 `docs/exec-plans/modules/[module-name].json`（Schema 与下方单体模式一致，但范围限定在本模块）
+  3. 如果是跨会话分轮拆解（Step 0-D），本轮只输出 infra 模块 + 全局索引骨架
 
 输出合法 JSON，遵循以下 Schema，每个 task 必须是原子切片（细化到具体方法或 SQL），严禁出现「开发后端」这类宏观描述：
 
@@ -206,7 +323,8 @@ metadata:
 | 2 | `ARCHITECTURE.md` | 架构约束全集，红线不得违反 | 无限制 |
 | 3 | `docs/SECURITY.md` | 安全红线，P0 零容忍 | 无限制 |
 | 4 | `docs/caveats.md` | 已知陷阱，避免重蹈覆辙 | 无限制 |
-| 5 | `docs/exec-plans/feature-list.json` 当前 Task 的 `contracts` | 本次任务契约 | — |
+| 5 | `docs/exec-plans/feature-list.json` | 全局索引或完整清单（取决于模式） | 单体无限制 / 模块化≤200行 |
+| 5.1 | `docs/exec-plans/modules/[module].json` 当前 Task 的 `contracts` | 模块级任务契约（仅模块化模式） | 按需 |
 | 6 | `docs/exec-plans/active/[task_id]/plan.md` | 并行工作区执行计划（仅并行模式下存在） | 按需 |
 | 7 | `metadata.files_affected` 列出的具体文件 | 最后才读源码 | 按需 |
 
@@ -228,6 +346,7 @@ metadata:
 | `docs/exec-plans/progress.txt` | 会话交接棒（≤200 行） | session-handoff 维护 |
 | `docs/exec-plans/issues.json` | 全局 Bug 池 | issue-triage 维护 |
 | `docs/exec-plans/tech-debt-tracker.md` | 技术债追踪 | 人工 + issue-triage |
+| `docs/exec-plans/modules/*.json` | 模块级任务清单（仅模块化模式） | 架构师分轮拆解 |
 | `docs/exec-plans/active/` | 并行工作区（串行模式下为空） | 架构师创建目录，Worker 写入，结项时归档 |
 ```
 
@@ -240,14 +359,15 @@ metadata:
 2. `PLANS.md` — 项目级长期规划 & 里程碑（空骨架，根目录）
 3. `docs/caveats.md` — 踩坑永久档案
 4. `docs/exec-plans/active/.gitkeep` — 并行工作区目录（初始为空，仅多会话并行时启用）
-5. `docs/exec-plans/completed/.gitkeep` — 归档目录
-6. `docs/exec-plans/tech-debt-tracker.md` — 技术债追踪（空骨架）
-7. `docs/design-docs/index.md` — 设计文档目录（空骨架）
-8. `docs/product-specs/index.md` — 产品规格目录（空骨架）
-9. `docs/QUALITY_SCORE.md` — 质量评分面板（空骨架）
-10. `docs/RELIABILITY.md` — 可靠性 & SLO 约定（空骨架）
-11. `docs/SECURITY.md` — 安全约束（空骨架，初始化后填写项目安全红线）
-12. `docs/PRODUCT_SENSE.md` — 产品感知 & 用户价值（空骨架）
+5. `docs/exec-plans/modules/.gitkeep` — 模块级任务清单目录（模块化模式时使用）
+6. `docs/exec-plans/completed/.gitkeep` — 归档目录
+7. `docs/exec-plans/tech-debt-tracker.md` — 技术债追踪（空骨架）
+8. `docs/design-docs/index.md` — 设计文档目录（空骨架）
+9. `docs/product-specs/index.md` — 产品规格目录（空骨架）
+10. `docs/QUALITY_SCORE.md` — 质量评分面板（空骨架）
+11. `docs/RELIABILITY.md` — 可靠性 & SLO 约定（空骨架）
+12. `docs/SECURITY.md` — 安全约束（空骨架，初始化后填写项目安全红线）
+13. `docs/PRODUCT_SENSE.md` — 产品感知 & 用户价值（空骨架）
 
 > ⚠️ AGENTS.md 的文档索引区块必须包含以上所有文件的指针条目。
 
@@ -550,6 +670,13 @@ except FileNotFoundError as e:
 - [ ] 如果存在并行任务（`plan_path` 非 null），对应的 `active/[task-name]/` 目录是否已创建并包含 `plan.md` 和 `progress.txt`？
 - [ ] 如果所有 `plan_path` 为 null（串行模式），`active/` 目录是否保持为空？
 - [ ] `AGENTS.md` 的「文档索引」区块是否包含以上所有文件的指针条目？
+- [ ] **（模块化模式）** `feature-list.json` 的 `mode` 字段是否为 `"modular"`？
+- [ ] **（模块化模式）** `module_index` 中每个模块是否都有对应的 `docs/exec-plans/modules/[name].json` 文件（已拆解的模块）或明确标注「待下轮拆解」？
+- [ ] **（模块化模式）** `cross_module_dependencies` 是否完整列出了所有跨模块依赖？
+- [ ] **（模块化模式）** 每个模块的 Task 数是否在 5-10 个范围内？
+- [ ] **（模块化模式）** `infra` 基础设施模块是否在第一轮就已完整拆解？
+- [ ] **（跨会话拆解）** `progress.txt` 的 [Next Steps] 是否明确列出了下一轮需要拆解的模块名？
+- [ ] **（首次初始化 + 模块化模式）** `docs/exec-plans/modules/` 目录是否已创建？
 
 ---
 

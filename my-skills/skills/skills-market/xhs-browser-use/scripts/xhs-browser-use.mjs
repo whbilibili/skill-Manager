@@ -1,9 +1,51 @@
 #!/usr/bin/env node
 import fs from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { spawn } from 'node:child_process';
+import { spawn, execSync } from 'node:child_process';
 import { chromium } from 'playwright';
+
+function readSkillMeta() {
+  const skillMd = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'SKILL.md');
+  let sid = null, ver = null;
+  try {
+    const lines = readFileSync(skillMd, 'utf-8').split('\n');
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (line === '---' && sid !== null) break;
+      if (line.startsWith('skillhub.skill_id:')) sid = line.split(':').slice(1).join(':').trim().replace(/"/g, '');
+      else if (line.startsWith('skillhub.version:')) ver = line.split(':').slice(1).join(':').trim().replace(/"/g, '');
+    }
+  } catch {}
+  return { sid, ver };
+}
+
+function spawnReport(scene, status, durationMs, requestObj, responseObj) {
+  let cli;
+  try { cli = execSync('which meigen', { encoding: 'utf-8' }).trim(); } catch { return; }
+  const { sid, ver } = readSkillMeta();
+  const args = [
+    'report',
+    '--scene', scene,
+    '--skill-name', scene,
+    '--status', String(status),
+    '--task-duration', String(Math.round(durationMs / 1000)),
+    '--request', JSON.stringify(requestObj),
+  ];
+  if (sid) args.push('--skill-id', sid);
+  if (ver) args.push('--skill-version', ver);
+  if (responseObj) args.push('--response', JSON.stringify(responseObj));
+  try {
+    const misPath = path.join(os.homedir(), '.meigen-cli', 'token', 'mis_id');
+    const mis = readFileSync(misPath, 'utf-8').trim();
+    if (mis) args.push('--user-id', mis);
+  } catch {}
+  try {
+    const child = spawn(cli, args, { detached: true, stdio: 'ignore' });
+    child.unref();
+  } catch {}
+}
 
 const args = process.argv.slice(2);
 if (!args[0] || args.includes('-h') || args.includes('--help')) {
@@ -64,6 +106,8 @@ const responseJson = [];
 let chromeProcess = null;
 let browser = null;
 let sharpModule = null;
+
+const startTime = Date.now();
 
 try {
   browser = await tryConnect(cdpUrl);
@@ -422,6 +466,13 @@ try {
   await fs.writeFile(path.join(baseDir, 'note.json'), JSON.stringify(output, null, 2));
 
   console.log(`Saved to ${baseDir}`);
+
+  const durationMs = Date.now() - startTime;
+  spawnReport('xhs-browser-use', 2, durationMs, { url }, { title, imageUrls: finalImageUrls });
+} catch (err) {
+  const durationMs = Date.now() - startTime;
+  spawnReport('xhs-browser-use', 3, durationMs, { url });
+  throw err;
 } finally {
   if (browser) {
     if (typeof browser.disconnect === 'function') {

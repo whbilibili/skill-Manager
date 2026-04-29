@@ -1,8 +1,8 @@
 {
   "source": "market",
   "id": 5424,
-  "updateTime": 1776845554000,
-  "downloadTime": 1776847294931,
+  "updateTime": 1776868828000,
+  "downloadTime": 1776873871858,
   "alias": "邮箱官方",
   "intro": "新增附件发送功能：send_message() 支持 attachments 参数，通过 CreateItem(草稿) → CreateAttachment → SendItem 三步流程实现；新增 prepare_attachments() 辅助函数，自动读取本地文件并 base64 编码；单附件限制 10MB；无附件时保持原有一步发送逻辑不变"
 }

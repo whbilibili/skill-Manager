@@ -1,0 +1,233 @@
+name: "HomeStock"
+philosophy: "Clean domestic order. A warm, approachable management tool that treats household inventory like a well-organized pantry — everything has its place, its quantity, and its freshness. The tension is between data density (real utility) and visual lightness (home comfort). Mint-green as the single accent anchors calm confidence; multi-hue category colors add life without chaos."
+primary_mode: "light"
+brand_domain: "household inventory management / home supplies tracking"
+brand_type: "ui-rich"
+mono_for_code: false
+mono_for_metrics: true
+
+# ── PRIMITIVES ── Raw scales derived from brand analysis
+primitives:
+  colors:
+    neutral:    # Cool-tinted grays to match the clean, organized feel
+      50:  "#F7F8FA"
+      100: "#F0F2F5"
+      200: "#E4E7EC"
+      300: "#D0D5DD"
+      400: "#98A2B3"
+      500: "#667085"
+      600: "#475467"
+      700: "#344054"
+      800: "#1D2939"
+      900: "#101828"
+      950: "#0C111D"
+    brand:      # Fresh mint-green, 500 = primary
+      50:  "#E8F5E9"
+      100: "#C8E6C9"
+      200: "#A5D6A7"
+      300: "#81C784"
+      400: "#66BB6A"
+      500: "#43A047"
+      600: "#388E3C"
+      700: "#2E7D32"
+      800: "#1B5E20"
+      900: "#114A16"
+      950: "#0A2E0E"
+    red:    { 50: "#FEF3F2", 500: "#E53935", 900: "#7A271A" }
+    green:  { 50: "#E8F5E9", 500: "#43A047", 900: "#114A16" }
+    amber:  { 50: "#FFF8E1", 500: "#FF9800", 900: "#7A4100" }
+    blue:   { 50: "#E3F2FD", 500: "#4A90D9", 900: "#1A3A5C" }
+    purple: { 50: "#F3E5F5", 500: "#9C27B0", 900: "#4A0E5C" }
+    pink:   { 50: "#FCE4EC", 500: "#E91E63", 900: "#6D0A2E" }
+  spacing: [0, 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96]
+  radii: [0, 4, 8, 12, 16, 999]
+
+# ── SEMANTIC TOKENS ── Roles that reference primitives
+tokens:
+  colors:
+    light:
+      background:      "{neutral.100}"    # #F0F2F5
+      surface1:        "#FFFFFF"
+      surface2:        "{neutral.50}"     # #F7F8FA
+      surface3:        "{neutral.200}"    # #E4E7EC
+      border:          "{neutral.200}"    # #E4E7EC
+      border_visible:  "{neutral.300}"    # #D0D5DD
+      text1:           "{neutral.900}"    # #101828
+      text2:           "{neutral.600}"    # #475467
+      text3:           "{neutral.500}"    # #667085
+      text4:           "{neutral.400}"    # #98A2B3
+      accent:          "{brand.500}"      # #43A047
+      accent_subtle:   "{brand.50}"       # #E8F5E9
+    dark:
+      background:      "{neutral.950}"    # #0C111D
+      surface1:        "{neutral.900}"    # #101828
+      surface2:        "{neutral.800}"    # #1D2939
+      surface3:        "{neutral.700}"    # #344054
+      border:          "{neutral.800}"    # #1D2939
+      border_visible:  "{neutral.700}"    # #344054
+      text1:           "{neutral.50}"     # #F7F8FA
+      text2:           "{neutral.400}"    # #98A2B3
+      text3:           "{neutral.500}"    # #667085
+      text4:           "{neutral.600}"    # #475467
+      accent:          "{brand.400}"      # #66BB6A
+      accent_subtle:   "{brand.950}"      # #0A2E0E
+    success: "{green.500}"
+    warning: "{amber.500}"
+    error:   "{red.500}"
+
+  spacing:
+    2xs: 2
+    xs:  4
+    sm:  8
+    md:  16
+    lg:  24
+    xl:  32
+    2xl: 48
+    3xl: 64
+    4xl: 96
+
+  radii:
+    element:   4       # small controls, checkboxes, icons
+    control:   8       # buttons, inputs, toggles
+    component: 12      # cards, panels
+    container: 16      # modals, sheets
+    pill:      999     # pills, tags, search bar
+
+  typography:
+    display: { family: "Noto Sans SC", size: "28px", weight: 600, line_height: 1.2 }
+    body:    { family: "Noto Sans SC", size: "14px", weight: 400, line_height: 1.5 }
+    mono:    { family: "JetBrains Mono", size: "13px", weight: 400 }
+
+  elevation:
+    strategy: "subtle"
+    shadow_1: "0 1px 3px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04)"
+    shadow_2: "0 4px 12px rgba(16,24,40,0.08), 0 2px 4px rgba(16,24,40,0.04)"
+    shadow_3: "0 12px 32px rgba(16,24,40,0.12), 0 4px 8px rgba(16,24,40,0.06)"
+
+  motion:
+    personality: "smooth"
+    easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+    duration_fast: "150ms"
+    duration_normal: "250ms"
+    duration_slow: "350ms"
+
+  hero_stage:
+    preset: "flat-blank"
+    observed_style:
+      description: "No hero stage — this is a dashboard/management tool. The identity lives in the clean white cards floating on a cool gray canvas."
+      where_used: []
+    background:
+      medium: "absent"
+      color_mode: "brand-tinted-neutral"
+      saturation: "flat"
+      light_source: "ambient"
+      falloff: "soft"
+      vignette: "off"
+      texture: "clean"
+      motion: "static"
+      intensity: "subtle"
+      safe_zone: "full-bleed"
+      color_palette: ["#43A047", "#F0F2F5"]
+    hero:
+      subject: "none"
+    relation:
+      type: "flat"
+      bleed: 0
+    disclaimer: "No hero stage — tool UI identity."
+
+  iconography:
+    observed_style:
+      description: "Clean 1.5px outline icons with rounded terminals. Friendly, approachable consumer-app icons. Each nav icon sits in a consistent visual weight, neither too thin nor too bold."
+      stroke_weight: "regular (~1.5px)"
+      corner_treatment: "soft"
+      fill_style: "outline"
+      form_language: "humanist"
+      visual_density: "balanced"
+    fallback_kit:
+      name: "Phosphor"
+      weight: "regular"
+      match_score: "high"
+      match_reasoning: "Phosphor regular matches the observed 1.5px stroke weight, rounded terminals, and humanist form language perfectly. The warm, friendly personality aligns with HomeStock's consumer-app feel. Lucide would be too geometric/cold for a household management tool."
+      cdn: "https://unpkg.com/@phosphor-icons/web@2/src/regular/style.css"
+      icon_class_prefix: "ph ph-"
+    disclaimer: "Icons in the generated preview are a best-match fallback from the Phosphor kit. The brand's actual icons are proprietary and not redistributed with this skill."
+
+  # Category colors — unique to HomeStock's multi-category system
+  category_colors:
+    food_beverage:    { color: "#43A047", bg: "#E8F5E9", label: "食品饮料" }
+    daily_supplies:   { color: "#4A90D9", bg: "#E3F2FD", label: "日用品" }
+    cleaning:         { color: "#FF9800", bg: "#FFF8E1", label: "清洁用品" }
+    personal_care:    { color: "#E91E63", bg: "#FCE4EC", label: "个人护理" }
+    health_medicine:  { color: "#9C27B0", bg: "#F3E5F5", label: "药品保健" }
+    other:            { color: "#7C4DFF", bg: "#EDE7F6", label: "其他" }
+
+components:
+  button_primary:
+    source: "observed"
+    background: "{brand.500}"
+    color: "#FFFFFF"
+    padding: "10px 20px"
+    radius: "{radii.control}"
+    font_weight: 500
+    hover: { background: "{brand.600}" }
+  button_ghost:
+    source: "observed"
+    background: "transparent"
+    color: "{brand.500}"
+    border: "1px solid {brand.500}"
+    padding: "6px 16px"
+    radius: "{radii.control}"
+    font_weight: 500
+    hover: { background: "{brand.50}" }
+  stat_card:
+    source: "observed"
+    background: "#FFFFFF"
+    radius: "{radii.component}"
+    padding: "20px"
+    icon_bg_size: "48px"
+    icon_bg_radius: "{radii.component}"
+    shadow: "{elevation.shadow_1}"
+  list_card:
+    source: "observed"
+    background: "#FFFFFF"
+    radius: "{radii.component}"
+    padding: "20px 24px"
+    shadow: "{elevation.shadow_1}"
+  sidebar_nav:
+    source: "observed"
+    background: "#FFFFFF"
+    active_bg: "{brand.500}"
+    active_text: "#FFFFFF"
+    inactive_text: "{neutral.600}"
+    item_radius: "{radii.control}"
+    item_padding: "10px 16px"
+  quick_action_button:
+    source: "observed"
+    size: "64px"
+    icon_bg_radius: "{radii.component}"
+    label_size: "12px"
+  donut_chart:
+    source: "observed"
+    size: "180px"
+    stroke_width: "32px"
+    center_text_size: "28px"
+  line_chart:
+    source: "observed"
+    stroke_width: "2px"
+    dot_size: "6px"
+    fill_opacity: "0.1"
+
+app_screen:
+  archetype: "dashboard"
+  frame: "browser"
+  frame_params:
+    url: "app.homestock.cn/dashboard"
+    title: "HomeStock — 首页"
+  content_seed: "家庭物资管理仪表盘。左侧导航含物资管理、库存预警、采购清单等模块。主面板展示统计卡片（物资总数、库存预警、即将过期、本月支出），库存预警列表，物资分类饼图，最近使用记录，即将过期清单，快捷操作，本周消耗趋势折线图。"
+  required_tokens_checklist:
+    - "background, surface1, surface2, surface3, border, border_visible"
+    - "text1, text2, text3, text4"
+    - "accent, accent_subtle, success, warning, error"
+    - "all typography scale tokens"
+    - "all spacing tokens used in components"
+    - "category colors for donut chart and category labels"

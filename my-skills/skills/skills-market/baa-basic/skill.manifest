@@ -1,0 +1,15 @@
+skill-manifest-version: 1
+skill-id: 5179a5b244d80b7edcf8d052e6c201b97daba95b2e910e154f44de5307df525c
+
+files:
+  e69f447de9f9467b4c49d9d8acac8802c9cb3e1073f9e66bfe48272d50e33b1f  SKILL.md
+  d985a6a2c58268846674854e96a3222a30d116a39a19e3047f98ecdf9f9a4145  references/analyze.md
+  2471b876e1195dce610635a8046c9874a036251132701ab94077b8a00cfc2cec  references/auth.md
+  54ec48a1e46f7f3904df9b5eb336065e707a1379d970442f5c93056ed80217bb  references/commands.md
+  795219f676a7c9fb8c03b9ec2ab1fb09ba651ab651dce1ec5e621047f2263b5d  references/gray-release.md
+  5cd46f4fda9e9a9a7f510067769d40b0a0dad83f278022330d3ad950dd82dc28  references/output.md
+  ac325c1e671ac5441677395a779313063c7a9e03fc5faceba7622e497bebe999  references/plan.md
+  7809bbfcd47ee16afd68feba971f6fed231bd3ab26525b04132c4d42227e5a50  scripts/call_ba_agent.py
+  a8e421ca59beaec07e67b2de046b4f216d1273d9dd1521c37936a83953f0c9f4  scripts/inject-ba-cookie-moa.sh
+  09de936df182c51e95369c59121224b84d82e1e8e10cb579eba3ab79a7a49f51  scripts/inject-ba-cookie-supabase-ciba.sh
+  91cad28bbe3153382688f910be686e4cb237eae2168e352d34a89988b76da7e5  scripts/read-env.sh

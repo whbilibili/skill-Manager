@@ -1,9 +1,9 @@
 skill-manifest-version: 1
-skill-id: 32cb5b37b54f2c6d87ab16b96171419db14f8f9768344d2183c65e0c143986b4
+skill-id: 190d9de493af13cd614e5f666cc699e1d847d676fa3fd160920fb1e06684def0
 
 files:
   b5a32c7b09e2130a4698f87b6866301f52fd8372ad3efa83a0db06deeba86afa  REVIEW_AND_IMPROVEMENT_PLAN.md
-  567c8ba813b59f96c9100ce625af6cfc9890e704133edb17fd81f5830cc925ea  SKILL.md
+  b7da4ebee2fcaa5c71c49c6804cb1fccf69281fd204d8fcbca7b2f208379e110  SKILL.md
   b7820b1487009ba527e0971fe286d6cd7ac49a7639ce9069766ea56b9b802848  knowledge/ASYNC_PATTERNS.md
   58490b561a68a147479adf134334a21402d504cfafedccad8eae8ae04e877e08  knowledge/CODE_DESIGN.md
   d30e77a9cf60d1fd01d826c7099d569e88f9422b8fcca3b86c15f53f78d90f1f  knowledge/CRITICAL_CONCERNS.md
@@ -25,4 +25,4 @@ files:
   5cdffea7f25b039bd8a8b08b5af2b12a0009e052d8b769743a7c919a4ee8afef  scripts/cr-progress.js
   5b6e4aeef22d7a4e2573db71e76355a43e6cde2c2f349e45c6e29f5783e062b6  scripts/index.js
   8c5def441b7afe5bfc9e26af49cf6efa196902714cdb7e504a1b50e977e02532  scripts/package.json
-  3e85864b2111c9b2ae55825670bfb08bc910aa15da67663d57ed068811c72e2a  templates/review-report.md
+  e37d2611ba741fcd58c394760e7b144a8554d55d97b8a09b5b3a2e451273cc8d  templates/review-report.md

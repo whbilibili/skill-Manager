@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeStock — App Screen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2/src/regular/style.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root, [data-theme="light"] {
+      --background: #F0F2F5; --surface1: #FFFFFF; --surface2: #F7F8FA; --surface3: #E4E7EC;
+      --border: #E4E7EC; --border-visible: #D0D5DD;
+      --text1: #101828; --text2: #475467; --text3: #667085; --text4: #98A2B3;
+      --accent: #43A047; --accent-subtle: #E8F5E9;
+      --success: #43A047; --success-bg: #E8F5E9;
+      --warning: #FF9800; --warning-bg: #FFF8E1;
+      --error: #E53935; --error-bg: #FEF3F2;
+      --cat-food: #43A047; --cat-food-bg: #E8F5E9;
+      --cat-daily: #4A90D9; --cat-daily-bg: #E3F2FD;
+      --cat-cleaning: #FF9800; --cat-cleaning-bg: #FFF8E1;
+      --cat-personal: #E91E63; --cat-personal-bg: #FCE4EC;
+      --cat-health: #9C27B0; --cat-health-bg: #F3E5F5;
+      --cat-other: #7C4DFF; --cat-other-bg: #EDE7F6;
+      --font-display: "Noto Sans SC", "PingFang SC", sans-serif;
+      --font-body: "Noto Sans SC", "PingFang SC", sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+      --shadow-1: 0 1px 3px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04);
+      --shadow-2: 0 4px 12px rgba(16,24,40,0.08), 0 2px 4px rgba(16,24,40,0.04);
+      --chrome-bg: #E8EAED;
+      --chrome-tab: #FFFFFF;
+      --chrome-text: #5F6368;
+      --chrome-dots-red: #FF5F57;
+      --chrome-dots-yellow: #FFBD2E;
+      --chrome-dots-green: #27C93F;
+    }
+    [data-theme="dark"] {
+      --background: #0C111D; --surface1: #101828; --surface2: #1D2939; --surface3: #344054;
+      --border: #1D2939; --border-visible: #344054;
+      --text1: #F7F8FA; --text2: #98A2B3; --text3: #667085; --text4: #475467;
+      --accent: #66BB6A; --accent-subtle: #0A2E0E;
+      --success: #43A047; --success-bg: #0A2E0E;
+      --warning: #FF9800; --warning-bg: #3D2200;
+      --error: #E53935; --error-bg: #3D0D0D;
+      --cat-food-bg: #0A2E0E; --cat-daily-bg: #0D1F33; --cat-cleaning-bg: #3D2200;
+      --cat-personal-bg: #3D0D1F; --cat-health-bg: #2A0A33; --cat-other-bg: #1A0D33;
+      --shadow-1: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-2: 0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
+      --chrome-bg: #1A1D21;
+      --chrome-tab: #2D3035;
+      --chrome-text: #9AA0A6;
+    }
+
+    html, body { font-family: var(--font-body); background: var(--background); color: var(--text1); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+    /* ── Browser Frame ── */
+    .browser-frame { max-width: 1280px; margin: 32px auto; border-radius: 12px; overflow: hidden; box-shadow: 0 24px 80px rgba(16,24,40,0.18), 0 8px 24px rgba(16,24,40,0.1); }
+
+    .browser-chrome { background: var(--chrome-bg); padding: 0; }
+    .chrome-titlebar { display: flex; align-items: center; padding: 12px 16px; gap: 8px; }
+    .chrome-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .chrome-dot--red { background: var(--chrome-dots-red); }
+    .chrome-dot--yellow { background: var(--chrome-dots-yellow); }
+    .chrome-dot--green { background: var(--chrome-dots-green); }
+    .chrome-tabs { display: flex; align-items: flex-end; padding: 0 12px; gap: 2px; margin-top: -4px; }
+    .chrome-tab { background: var(--chrome-tab); padding: 8px 16px; border-radius: 8px 8px 0 0; font-size: 12px; color: var(--chrome-text); display: flex; align-items: center; gap: 6px; max-width: 240px; }
+    .chrome-tab i { font-size: 14px; color: var(--accent); }
+    .chrome-url-bar { display: flex; align-items: center; margin: 0 12px 8px; padding: 6px 12px; background: var(--chrome-tab); border-radius: 20px; font-size: 12px; color: var(--chrome-text); gap: 6px; }
+    .chrome-url-bar i { font-size: 14px; }
+
+    /* ── App Layout ── */
+    .app-viewport { background: var(--background); display: flex; flex-direction: column; height: 680px; }
+
+    /* Top Bar */
+    .app-topbar { height: 64px; background: var(--surface1); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 16px; flex-shrink: 0; }
+    .topbar-brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: var(--text1); }
+    .topbar-brand-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; }
+    .topbar-search { flex: 1; max-width: 400px; margin-left: 24px; height: 40px; background: var(--surface2); border-radius: 999px; border: none; padding: 0 16px; display: flex; align-items: center; gap: 8px; color: var(--text3); font-size: 13px; }
+    .topbar-search i { font-size: 18px; }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+    .topbar-notif { position: relative; font-size: 22px; color: var(--text2); cursor: pointer; }
+    .topbar-notif-badge { position: absolute; top: -4px; right: -6px; background: var(--error); color: #fff; font-size: 10px; font-weight: 600; min-width: 16px; height: 16px; border-radius: 999px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+    .topbar-avatar { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+
+    /* Body Layout */
+    .app-body { display: flex; flex: 1; overflow: hidden; }
+
+    /* Sidebar */
+    .app-sidebar { width: 220px; background: var(--surface1); border-right: 1px solid var(--border); padding: 16px 12px; flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 150ms; position: relative; }
+    .nav-item:hover { background: var(--surface2); color: var(--text1); }
+    .nav-item.active { background: var(--accent-subtle); color: var(--accent); }
+    .nav-item i { font-size: 20px; }
+    .nav-badge { position: absolute; right: 12px; background: var(--error); color: #fff; font-size: 10px; font-weight: 600; min-width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+
+    /* Main Content */
+    .app-main { flex: 1; overflow-y: auto; padding: 24px; }
+
+    /* Stat Cards Row */
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--surface1); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-1); display: flex; align-items: center; gap: 16px; }
+    .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+    .stat-label { font-size: 12px; color: var(--text3); margin-bottom: 4px; }
+    .stat-number { font-family: var(--font-mono); font-size: 24px; font-weight: 600; color: var(--text1); }
+    .stat-delta { font-size: 11px; display: flex; align-items: center; gap: 3px; margin-top: 2px; }
+    .stat-delta.up { color: var(--success); }
+    .stat-delta.down { color: var(--error); }
+
+    /* Two Column Below Stats */
+    .content-cols { display: flex; gap: 20px; }
+    .content-main { flex: 1; min-width: 0; }
+    .content-side { width: 320px; flex-shrink: 0; }
+
+    /* Table Card */
+    .table-card { background: var(--surface1); border-radius: 12px; box-shadow: var(--shadow-1); overflow: hidden; }
+    .table-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .table-title { font-size: 16px; font-weight: 600; }
+    .table-actions { display: flex; gap: 8px; }
+    .table-btn { height: 32px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border-visible); background: var(--surface1); font-family: var(--font-body); font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .table-btn--primary { background: var(--accent); color: #fff; border: none; }
+    .table-btn i { font-size: 16px; }
+
+    .inv-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .inv-table th { background: var(--surface2); height: 40px; padding: 0 16px; text-align: left; font-weight: 500; color: var(--text3); font-size: 12px; border-bottom: 1px solid var(--border); }
+    .inv-table td { height: 52px; padding: 0 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .inv-table tr.hovered td { background: var(--surface2); }
+
+    .item-cell { display: flex; align-items: center; gap: 10px; }
+    .item-img { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .item-name { font-weight: 500; color: var(--text1); }
+
+    .cat-tag { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; line-height: 1; white-space: nowrap; }
+    .cat-tag--food { background: var(--cat-food-bg); color: var(--cat-food); }
+    .cat-tag--daily { background: var(--cat-daily-bg); color: var(--cat-daily); }
+    .cat-tag--cleaning { background: var(--cat-cleaning-bg); color: var(--cat-cleaning); }
+    .cat-tag--personal { background: var(--cat-personal-bg); color: var(--cat-personal); }
+    .cat-tag--health { background: var(--cat-health-bg); color: var(--cat-health); }
+    .cat-tag--other { background: var(--cat-other-bg); color: var(--cat-other); }
+
+    .qty { font-family: var(--font-mono); font-size: 13px; }
+    .loc { font-size: 13px; color: var(--text2); }
+    .exp { font-family: var(--font-mono); font-size: 12px; color: var(--text3); }
+
+    .status-badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; line-height: 1; white-space: nowrap; }
+    .status-badge--ok { background: var(--success-bg); color: var(--success); }
+    .status-badge--low { background: var(--warning-bg); color: var(--warning); }
+    .status-badge--out { background: var(--error-bg); color: var(--error); }
+    .status-badge--expiring { background: var(--warning-bg); color: var(--warning); }
+
+    /* Alerts Panel */
+    .alerts-card { background: var(--surface1); border-radius: 12px; box-shadow: var(--shadow-1); }
+    .alerts-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .alerts-title { font-size: 16px; font-weight: 600; }
+    .alerts-count { font-family: var(--font-mono); font-size: 12px; background: var(--error-bg); color: var(--error); padding: 2px 8px; border-radius: 999px; line-height: 1; }
+    .alert-item { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+    .alert-item:last-child { border-bottom: none; }
+    .alert-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .alert-info { flex: 1; min-width: 0; }
+    .alert-name { font-size: 13px; font-weight: 500; color: var(--text1); }
+    .alert-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .alert-badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 500; line-height: 1; white-space: nowrap; }
+    .alert-badge--expired { background: var(--error-bg); color: var(--error); }
+    .alert-badge--expiring { background: var(--warning-bg); color: var(--warning); }
+
+    /* Floating Bar */
+    .floating-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface1); border: 1.5px solid var(--border); box-shadow: 0px 8px 32px rgba(0,0,0,0.12); }
+    .mode-btn { height: 32px; border-radius: 999px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 0 14px; font-family: var(--font-body); font-size: 12px; font-weight: 500; color: var(--text3); outline: none; }
+    .mode-btn:hover { color: var(--text1); }
+    .mode-btn.active { background: var(--surface3); color: var(--text1); }
+    .mode-btn i { font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="browser-frame">
+  <!-- Browser Chrome -->
+  <div class="browser-chrome">
+    <div class="chrome-titlebar">
+      <div class="chrome-dot chrome-dot--red"></div>
+      <div class="chrome-dot chrome-dot--yellow"></div>
+      <div class="chrome-dot chrome-dot--green"></div>
+    </div>
+    <div class="chrome-tabs">
+      <div class="chrome-tab"><i class="ph ph-package"></i> HomeStock - 家庭物资管理</div>
+    </div>
+    <div class="chrome-url-bar">
+      <i class="ph ph-lock-simple"></i>
+      app.homestock.cn/dashboard
+    </div>
+  </div>
+
+  <!-- App Viewport -->
+  <div class="app-viewport">
+    <!-- Top Bar -->
+    <div class="app-topbar">
+      <div class="topbar-brand">
+        <div class="topbar-brand-icon"><i class="ph ph-package"></i></div>
+        HomeStock
+      </div>
+      <div class="topbar-search"><i class="ph ph-magnifying-glass"></i> 搜索物资、分类或位置...</div>
+      <div class="topbar-right">
+        <div class="topbar-notif">
+          <i class="ph ph-bell"></i>
+          <span class="topbar-notif-badge">7</span>
+        </div>
+        <div class="topbar-avatar">张</div>
+      </div>
+    </div>
+
+    <div class="app-body">
+      <!-- Sidebar -->
+      <aside class="app-sidebar">
+        <div class="nav-item active"><i class="ph ph-squares-four"></i> 概览</div>
+        <div class="nav-item"><i class="ph ph-package"></i> 物资库</div>
+        <div class="nav-item"><i class="ph ph-folders"></i> 分类管理</div>
+        <div class="nav-item"><i class="ph ph-warning-circle"></i> 过期提醒 <span class="nav-badge">7</span></div>
+        <div class="nav-item"><i class="ph ph-chart-pie"></i> 数据统计</div>
+        <div class="nav-item" style="margin-top:auto;"><i class="ph ph-gear"></i> 设置</div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="app-main">
+        <!-- Stat Cards -->
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--cat-food-bg);color:var(--cat-food);"><i class="ph ph-package"></i></div>
+            <div><div class="stat-label">物资总数</div><div class="stat-number">256</div><div class="stat-delta up"><i class="ph ph-arrow-up" style="font-size:10px;"></i> +12 本月</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--cat-daily-bg);color:var(--cat-daily);"><i class="ph ph-currency-cny"></i></div>
+            <div><div class="stat-label">库存总值</div><div class="stat-number">&yen;4,568</div><div class="stat-delta down"><i class="ph ph-arrow-down" style="font-size:10px;"></i> -8%</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--cat-cleaning-bg);color:var(--cat-cleaning);"><i class="ph ph-shopping-cart"></i></div>
+            <div><div class="stat-label">本月消耗</div><div class="stat-number">&yen;1,280</div><div class="stat-delta down"><i class="ph ph-arrow-down" style="font-size:10px;"></i> -12%</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--error-bg);color:var(--error);"><i class="ph ph-warning-circle"></i></div>
+            <div><div class="stat-label">即将过期</div><div class="stat-number">7</div><div class="stat-delta down"><i class="ph ph-arrow-up" style="font-size:10px;"></i> +3 件</div></div>
+          </div>
+        </div>
+
+        <!-- Two Columns -->
+        <div class="content-cols">
+          <!-- Inventory Table -->
+          <div class="content-main">
+            <div class="table-card">
+              <div class="table-header">
+                <span class="table-title">物资列表</span>
+                <div class="table-actions">
+                  <button class="table-btn"><i class="ph ph-funnel"></i> 筛选</button>
+                  <button class="table-btn"><i class="ph ph-arrow-down-up"></i> 排序</button>
+                  <button class="table-btn table-btn--primary"><i class="ph ph-plus"></i> 添加</button>
+                </div>
+              </div>
+              <table class="inv-table">
+                <thead><tr><th>物资名称</th><th>分类</th><th>数量</th><th>位置</th><th>过期时间</th><th>状态</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-food-bg);color:var(--cat-food);"><i class="ph ph-egg"></i></div><span class="item-name">有机鸡蛋</span></div></td>
+                    <td><span class="cat-tag cat-tag--food">食品</span></td>
+                    <td class="qty">12 枚</td><td class="loc">冰箱</td><td class="exp">2025-05-10</td>
+                    <td><span class="status-badge status-badge--ok">充足</span></td>
+                  </tr>
+                  <tr class="hovered">
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-food-bg);color:var(--cat-food);"><i class="ph ph-drop"></i></div><span class="item-name">纯牛奶</span></div></td>
+                    <td><span class="cat-tag cat-tag--food">食品</span></td>
+                    <td class="qty">2 盒</td><td class="loc">冰箱</td><td class="exp">2025-04-22</td>
+                    <td><span class="status-badge status-badge--out">已过期</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-food-bg);color:var(--cat-food);"><i class="ph ph-bread"></i></div><span class="item-name">全麦面包</span></div></td>
+                    <td><span class="cat-tag cat-tag--food">食品</span></td>
+                    <td class="qty">1 袋</td><td class="loc">厨房</td><td class="exp">2025-04-25</td>
+                    <td><span class="status-badge status-badge--expiring">即将过期</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-daily-bg);color:var(--cat-daily);"><i class="ph ph-toilet-paper"></i></div><span class="item-name">卫生纸</span></div></td>
+                    <td><span class="cat-tag cat-tag--daily">日用</span></td>
+                    <td class="qty">3 卷</td><td class="loc">储物柜</td><td class="exp">—</td>
+                    <td><span class="status-badge status-badge--low">库存不足</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-cleaning-bg);color:var(--cat-cleaning);"><i class="ph ph-spray-bottle"></i></div><span class="item-name">洗洁精</span></div></td>
+                    <td><span class="cat-tag cat-tag--cleaning">清洁</span></td>
+                    <td class="qty">1 瓶</td><td class="loc">厨房</td><td class="exp">2026-01-15</td>
+                    <td><span class="status-badge status-badge--low">库存不足</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-personal-bg);color:var(--cat-personal);"><i class="ph ph-tooth"></i></div><span class="item-name">牙膏</span></div></td>
+                    <td><span class="cat-tag cat-tag--personal">个护</span></td>
+                    <td class="qty">2 支</td><td class="loc">浴室</td><td class="exp">2026-08-20</td>
+                    <td><span class="status-badge status-badge--ok">充足</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-health-bg);color:var(--cat-health);"><i class="ph ph-pill"></i></div><span class="item-name">维生素C</span></div></td>
+                    <td><span class="cat-tag cat-tag--health">健康</span></td>
+                    <td class="qty">0 瓶</td><td class="loc">药箱</td><td class="exp">2025-04-28</td>
+                    <td><span class="status-badge status-badge--out">缺货</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-other-bg);color:var(--cat-other);"><i class="ph ph-battery-charging"></i></div><span class="item-name">5号电池</span></div></td>
+                    <td><span class="cat-tag cat-tag--other">其他</span></td>
+                    <td class="qty">8 节</td><td class="loc">储物柜</td><td class="exp">2028-12-01</td>
+                    <td><span class="status-badge status-badge--ok">充足</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-personal-bg);color:var(--cat-personal);"><i class="ph ph-eye"></i></div><span class="item-name">眼药水</span></div></td>
+                    <td><span class="cat-tag cat-tag--personal">个护</span></td>
+                    <td class="qty">1 瓶</td><td class="loc">药箱</td><td class="exp">2025-04-26</td>
+                    <td><span class="status-badge status-badge--expiring">即将过期</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="item-cell"><div class="item-img" style="background:var(--cat-daily-bg);color:var(--cat-daily);"><i class="ph ph-tote"></i></div><span class="item-name">垃圾袋</span></div></td>
+                    <td><span class="cat-tag cat-tag--daily">日用</span></td>
+                    <td class="qty">15 个</td><td class="loc">厨房</td><td class="exp">—</td>
+                    <td><span class="status-badge status-badge--ok">充足</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Expiry Alerts Panel -->
+          <div class="content-side">
+            <div class="alerts-card">
+              <div class="alerts-header">
+                <span class="alerts-title">过期预警</span>
+                <span class="alerts-count">7</span>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon" style="background:var(--cat-food-bg);color:var(--cat-food);"><i class="ph ph-drop"></i></div>
+                <div class="alert-info"><div class="alert-name">纯牛奶</div><div class="alert-meta">食品 · 已过期 1 天</div></div>
+                <span class="alert-badge alert-badge--expired">已过期</span>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon" style="background:var(--cat-food-bg);color:var(--cat-food);"><i class="ph ph-bread"></i></div>
+                <div class="alert-info"><div class="alert-name">全麦面包</div><div class="alert-meta">食品 · 剩余 2 天</div></div>
+                <span class="alert-badge alert-badge--expiring">即将过期</span>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon" style="background:var(--cat-personal-bg);color:var(--cat-personal);"><i class="ph ph-eye"></i></div>
+                <div class="alert-info"><div class="alert-name">眼药水</div><div class="alert-meta">个护 · 剩余 3 天</div></div>
+                <span class="alert-badge alert-badge--expiring">即将过期</span>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon" style="background:var(--cat-health-bg);color:var(--cat-health);"><i class="ph ph-pill"></i></div>
+                <div class="alert-info"><div class="alert-name">维生素C</div><div class="alert-meta">健康 · 剩余 5 天</div></div>
+                <span class="alert-badge alert-badge--expiring">即将过期</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="floating-bar">
+  <button class="mode-btn active" data-mode="light"><i class="ph ph-sun"></i> Light</button>
+  <button class="mode-btn" data-mode="dark"><i class="ph ph-moon"></i> Dark</button>
+</div>
+
+<script>
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.documentElement.dataset.theme = btn.dataset.mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', e => e.preventDefault());
+  });
+</script>
+
+</body>
+</html>

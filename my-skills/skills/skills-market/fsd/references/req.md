@@ -12,17 +12,19 @@
 
 **所有参数均为可选，直接执行 `fsd req create` 即可，CLI 自动处理缺失参数。**
 
-| 参数 | 说明 |
-|------|------|
-| `-p, --project-id <id>` | ONES 空间 ID（不传则用最近空间） |
-| `-n, --name <name>` | 需求名称（不传则自动生成 `新需求_yyyy-MM-dd`） |
-| `--subtype <subtype>` | 需求子类型：`产品需求`/`产品`(55813)、`技术需求`/`技术`(55826)。不传默认产品需求 |
-| `--subtype-id <id>` | 子类型 ID（直接传数字，优先级高于 `--subtype`） |
-| `--priority <n>` | 优先级（1-低, 2-中, 3-高, 4-紧急） |
-| `-a, --assigned <mis>` | 负责人 MIS |
-| `-d, --desc <html>` | 需求描述（HTML） |
-| `--req-propose-users <users>` | 逗号分隔 MIS 列表 |
-| `-v, --verbose` | 输出完整 JSON |
+
+| 参数                            | 说明                                                   |
+| ----------------------------- | ---------------------------------------------------- |
+| `-p, --project-id <id>`       | ONES 空间 ID（不传则用最近空间）                                 |
+| `-n, --name <name>`           | 需求名称（不传则自动生成 `新需求_yyyy-MM-dd`）                       |
+| `--subtype <subtype>`         | 需求子类型：`产品需求`/`产品`(55813)、`技术需求`/`技术`(55826)。不传默认产品需求 |
+| `--subtype-id <id>`           | 子类型 ID（直接传数字，优先级高于 `--subtype`）                      |
+| `--priority <n>`              | 优先级（1-低, 2-中, 3-高, 4-紧急）                             |
+| `-a, --assigned <mis>`        | 负责人 MIS                                              |
+| `-d, --desc <html>`           | 需求描述（HTML）                                           |
+| `--req-propose-users <users>` | 逗号分隔 MIS 列表                                          |
+| `-v, --verbose`               | 输出完整 JSON                                            |
+
 
 ### 决策树
 
@@ -45,11 +47,13 @@
 
 查询需求详情。`GET /api/qa/v1/reqTaskSkill/queryReqDetail`
 
-| 参数 | 说明 |
-|------|------|
-| `-i, --id <reqId>` | 必填，需求 ID |
-| `-v, --verbose` | 输出完整 JSON |
-| `--pretty` | 人类可读格式输出 |
+
+| 参数                 | 说明        |
+| ------------------ | --------- |
+| `-i, --id <reqId>` | 必填，需求 ID  |
+| `-v, --verbose`    | 输出完整 JSON |
+| `--pretty`         | 人类可读格式输出  |
+
 
 > 从 ONES 链接中提取需求 ID：`https://ones.sankuai.com/.../detail/123456` → `-i 123456`
 
@@ -59,16 +63,18 @@
 
 按 ONES **需求 issueId** 查询关联交付行，并从中汇总 **testPlanId**（去重）。接口：`GET /api/qa/v1/delivery/getListByIssueId?issueId=<ONES 需求 ID>`
 
-与 FSD 需求空间页「交付」抽屉/列表同源。返回 `data.list` 为交付计划行；行内 **`applyProgramId`** 为交付主键（与 `fsd delivery -i`、`testApplyDetail` 一致）；**`testPlanId`** 为该交付当前绑定的测试计划 ID，可为 `null`。  
-**`testPlanIds` 汇总规则**：对 `list` 中所有非空 `testPlanId` 去重、升序，**不等于**「该需求下全部测试计划」的独立枚举接口，仅反映交付行上的绑定关系。
+与 FSD 需求空间页「交付」抽屉/列表同源。返回 `data.list` 为交付计划行；行内 `**applyProgramId`** 为交付主键（与 `fsd delivery -i`、`testApplyDetail` 一致）；`**testPlanId`** 为该交付当前绑定的测试计划 ID，可为 `null`。  
+`**testPlanIds` 汇总规则**：对 `list` 中所有非空 `testPlanId` 去重、升序，**不等于**「该需求下全部测试计划」的独立枚举接口，仅反映交付行上的绑定关系。
 
 ### CLI
 
-| 命令 | 说明 |
-|------|------|
-| `fsd req relate -i <issueId>` | 默认输出 JSON：`issueId`、`deliveryCount`、`testPlanIds`、`deliveries`（摘要字段） |
-| `fsd req relate -i <issueId> --pretty` | 人类可读表格与 URL 模板行 |
-| `fsd req relate -i <issueId> -v` | 完整 `data`（含 `userMessage`、接口原始 `list` 字段） |
+
+| 命令                                     | 说明                                                                   |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| `fsd req relate -i <issueId>`          | 默认输出 JSON：`issueId`、`deliveryCount`、`testPlanIds`、`deliveries`（摘要字段） |
+| `fsd req relate -i <issueId> --pretty` | 人类可读表格与 URL 模板行                                                      |
+| `fsd req relate -i <issueId> -v`       | 完整 `data`（含 `userMessage`、接口原始 `list` 字段）                            |
+
 
 ### 后续操作
 
@@ -83,14 +89,16 @@
 
 ### CLI 参数
 
-| 参数 | 说明 |
-|------|------|
-| `-i, --id <reqId>` | 必填，需求 ID |
-| `-p, --project-id <id>` | ONES 空间 ID（不传则自动从需求详情获取） |
-| `-n, --name <name>` | 快捷：修改名称 |
-| `--priority <n>` | 快捷：优先级（1-低, 2-中, 3-高, 4-紧急） |
-| `-a, --assigned <mis>` | 快捷：负责人 MIS |
-| `-d, --data <json>` | 其他字段（JSON），支持 FSD 字段名和 ONES 原生字段名 |
+
+| 参数                      | 说明                                |
+| ----------------------- | --------------------------------- |
+| `-i, --id <reqId>`      | 必填，需求 ID                          |
+| `-p, --project-id <id>` | ONES 空间 ID（不传则自动从需求详情获取）          |
+| `-n, --name <name>`     | 快捷：修改名称                           |
+| `--priority <n>`        | 快捷：优先级（1-低, 2-中, 3-高, 4-紧急）       |
+| `-a, --assigned <mis>`  | 快捷：负责人 MIS                        |
+| `-d, --data <json>`     | 其他字段（JSON），支持 FSD 字段名和 ONES 原生字段名 |
+
 
 快捷字段与 `-d` 可同时使用。`-d` 中同名键覆盖快捷字段。
 
@@ -105,22 +113,24 @@
 
 ### -d 常用字段映射
 
-| FSD 字段名 | ONES 字段 | 类型 | 说明 |
-|------------|-----------|------|------|
-| projectId | projectId | Integer | 目标空间 ID（移动需求到新空间） |
-| name | name | String | 名称 |
-| subtypeId | subtypeId | Integer | 需求子类型 ID（55813=产品需求, 55826=技术需求） |
-| desc | desc | String | 描述（HTML） |
-| priority | priority | Integer | 优先级 |
-| assigned | assigned | String | 负责人 MIS |
-| rdMaster | customField14076 | String | 研发负责人 |
-| qaMaster | customField12144 | String | 测试负责人 |
-| uiMainR | customField22430 | String | UI 负责人 |
-| reqProposeUsers | customField12738 | List\<String\> | 提出人（联动提出部门） |
-| expectedOnlineTime | customField13200 | Long | 预计上线（毫秒时间戳） |
-| label | labels | List | 标签 |
-| iterationId | iterationId | Long | 迭代 ID（`-1` 清空） |
-| tgId | customField24725 | List\<Long\> | 团队目标（`-1` 不关联） |
+
+| FSD 字段名            | ONES 字段          | 类型         | 说明                               |
+| ------------------ | ---------------- | ---------- | -------------------------------- |
+| projectId          | projectId        | Integer    | 目标空间 ID（移动需求到新空间）                |
+| name               | name             | String     | 名称                               |
+| subtypeId          | subtypeId        | Integer    | 需求子类型 ID（55813=产品需求, 55826=技术需求） |
+| desc               | desc             | String     | 描述（HTML）                         |
+| priority           | priority         | Integer    | 优先级                              |
+| assigned           | assigned         | String     | 负责人 MIS                          |
+| rdMaster           | customField14076 | String     | 研发负责人                            |
+| qaMaster           | customField12144 | String     | 测试负责人                            |
+| uiMainR            | customField22430 | String     | UI 负责人                           |
+| reqProposeUsers    | customField12738 | ListString | 提出人（联动提出部门）                      |
+| expectedOnlineTime | customField13200 | Long       | 预计上线（毫秒时间戳）                      |
+| label              | labels           | List       | 标签                               |
+| iterationId        | iterationId      | Long       | 迭代 ID（`-1` 清空）                   |
+| tgId               | customField24725 | ListLong   | 团队目标（`-1` 不关联）                   |
+
 
 > 未在映射表中的字段名会原样透传给 ONES 接口。也可直接传 `customField*` 字段。
 > 时间字段传毫秒时间戳；列表类型传数组。推荐 `-d` 整段用单引号：`-d '{"rdMaster":"zhangsan"}'`
@@ -131,9 +141,11 @@
 
 删除需求。`DELETE /api/qa/v1/reqTaskSkill/deleteOnes`
 
-| 参数 | 说明 |
-|------|------|
+
+| 参数                   | 说明       |
+| -------------------- | -------- |
 | `-i, --id <issueId>` | 必填，需求 ID |
+
 
 ---
 
@@ -141,10 +153,12 @@
 
 按空间名称精确查询。`GET /api/qa/v1/reqTaskSkill/queryProjectByName`
 
-| 参数 | 说明 |
-|------|------|
+
+| 参数                  | 说明            |
+| ------------------- | ------------- |
 | `-n, --name <name>` | 必填，空间名称（精确匹配） |
-| `--pretty` | 人类可读格式 |
+| `--pretty`          | 人类可读格式        |
+
 
 ---
 
@@ -154,20 +168,22 @@
 
 ### CLI 参数
 
-| 参数 | 说明 |
-|------|------|
-| `--page <n>` | 页码（默认 1） |
-| `--size <n>` | 每页大小（默认 20） |
-| `-p, --project-id <id>` | 空间 ID |
-| `-s, --status <status>` | 状态过滤（逗号分隔）。快捷词：`未上线`、`进行中`、`未开始`、`已完结`；也可直接传精确状态如 `开发中,测试中` |
-| `--subtype <type>` | 需求类型（逗号分隔）：`产品需求`/`产品`、`技术需求`/`技术`、`默认任务`/`默认`、`管理事项`/`管理`、`其他` |
-| `-n, --name <keyword>` | 名称关键词 |
-| `--assigned <mis>` | 负责人 MIS |
-| `--created-by <mis>` | 创建人 MIS |
-| `--start-time <datetime>` | 创建时间起始（yyyy-MM-dd HH:mm:ss） |
-| `--end-time <datetime>` | 创建时间结束 |
-| `--priority <n>` | 优先级过滤（逗号分隔数字） |
-| `--pretty` | 表格格式输出 |
+
+| 参数                        | 说明                                                              |
+| ------------------------- | --------------------------------------------------------------- |
+| `--page <n>`              | 页码（默认 1）                                                        |
+| `--size <n>`              | 每页大小（默认 20）                                                     |
+| `-p, --project-id <id>`   | 空间 ID                                                           |
+| `-s, --status <status>`   | 状态过滤（逗号分隔）。快捷词：`未上线`、`进行中`、`未开始`、`已完结`；也可直接传精确状态如 `开发中,测试中`     |
+| `--subtype <type>`        | 需求类型（逗号分隔）：`产品需求`/`产品`、`技术需求`/`技术`、`默认任务`/`默认`、`管理事项`/`管理`、`其他` |
+| `-n, --name <keyword>`    | 名称关键词                                                           |
+| `--assigned <mis>`        | 负责人 MIS                                                         |
+| `--created-by <mis>`      | 创建人 MIS                                                         |
+| `--start-time <datetime>` | 创建时间起始（yyyy-MM-dd HH:mm:ss）                                     |
+| `--end-time <datetime>`   | 创建时间结束                                                          |
+| `--priority <n>`          | 优先级过滤（逗号分隔数字）                                                   |
+| `--pretty`                | 表格格式输出                                                          |
+
 
 ---
 
@@ -177,17 +193,19 @@
 
 ### CLI 参数（`fsd req pd`）
 
-| 参数 | 说明 |
-|------|------|
-| `--start <ms>` | 开始时间（毫秒时间戳）；与 `--end` **须成对**，否则默认**本周一至周日**（本地时区） |
-| `--end <ms>` | 结束时间（毫秒时间戳） |
-| `--subtype <list>` | 需求子类型（逗号分隔，规则同 `fsd req list`）→ `onesSubTypeList` |
-| `-s, --status <list>` | 需求状态（逗号分隔，快捷词/精确状态同 list）→ `reqStatusList` |
-| `--priority <list>` | 优先级（逗号分隔 1～4）→ `priorityList` |
-| `-p, --project-id <ids>` | 空间 ID（逗号分隔）→ `projectIdList` |
-| `-n, --name <keyword>` | 需求名称包含匹配 → `reqName` |
-| `-v, --verbose` | 输出完整 JSON |
-| `--pretty` | 按日期分组、当日小计、条形图 + 需求列 |
+
+| 参数                       | 说明                                                 |
+| ------------------------ | -------------------------------------------------- |
+| `--start <ms>`           | 开始时间（毫秒时间戳）；与 `--end` **须成对**，否则默认**本周一至周日**（本地时区） |
+| `--end <ms>`             | 结束时间（毫秒时间戳）                                        |
+| `--subtype <list>`       | 需求子类型（逗号分隔，规则同 `fsd req list`）→ `onesSubTypeList`  |
+| `-s, --status <list>`    | 需求状态（逗号分隔，快捷词/精确状态同 list）→ `reqStatusList`         |
+| `--priority <list>`      | 优先级（逗号分隔 1～4）→ `priorityList`                      |
+| `-p, --project-id <ids>` | 空间 ID（逗号分隔）→ `projectIdList`                       |
+| `-n, --name <keyword>`   | 需求名称包含匹配 → `reqName`                               |
+| `-v, --verbose`          | 输出完整 JSON                                          |
+| `--pretty`               | 按日期分组、当日小计、条形图 + 需求列                               |
+
 
 ---
 
@@ -197,21 +215,23 @@
 
 ### CLI 参数（`fsd req schedule`）
 
-| 参数 | 说明 |
-|------|------|
-| （组织） | **固定**取当前登录用户 `getCurrentUserInfo` 的 `orgId`，**不可在 CLI 指定** |
-| `--start <ms>` | 开始时间（**毫秒时间戳**）；与 `--end` **须成对**传入，否则使用默认时间范围 |
-| `--end <ms>` | 结束时间（毫秒时间戳） |
-| （默认时间） | 未传 `--start`/`--end` 时：当前自然周 **周一 00:00:00.000 ～ 周日 23:59:59.999**（本地时区） |
-| `--page <n>` | 页码（默认 1） |
-| `--size <n>` | 每页大小（默认 20） |
-| `--mis <list>` | 用户 MIS 过滤（逗号分隔，模糊匹配）→ 请求体 `mis` |
-| `--subtype <list>` | 需求类型（逗号分隔，规则同 `fsd req list`）→ `onesSubType` |
-| `-n, --name <keyword>` | 工作项名称 → `issueName` |
-| `--priority <list>` | 优先级（逗号分隔 1～4）→ `priorityList` |
-| `-p, --project-id <ids>` | 空间 `projectId`（逗号分隔）→ `projectId` |
-| `-v, --verbose` | 输出完整 JSON |
-| `--pretty` | 汇总表 + 按人分块；**【需求整体排期】**取 `reqList[].stageList`（`stage`/`stageName` + 排期 + 可选 `durationDay`）；**【任务排期】**优先从 `stageList[].details[]` 展开（`taskDetailId`、`taskPd`、嵌套 `details` 内任务阶段 + 排期）；无则回退 `taskList` |
+
+| 参数                       | 说明                                                                                                                                                                                                    |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| （组织）                     | **固定**取当前登录用户 `getCurrentUserInfo` 的 `orgId`，**不可在 CLI 指定**                                                                                                                                           |
+| `--start <ms>`           | 开始时间（**毫秒时间戳**）；与 `--end` **须成对**传入，否则使用默认时间范围                                                                                                                                                        |
+| `--end <ms>`             | 结束时间（毫秒时间戳）                                                                                                                                                                                           |
+| （默认时间）                   | 未传 `--start`/`--end` 时：当前自然周 **周一 00:00:00.000 ～ 周日 23:59:59.999**（本地时区）                                                                                                                              |
+| `--page <n>`             | 页码（默认 1）                                                                                                                                                                                              |
+| `--size <n>`             | 每页大小（默认 20）                                                                                                                                                                                           |
+| `--mis <list>`           | 用户 MIS 过滤（逗号分隔，模糊匹配）→ 请求体 `mis`                                                                                                                                                                       |
+| `--subtype <list>`       | 需求类型（逗号分隔，规则同 `fsd req list`）→ `onesSubType`                                                                                                                                                          |
+| `-n, --name <keyword>`   | 工作项名称 → `issueName`                                                                                                                                                                                   |
+| `--priority <list>`      | 优先级（逗号分隔 1～4）→ `priorityList`                                                                                                                                                                         |
+| `-p, --project-id <ids>` | 空间 `projectId`（逗号分隔）→ `projectId`                                                                                                                                                                     |
+| `-v, --verbose`          | 输出完整 JSON                                                                                                                                                                                             |
+| `--pretty`               | 汇总表 + 按人分块；**【需求整体排期】**取 `reqList[].stageList`（`stage`/`stageName` + 排期 + 可选 `durationDay`）；**【任务排期】**优先从 `stageList[].details[]` 展开（`taskDetailId`、`taskPd`、嵌套 `details` 内任务阶段 + 排期）；无则回退 `taskList` |
+
 
 > 接口层 `orgId`、`startTime`、`endTime` 均为必填；CLI 固定用当前用户 `orgId`，时间默认本周或 `--start`/`--end`。
 
@@ -229,12 +249,14 @@
 
 ### CLI 参数（fsd req stage）
 
-| 参数 | 说明 |
-|------|------|
-| `-i, --id <issueId>` | 必填，需求 ID |
-| `--to <targetState>` | 目标状态名称（不传则仅展示可流转状态列表） |
-| `--form <json>` | 表单字段 JSON（格式：`{"restIssue":{"field":"val"}}`） |
-| `-v, --verbose` | 输出完整 JSON |
+
+| 参数                   | 说明                                            |
+| -------------------- | --------------------------------------------- |
+| `-i, --id <issueId>` | 必填，需求 ID                                      |
+| `--to <targetState>` | 目标状态名称（不传则仅展示可流转状态列表）                         |
+| `--form <json>`      | 表单字段 JSON（格式：`{"restIssue":{"field":"val"}}`） |
+| `-v, --verbose`      | 输出完整 JSON                                     |
+
 
 ### 自动填充规则
 
@@ -248,13 +270,15 @@
 
 ### CLI 参数（`fsd req bind-branch`）
 
-| 参数 | 说明 |
-|------|------|
-| `-i, --id <onesId>` | 必填，需求 ID（ONES issueId） |
-| `-b, --branch <branch>` | 分支名称；不传则自动取当前 Git 分支 |
-| `-g, --git <gitUrl>` | Git 仓库地址；不传则自动取当前工程远程地址 |
+
+| 参数                         | 说明                      |
+| -------------------------- | ----------------------- |
+| `-i, --id <onesId>`        | 必填，需求 ID（ONES issueId）  |
+| `-b, --branch <branch>`    | 分支名称；不传则自动取当前 Git 分支    |
+| `-g, --git <gitUrl>`       | Git 仓库地址；不传则自动取当前工程远程地址 |
 | `-j, --job-name <jobName>` | 服务名称；当无法自动识别 Git 时可显式指定 |
-| `-u, --user-name <mis>` | 执行人 MIS；默认取当前登录用户 |
+| `-u, --user-name <mis>`    | 执行人 MIS；默认取当前登录用户       |
+
 
 ### 执行规则
 
@@ -274,12 +298,14 @@ fsd req bind-branch -i 123456 -g ssh://git@git.sankuai.com/group/repo.git -b fea
 
 ## 错误处理
 
-| 错误类型 | 建议 |
-|----------|------|
-| 401/403 | 确认 API Key 有效 |
-| code !== 0 | 检查 projectId、必填字段、reqId 是否正确 |
-| 目标状态不可达 | 检查 --to 是否与 nextStateName 一致 |
-| 返回格式异常 / 超时 | 联系管理员或稍后重试 |
+
+| 错误类型        | 建议                           |
+| ----------- | ---------------------------- |
+| 401/403     | 确认 API Key 有效                |
+| code !== 0  | 检查 projectId、必填字段、reqId 是否正确 |
+| 目标状态不可达     | 检查 --to 是否与 nextStateName 一致 |
+| 返回格式异常 / 超时 | 联系管理员或稍后重试                   |
+
 
 ---
 
@@ -391,3 +417,4 @@ fsd req stage -i 93941845
 now=$(date +%s)000
 fsd req stage -i 93941845 --to "已上线" --form '{"restIssue":{"customField17159":"'$now'","customField17160":"'$now'"}}'
 ```
+

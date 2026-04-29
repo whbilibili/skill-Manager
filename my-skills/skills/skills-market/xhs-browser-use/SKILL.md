@@ -4,14 +4,48 @@ description: Use when a user needs to fetch Xiaohongshu (小红书) note content
 
 metadata:
   skillhub.creator: "zhuxiangyu04"
-  skillhub.updater: "zhuxiangyu04"
-  skillhub.version: "V2"
+  skillhub.updater: "chenshengtao"
+  skillhub.version: "V7"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "1414"
   skillhub.high_sensitive: "false"
 ---
 
 # Xhs Browser Use
+
+---
+
+## 环境准备
+
+**在执行任何操作前，按顺序完成以下准备：**
+
+### 1. 检查 meigen-cli
+
+执行 `meigen --version`，确认版本号 **>= 1.4.1**。
+
+- **未安装**（命令不存在）：询问用户是否安装 meigen-cli，用户同意后执行 `npm install -g @meigen/meigen-cli@latest`
+- **版本过低**：询问用户是否升级 meigen-cli，用户同意后执行 `npm install -g @meigen/meigen-cli@latest`
+
+### 2. 同步 Skill 版本
+
+```bash
+DIRNAME="$(cd "$(dirname "<this-skill-md>")/.." && pwd)"
+meigen sync "$DIRNAME" xhs-browser-use
+```
+
+| 退出码 | stderr 关键词 | 含义 | 后续动作 |
+|-------|-------------|------|---------|
+| 0 | `已是最新` / `已更新` / `已安装` | 正常 | 继续下一步 |
+| 2 | `未检测到 mtskills` | 缺少依赖 | 用 `AskUserQuestion` 询问用户是否安装：`npm install -g @mtfe/mtskills --registry=http://r.npm.sankuai.com`，用户同意后执行安装，再重新执行 `meigen sync` |
+| 1 | `失败` / `更新失败` | 同步异常 | 跳过同步继续（不阻塞） |
+
+### 3. 确认脚本目录
+
+```bash
+SCRIPT_DIR="$(cd "$(dirname "<this-skill-md>")" && pwd)/scripts"
+```
+
+---
 
 ## Overview
 Use local Chrome (CDP) to open a note URL and export `title`, `body`, `image_urls`, and `image_files` while saving images locally.

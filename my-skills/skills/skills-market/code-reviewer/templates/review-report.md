@@ -83,8 +83,12 @@
 - **位置**：[src/components/UserList.tsx:45]({{CODE_BASE_URL}}/file/detail?path=src/components/UserList.tsx&branch={{BRANCH}}#L45)
 - **依据**：速查卡 G4 / SECURITY_PATTERNS.md §一.1
 - **规则原文**：`禁止直接将外部数据通过 dangerouslySetInnerHTML 注入 DOM，必须净化`
-- **不修后果**：当后端 `content` 字段被注入 `<script>` 标签时，访问该页面的用户 Cookie/Token 将被发送到攻击者服务器
+- **不修后果**：
+   ① 触发条件：后端 `content` 字段被注入 `<script>` 标签（例如评论接口未做 HTML 净化）
+   ② 可观察现象：访问该页面的用户 Cookie / Token 被发送到攻击者服务器，监控里出现大量跨域请求到陌生域名
+   ③ 影响量级：**全量登录用户**（凡打开详情页即触发），按页面 DAU 计约 10W+
 - **修改成本**：`1 行`
+- **跨文件验证**：—  （本条仅单文件调用，未触发 Q0）
 - **问题代码**：
   ```javascript
   // ❌ 当前
@@ -105,8 +109,12 @@
 - **位置**：[src/hooks/useUserList.ts:23]({{CODE_BASE_URL}}/file/detail?path=src/hooks/useUserList.ts&branch={{BRANCH}}#L23)
 - **依据**：REACT_BEST_PRACTICES.md §一.1
 - **规则原文**：`useEffect 依赖数组必须包含函数体内引用的所有外部变量`
-- **不修后果**：当用户在用户列表页切换 userId 时，列表展示的仍是上一个用户的数据，需手动刷新页面才能看到正确内容
+- **不修后果**：
+   ① 触发条件：用户在用户列表页通过路由切换 userId（非初次进入）
+   ② 可观察现象：列表仍展示上一个用户的数据，需手动刷新页面
+   ③ 影响量级：所有使用多账号切换路径的用户（约占 list 页 PV 的 15%）
 - **修改成本**：`1 行`
+- **跨文件验证**：`Grep pattern='useUserList' glob='**/*.{ts,tsx}' → 3 处命中，抽样 src/pages/admin/UserList.tsx:12 已 Read 确认无需同步改`
 - **问题代码**：
   ```javascript
   // ❌ 当前

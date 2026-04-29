@@ -2,6 +2,39 @@
 
 > 本文件是 SKILL.md 中 P1 层的详细展开。安全部分对齐美团安全训练平台（security.mws.sankuai.com）12 类漏洞分类。
 
+> 🚨 **P1 全局报出规则（对所有子类别生效，优先级高于各子类别的独立门槛）**
+>
+> 每条疑似 P1 在内部必须完成以下校验。**不满足的直接按实际级别归类输出，不在文档中出现"降级"字样**：
+>
+> | 校验项 | 要求 | 不满足时 |
+> |--------|------|---------|
+> | 代码证据 | diff 中有具体行号和代码片段（不是"可能会调用"） | 不报 |
+> | 线上场景 | 能描述具体业务场景：什么请求→什么数据→触发什么异常→影响什么功能 | 归为 P2/P3 |
+> | 排除已有保护 | 确认调用链上无 try-catch/降级/兜底等防护，或有防护但防护不充分 | 有完整防护 → 不报或归为 P2/P3 |
+> | 非猜测性 | 结论基于代码事实，不是"可能不够"、"理论上会" | 归为 P2/P3 |
+>
+> **P1 输出格式（强制，每条必须包含）**：
+> ```
+> **🟠 [P1-xx] {规则编号} — {一句话概括}**
+>
+> - **文件**：{完整文件名} L{行号}
+> - **问题代码**：`{关键代码片段}`
+> - **触达分析**：{数据从哪来？经过哪些调用？外层有无保护？}
+> - **线上场景**：{什么请求/什么时机/什么数据会触发？发生概率？}
+> - **影响范围**：{影响哪个接口？单次失败还是服务级影响？有无降级？}
+> - **修复建议**：{具体修复方案，含代码片段}
+> ```
+>
+> **以下场景禁止报 P1（直接归到对应级别，不提"降级"）**：
+> | 场景 | 实际级别 | 原因 |
+> |------|---------|------|
+> | "超时时间可能不够"（无性能数据支撑） | P3 | 纯猜测，没有依据 |
+> | "没有 failover/多 IP"（测试环境直连） | P3 | 测试环境本身就是非关键依赖 |
+> | "没有重试"（用户主动触发的同步操作） | P3 | 用户可手动重试 |
+> | "没有事务保护"（跨 RPC + 乐观锁 + 逐步 catch 设计） | 不报 | 有意为之的非事务设计 |
+> | "catch(Exception) 范围过宽"（已有 log.error + Cat 上报） | P2 | 已有监控，仅建议细化 |
+> | "缓存可能过期"（业务可容忍短暂不一致） | P3 | 非强一致性要求场景 |
+
 ---
 
 ## 1.1 异常处理（EH）
@@ -151,6 +184,117 @@ ExecutorService pool = new ThreadPoolExecutor(
 );
 ```
 
+### RM-05 Future.get() 必须设超时
+
+```java
+// ❌ 无超时，下游卡住 → 当前线程永久阻塞 → 线程池打满
+Future<Result> future = executor.submit(task);
+Result result = future.get();  // 永久阻塞！
+
+// ✅ 必须设置超时时间
+Result result = future.get(500, TimeUnit.MILLISECONDS);
+```
+
+### RM-06 禁止 CompletableFuture.allOf().join()
+
+```java
+// ❌ join() 无超时，且异常被包装为 CompletionException
+CompletableFuture.allOf(futures).join();
+
+// ✅ 使用 get 并设置超时
+CompletableFuture.allOf(futures).get(3, TimeUnit.SECONDS);
+```
+
+### RM-07 supplyAsync/runAsync 必须指定自定义线程池
+
+```java
+// ❌ 默认 ForkJoinPool，核心线程数 = CPU-1，IO 密集场景严重不足 + 无界队列 OOM
+CompletableFuture.supplyAsync(() -> queryFromDB(id));
+
+// ✅ 指定自定义线程池
+CompletableFuture.supplyAsync(() -> queryFromDB(id), bizThreadPool);
+```
+
+### RM-08 禁止父子任务共用线程池
+
+```java
+// ❌ 父任务等子任务结果，子任务在同一线程池排队 → 死锁（重启无法恢复）
+CompletableFuture<Void> parent = CompletableFuture.runAsync(() -> {
+    CompletableFuture<String> child = CompletableFuture.supplyAsync(() -> "data", samePool);
+    child.get();  // 父线程在此阻塞，子任务在队列等线程 → 死锁
+}, samePool);
+
+// ✅ 父子任务使用不同线程池
+CompletableFuture.runAsync(() -> {
+    CompletableFuture.supplyAsync(() -> "data", childPool).get(500, TimeUnit.MILLISECONDS);
+}, parentPool);
+```
+
+### RM-09 局部线程池必须在 finally 中 shutdown
+
+```java
+// ❌ 局部创建后未 shutdown → 线程泄漏 → OOM
+ExecutorService pool = new ThreadPoolExecutor(...);
+pool.submit(task);
+// 方法结束但线程池还活着
+
+// ✅ finally 中关闭
+ExecutorService pool = new ThreadPoolExecutor(...);
+try {
+    pool.submit(task);
+} finally {
+    pool.shutdown();
+}
+```
+
+### RM-10 禁止在递归方法中创建线程/任务
+
+```java
+// ❌ 递归创建线程，深度不可控时线程数爆炸 → OOM
+void processTree(Node node) {
+    executor.submit(() -> {
+        process(node);
+        for (Node child : node.children) {
+            processTree(child);  // 递归 submit → 线程数指数增长
+        }
+    });
+}
+
+// ✅ 用队列 + 迭代替代递归提交
+Queue<Node> queue = new LinkedList<>(List.of(root));
+while (!queue.isEmpty()) {
+    Node node = queue.poll();
+    executor.submit(() -> process(node));
+    queue.addAll(node.children);
+}
+```
+
+### RM-11 禁止无界队列
+
+```java
+// ❌ 不指定容量 = Integer.MAX_VALUE → 任务堆积 → OOM
+new LinkedBlockingQueue<>()
+
+// ✅ 显式指定合理容量
+new LinkedBlockingQueue<>(1000)
+```
+
+### RM-12 禁止 Executors.newXxx 创建线程池
+
+```java
+// ❌ FixedThreadPool / SingleThreadPool 内部无界队列 → OOM
+// ❌ CachedThreadPool / ScheduledThreadPool 最大线程数 Integer.MAX_VALUE → OOM
+ExecutorService pool = Executors.newFixedThreadPool(10);
+
+// ✅ 必须使用 ThreadPoolExecutor 显式指定所有参数（或使用 Rhino 动态线程池）
+ThreadPoolExecutor pool = new ThreadPoolExecutor(
+    10, 20, 60, TimeUnit.SECONDS,
+    new LinkedBlockingQueue<>(1000),
+    new ThreadFactoryBuilder().setNameFormat("biz-pool-%d").build(),
+    new ThreadPoolExecutor.CallerRunsPolicy()
+);
+```
+
 ---
 
 ## 1.3 并发安全（CC）
@@ -202,6 +346,36 @@ private Map<Long, OrderInfo> orderCache = new HashMap<>();
 
 // ✅ ConcurrentHashMap
 private Map<Long, OrderInfo> orderCache = new ConcurrentHashMap<>();
+```
+
+### CC-06 ConcurrentHashMap 禁止 null 键/值
+
+```java
+// ❌ ConcurrentHashMap 的 key 和 value 均不允许 null（与 HashMap 不同）
+ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
+map.put(null, "value");   // NPE！
+map.put("key", null);     // NPE！
+
+// ✅ 存入前确保非 null
+if (key != null && value != null) {
+    map.put(key, value);
+}
+```
+
+### CC-07 Collectors.toMap() 必须处理 key 冲突和 null value
+
+```java
+// ❌ 重复 key → IllegalStateException，null value → NPE
+Map<String, Integer> map = list.stream()
+    .collect(Collectors.toMap(Item::getKey, Item::getValue));
+
+// ✅ 处理 key 冲突 + null value
+Map<String, Integer> map = list.stream()
+    .collect(Collectors.toMap(
+        Item::getKey,
+        item -> Optional.ofNullable(item.getValue()).orElse(0),  // null 兜底
+        (existing, replacement) -> existing  // key 冲突取先到的
+    ));
 ```
 
 ---

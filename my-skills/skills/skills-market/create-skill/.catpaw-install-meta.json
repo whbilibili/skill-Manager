@@ -1,8 +1,8 @@
 {
   "source": "market",
   "id": 109,
-  "updateTime": 1776648946000,
-  "downloadTime": 1776651441929,
+  "updateTime": 1776915909000,
+  "downloadTime": 1776917071378,
   "alias": "create_skill",
   "intro": "帮助用户在 CatPaw 中创建 Agent Skills 的指南型 skill"
 }

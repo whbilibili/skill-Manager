@@ -1,8 +1,8 @@
 {
   "source": "market",
   "id": 8459,
-  "updateTime": 1776345450000,
-  "downloadTime": 1776396659928,
+  "updateTime": 1776741780000,
+  "downloadTime": 1777363862015,
   "alias": "仓库AI友好基建文档更新工具",
   "intro": "根据项目代码变更自动更新项目文档。必须更新 AGENTS.md、ARCHITECTURE.md、docs/tech-debt.md、docs/caveats.md、docs/quality-score.md；若项目存在 doc/components/、.cursor/rules/components/、CLAUDE.md 则也更新；可选输出 CHANGELOG 到 doc/CHANGELOG/。当用户请求更新文档、同步文档、或执行 /fe-update-docs 命令时触发。"
 }

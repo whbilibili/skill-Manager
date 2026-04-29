@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HomeStock — Always know what's in your home.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --background:#F9FAFB;--bg:var(--background);--surface1:#FFFFFF;--surface2:#F3F4F6;--surface3:#E5E7EB;
+  --border:#E5E7EB;--border-visible:#D1D5DB;--text1:#111827;--text2:#6B7280;--text3:#9CA3AF;--text4:#D1D5DB;
+  --accent:#10B981;--accent-dark:#059669;--accent-subtle:#ECFDF5;
+  --success:#22C55E;--warning:#F59E0B;--error:#EF4444;
+  --success-bg:#F0FDF4;--warning-bg:#FFFBEB;--error-bg:#FEF2F2;
+  --radius-element:6px;--radius-control:10px;--radius-component:16px;--radius-container:20px;--radius-pill:999px;
+  --shadow-1:0 1px 3px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04);
+  --shadow-2:0 12px 32px rgba(0,0,0,.08);
+  --shadow-3:0 30px 80px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.05);
+  --shadow-accent:0 6px 20px rgba(16,185,129,.35);
+  --font-display:'Noto Serif JP',serif;--font-body:'Outfit',sans-serif;
+}
+[data-theme="dark"]{
+  --background:#030712;--bg:var(--background);--surface1:#111827;--surface2:#1F2937;--surface3:#374151;
+  --border:#1F2937;--border-visible:#374151;--text1:#F9FAFB;--text2:#9CA3AF;--text3:#6B7280;--text4:#4B5563;
+  --accent:#34D399;--accent-dark:#10B981;--accent-subtle:#022C22;
+  --success-bg:#14532D;--warning-bg:#78350F;--error-bg:#7F1D1D;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-body);color:var(--text1);background:var(--bg);line-height:1.6;transition:background .4s,color .4s}
+a{color:inherit;text-decoration:none}
+.ctn{max-width:1100px;margin:0 auto;padding:0 24px}
+
+/* ── HEADER ─────────────────────────────────── */
+.hd{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:background .4s,border-color .4s}
+[data-theme="dark"] .hd{background:rgba(3,7,18,.88)}
+.hd-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px}
+.logo-ic{width:34px;height:34px;border-radius:var(--radius-control);background:linear-gradient(135deg,#10B981,#059669);display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;box-shadow:var(--shadow-accent)}
+.logo-tx{background:linear-gradient(135deg,#10B981,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+[data-theme="dark"] .logo-tx{background:linear-gradient(135deg,#34D399,#10B981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav{display:flex;align-items:center;gap:32px;list-style:none}
+.nav a{font-size:15px;font-weight:500;color:var(--text2);transition:color .2s}
+.nav a:hover{color:var(--text1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-weight:600;font-size:15px;border:none;cursor:pointer;transition:all .25s;line-height:1;text-align:center}
+.btn-p{background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:10px 24px;border-radius:var(--radius-pill);box-shadow:var(--shadow-accent)}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(16,185,129,.45)}
+.btn-s{background:transparent;color:var(--text1);padding:10px 24px;border-radius:var(--radius-pill);border:1.5px solid var(--border-visible)}
+.btn-s:hover{border-color:var(--accent);color:var(--accent)}
+.nav-cta{font-size:14px;padding:8px 20px}
+.ham{display:none;background:none;border:none;cursor:pointer;width:36px;height:36px;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.ham span{display:block;width:22px;height:2px;background:var(--text1);border-radius:2px}
+
+/* ── HERO ───────────────────────────────────── */
+.hero{padding:140px 0 100px;position:relative;overflow:hidden;background:linear-gradient(160deg,#f0fdf4 0%,#ecfdf5 40%,#f0fdfa 100%);transition:background .4s}
+[data-theme="dark"] .hero{background:linear-gradient(160deg,#030712 0%,#022C22 50%,#030712 100%)}
+.hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.12) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-150px;left:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(52,211,153,.1) 0%,transparent 70%);pointer-events:none}
+.hero-g{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-subtle);border:1px solid rgba(16,185,129,.2);color:var(--accent-dark);font-size:13px;font-weight:600;padding:6px 16px;border-radius:var(--radius-pill);margin-bottom:24px;letter-spacing:.02em}
+[data-theme="dark"] .badge{color:var(--accent)}
+.badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pul 2s ease-in-out infinite}
+@keyframes pul{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.hero-t{font-family:var(--font-display);font-weight:700;font-size:clamp(40px,7vw,72px);line-height:1.12;letter-spacing:-.02em;color:var(--text1);margin-bottom:24px}
+.hero-t .gr{background:linear-gradient(135deg,#10B981,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+[data-theme="dark"] .hero-t .gr{background:linear-gradient(135deg,#34D399,#10B981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:18px;line-height:1.7;color:var(--text2);margin-bottom:36px;max-width:480px;font-weight:300}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero-cta .btn-p{padding:14px 32px;font-size:16px}
+.hero-cta .btn-s{padding:14px 28px;font-size:16px}
+.hero-vis{position:relative;height:420px;display:flex;align-items:center;justify-content:center}
+.ic{position:absolute;background:var(--surface1);border:1px solid var(--border);border-radius:var(--radius-component);padding:18px 22px;box-shadow:var(--shadow-2);display:flex;align-items:center;gap:14px;min-width:260px;transition:background .4s,border-color .4s}
+.ic-em{font-size:32px;line-height:1}
+.ic-inf{flex:1}
+.ic-nm{font-weight:600;font-size:15px;color:var(--text1);margin-bottom:3px}
+.ic-dt{font-size:12px;color:var(--text3)}
+.eb{font-size:11px;font-weight:600;padding:4px 10px;border-radius:var(--radius-pill);white-space:nowrap}
+.eb-g{background:var(--success-bg);color:var(--success)}
+.eb-w{background:var(--warning-bg);color:var(--warning)}
+.eb-r{background:var(--error-bg);color:var(--error)}
+.ic1{top:40px;right:30px;animation:f1 6s ease-in-out infinite}
+.ic2{top:150px;right:70px;animation:f2 7s ease-in-out infinite}
+.ic3{top:260px;right:10px;animation:f3 8s ease-in-out infinite}
+@keyframes f1{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(.5deg)}}
+@keyframes f2{0%,100%{transform:translateY(0) rotate(.5deg)}50%{transform:translateY(-10px) rotate(-.5deg)}}
+@keyframes f3{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-14px) rotate(1deg)}}
+
+/* ── SECTIONS SHARED ────────────────────────── */
+.sec{padding:100px 0}
+.sec-lb{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.sec-t{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.25;color:var(--text1);margin-bottom:16px}
+.sec-d{font-size:17px;color:var(--text2);line-height:1.7;max-width:460px;font-weight:300}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.fg.rev .ft{order:2}.fg.rev .fv{order:1}
+.fv{display:flex;align-items:center;justify-content:center;position:relative;min-height:340px}
+
+/* ── FEATURE 1 ── Expiry ────────────────────── */
+.exp-stack{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px}
+.exp-c{background:var(--surface1);border:1px solid var(--border);border-radius:var(--radius-component);padding:16px 20px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow-1);transition:transform .3s,box-shadow .3s,background .4s,border-color .4s}
+.exp-c:hover{transform:translateY(-2px);box-shadow:var(--shadow-2)}
+.exp-c .e-em{font-size:28px;line-height:1}
+.exp-c .e-inf{flex:1}
+.exp-c .e-nm{font-weight:600;font-size:14px;color:var(--text1)}
+.exp-c .e-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.cb{font-size:11px;font-weight:700;padding:5px 12px;border-radius:var(--radius-pill);white-space:nowrap}
+.cb-g{background:var(--success-bg);color:var(--success)}
+.cb-y{background:var(--warning-bg);color:var(--warning)}
+.cb-r{background:var(--error-bg);color:var(--error)}
+
+/* ── FEATURE 2 ── Family ────────────────────── */
+.fam-vis{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;max-width:320px}
+.av-gr{display:flex;align-items:center}
+.av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:3px solid var(--surface1);margin-left:-12px;box-shadow:var(--shadow-1);transition:background .4s,border-color .4s}
+.av:first-child{margin-left:0}
+.av1{background:#DBEAFE}.av2{background:#FCE7F3}.av3{background:#FEF3C7}.av4{background:#D1FAE5}
+[data-theme="dark"] .av1{background:#1E3A5F}[data-theme="dark"] .av2{background:#4A1942}[data-theme="dark"] .av3{background:#4A3B1F}[data-theme="dark"] .av4{background:#1A4D3A}
+.shl{background:var(--surface1);border:1px solid var(--border);border-radius:var(--radius-component);padding:20px;width:100%;box-shadow:var(--shadow-2);transition:background .4s,border-color .4s}
+.shl-t{font-weight:600;font-size:14px;color:var(--text1);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.shl-t .slic{width:20px;height:20px;border-radius:6px;background:var(--accent-subtle);display:flex;align-items:center;justify-content:center;font-size:11px}
+.shl-i{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2)}
+.shl-i:last-child{border-bottom:none}
+.shl-i .si-em{font-size:18px}
+.shl-i .si-w{margin-left:auto;font-size:11px;color:var(--text3);background:var(--surface2);padding:2px 8px;border-radius:var(--radius-pill)}
+
+/* ── FEATURE 3 ── Cloud ─────────────────────── */
+.sync-vis{display:flex;align-items:flex-end;justify-content:center;gap:20px;width:100%;max-width:380px;position:relative}
+.dev{background:var(--surface1);border:1.5px solid var(--border-visible);display:flex;flex-direction:column;align-items:center;padding:10px;box-shadow:var(--shadow-2);transition:background .4s,border-color .4s}
+.dev-ph{width:80px;height:150px;border-radius:var(--radius-component)}
+.dev-tb{width:130px;height:170px;border-radius:var(--radius-component)}
+.dev-lp{width:180px;height:120px;border-radius:var(--radius-control);padding-top:6px}
+.dev-sc{flex:1;width:100%;background:var(--accent-subtle);border-radius:var(--radius-element);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;color:var(--accent-dark);font-weight:600;overflow:hidden;padding:6px}
+[data-theme="dark"] .dev-sc{color:var(--accent)}
+.dev-sc .ds-ic{font-size:20px;margin-bottom:2px}
+.dev-sc .ds-ct{font-size:16px;font-weight:800}
+.dev-sc .ds-lb{font-size:9px;opacity:.8}
+.dev-base{width:50%;height:3px;background:var(--border-visible);border-radius:2px;margin-top:6px}
+.sync-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;border-radius:50%;border:1.5px dashed var(--accent);opacity:.15;animation:sring 3s ease-in-out infinite;pointer-events:none}
+@keyframes sring{0%,100%{opacity:.12;transform:translate(-50%,-50%) scale(.9)}50%{opacity:.25;transform:translate(-50%,-50%) scale(1.05)}}
+
+/* ── PULL QUOTE ─────────────────────────────── */
+.pq-sec{padding:80px 0;background:var(--surface2);transition:background .4s}
+.pq{max-width:720px;margin:0 auto;text-align:center;position:relative;padding:0 48px}
+.pq::before{content:'\201C';font-family:var(--font-display);font-size:120px;color:var(--accent);opacity:.18;position:absolute;top:-50px;left:0;line-height:1}
+.pq::after{content:'\201D';font-family:var(--font-display);font-size:120px;color:var(--accent);opacity:.18;position:absolute;bottom:-90px;right:0;line-height:1}
+.pq blockquote{font-family:var(--font-display);font-size:clamp(20px,3vw,28px);font-weight:400;line-height:1.6;color:var(--text1);margin-bottom:28px}
+.pq cite{font-style:normal;font-family:var(--font-body);font-size:15px;color:var(--text3);display:flex;align-items:center;justify-content:center;gap:10px}
+.cite-bar{width:28px;height:2px;background:var(--accent);border-radius:2px}
+
+/* ── PRICING ────────────────────────────────── */
+.pr-sec{padding:100px 0}
+.pr-hd{text-align:center;margin-bottom:56px}
+.pr-hd .sec-d{margin:0 auto;max-width:520px;text-align:center}
+.pr-g{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start}
+.pr-c{background:var(--surface1);border:1.5px solid var(--border);border-radius:var(--radius-container);padding:36px 28px 32px;position:relative;transition:transform .3s,box-shadow .3s,background .4s,border-color .4s}
+.pr-c:hover{transform:translateY(-4px);box-shadow:var(--shadow-2)}
+.pr-c.feat{border-color:var(--accent);box-shadow:var(--shadow-2)}
+.pr-c.feat:hover{box-shadow:var(--shadow-3)}
+.pop-b{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#10B981,#059669);color:#fff;font-size:12px;font-weight:700;padding:5px 18px;border-radius:var(--radius-pill);white-space:nowrap}
+.pr-nm{font-weight:700;font-size:18px;color:var(--text1);margin-bottom:4px}
+.pr-ds{font-size:13px;color:var(--text3);margin-bottom:24px;line-height:1.5}
+.pr-am{display:flex;align-items:baseline;gap:4px;margin-bottom:4px}
+.pr-cur{font-size:18px;font-weight:600;color:var(--text2)}
+.pr-val{font-size:48px;font-weight:800;color:var(--text1);line-height:1}
+.pr-per{font-size:14px;color:var(--text3);margin-bottom:28px}
+.pr-fl{list-style:none;margin-bottom:28px}
+.pr-fl li{font-size:14px;color:var(--text2);padding:8px 0;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.pr-fl li:last-child{border-bottom:none}
+.pr-fl .ck{color:var(--accent);font-size:16px;flex-shrink:0}
+.pr-c .btn{width:100%;padding:12px 0;font-size:15px}
+
+/* ── FINAL CTA ──────────────────────────────── */
+.fcta{padding:80px 0;background:linear-gradient(160deg,#ecfdf5,#f0fdfa);text-align:center;transition:background .4s}
+[data-theme="dark"] .fcta{background:linear-gradient(160deg,#022C22,#030712)}
+.fcta-t{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,42px);color:var(--text1);margin-bottom:12px}
+.fcta-d{font-size:17px;color:var(--text2);margin-bottom:32px;font-weight:300}
+.fcta .btn-p{padding:16px 40px;font-size:17px}
+
+/* ── FOOTER ─────────────────────────────────── */
+.ft{background:#111827;color:#9CA3AF;padding:64px 0 32px}
+[data-theme="dark"] .ft{background:#030712;border-top:1px solid var(--border)}
+.ft-in{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:48px;margin-bottom:48px}
+.ft .logo-tx{background:linear-gradient(135deg,#34D399,#10B981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ft-tag{font-size:14px;color:#6B7280;margin-top:12px;line-height:1.6;max-width:260px;font-weight:300}
+.ft-col-t{font-size:13px;font-weight:600;color:#F9FAFB;margin-bottom:16px;letter-spacing:.04em;text-transform:uppercase}
+.ft-col a{display:block;font-size:14px;color:#9CA3AF;margin-bottom:10px;transition:color .2s}
+.ft-col a:hover{color:#F9FAFB}
+.ft-bot{border-top:1px solid #1F2937;padding-top:24px;text-align:center;font-size:13px;color:#6B7280}
+
+/* ── THEME TOGGLE ───────────────────────────── */
+.theme-bar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:1001;display:flex;background:var(--surface1);border:1px solid var(--border);border-radius:var(--radius-pill);padding:4px;box-shadow:var(--shadow-2);transition:background .4s,border-color .4s}
+.theme-bar button{border:none;background:transparent;padding:8px 16px;font-size:13px;font-weight:600;font-family:var(--font-body);cursor:pointer;border-radius:var(--radius-pill);color:var(--text3);transition:all .25s;display:flex;align-items:center;gap:6px}
+.theme-bar button.active{background:var(--accent-subtle);color:var(--accent)}
+
+/* ── RESPONSIVE ─────────────────────────────── */
+@media(max-width:900px){
+  .hero-g,.fg{grid-template-columns:1fr;gap:40px;text-align:center}
+  .fg.rev .ft{order:1}.fg.rev .fv{order:2}
+  .hero-sub,.sec-d{margin-left:auto;margin-right:auto}
+  .hero-cta{justify-content:center}
+  .hero-vis{height:320px}
+  .ic{min-width:220px;padding:14px 16px}
+  .ic1{top:20px;right:10px}.ic2{top:110px;right:40px}.ic3{top:200px;right:0}
+  .pr-g{grid-template-columns:1fr;max-width:400px;margin:0 auto}
+  .ft-in{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media(max-width:640px){
+  .nav{display:none}
+  .ham{display:flex}
+  .hero{padding:110px 0 70px}
+  .sec{padding:70px 0}
+  .ft-in{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<header class="hd">
+  <div class="ctn hd-in">
+    <a href="#" onclick="return false" class="logo">
+      <div class="logo-ic">⌂</div>
+      <span class="logo-tx">HomeStock</span>
+    </a>
+    <nav>
+      <ul class="nav">
+        <li><a href="#features" onclick="return false">Features</a></li>
+        <li><a href="#pricing" onclick="return false">Pricing</a></li>
+        <li><a href="#about" onclick="return false">About</a></li>
+        <li><a href="#" onclick="return false" class="btn btn-p nav-cta">Get Started Free</a></li>
+      </ul>
+    </nav>
+    <button class="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <div class="ctn hero-g">
+    <div class="hero-text">
+      <div class="badge">Smart Home Inventory</div>
+      <h1 class="hero-t">Always know what's in your <span class="gr">home.</span></h1>
+      <p class="hero-sub">Track groceries, monitor expiry dates, and share your household inventory with your family — all from one beautifully simple app.</p>
+      <div class="hero-cta">
+        <a href="#" onclick="return false" class="btn btn-p">Start for Free</a>
+        <a href="#" onclick="return false" class="btn btn-s">See How It Works</a>
+      </div>
+    </div>
+    <div class="hero-vis">
+      <div class="ic ic1">
+        <span class="ic-em">🥛</span>
+        <div class="ic-inf"><div class="ic-nm">Oat Milk</div><div class="ic-dt">Refrigerator · 1L</div></div>
+        <span class="eb eb-g">5 days</span>
+      </div>
+      <div class="ic ic2">
+        <span class="ic-em">🍳</span>
+        <div class="ic-inf"><div class="ic-nm">Free-Range Eggs</div><div class="ic-dt">Refrigerator · 10 pack</div></div>
+        <span class="eb eb-w">2 days</span>
+      </div>
+      <div class="ic ic3">
+        <span class="ic-em">🍓</span>
+        <div class="ic-inf"><div class="ic-nm">Strawberries</div><div class="ic-dt">Refrigerator · 250g</div></div>
+        <span class="eb eb-r">Today!</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FEATURE 1 ═══════════════════ -->
+<section class="sec" id="features">
+  <div class="ctn">
+    <div class="fg">
+      <div class="ft">
+        <div class="sec-lb">Expiry Tracking</div>
+        <h2 class="sec-t">Never let food go to waste</h2>
+        <p class="sec-d">HomeStock sends gentle reminders before items expire. Color-coded badges tell you at a glance what needs to be used first — so nothing gets forgotten at the back of the fridge.</p>
+      </div>
+      <div class="fv">
+        <div class="exp-stack">
+          <div class="exp-c">
+            <span class="e-em">🐟</span>
+            <div class="e-inf"><div class="e-nm">Salmon Fillet</div><div class="e-sub">Freezer · 400g</div></div>
+            <span class="cb cb-r">Tomorrow</span>
+          </div>
+          <div class="exp-c">
+            <span class="e-em">🥬</span>
+            <div class="e-inf"><div class="e-nm">Baby Spinach</div><div class="e-sub">Refrigerator · 200g</div></div>
+            <span class="cb cb-y">3 days</span>
+          </div>
+          <div class="exp-c">
+            <span class="e-em">🧀</span>
+            <div class="e-inf"><div class="e-nm">Aged Cheddar</div><div class="e-sub">Refrigerator · 150g</div></div>
+            <span class="cb cb-g">12 days</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FEATURE 2 ═══════════════════ -->
+<section class="sec" style="background:var(--surface2);transition:background .4s">
+  <div class="ctn">
+    <div class="fg rev">
+      <div class="ft">
+        <div class="sec-lb">Family Sharing</div>
+        <h2 class="sec-t">Your whole family, one inventory</h2>
+        <p class="sec-d">Everyone in the household sees the same list in real time. When someone grabs the last carton of milk, the whole family knows instantly — no more duplicate grocery runs.</p>
+      </div>
+      <div class="fv">
+        <div class="fam-vis">
+          <div class="av-gr">
+            <div class="av av1">👩</div>
+            <div class="av av2">👨</div>
+            <div class="av av3">👧</div>
+            <div class="av av4">👴</div>
+          </div>
+          <div class="shl">
+            <div class="shl-t"><span class="slic">📋</span> Shared Grocery List</div>
+            <div class="shl-i"><span class="si-em">🥖</span> Sourdough Bread <span class="si-w">Added by Mom</span></div>
+            <div class="shl-i"><span class="si-em">🍎</span> Fuji Apples ×6 <span class="si-w">Added by Dad</span></div>
+            <div class="shl-i"><span class="si-em">🧃</span> Apple Juice <span class="si-w">Added by Yui</span></div>
+            <div class="shl-i"><span class="si-em">🍵</span> Green Tea <span class="si-w">Added by Grandpa</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FEATURE 3 ═══════════════════ -->
+<section class="sec">
+  <div class="ctn">
+    <div class="fg">
+      <div class="ft">
+        <div class="sec-lb">Cloud Sync</div>
+        <h2 class="sec-t">Access anywhere, anytime</h2>
+        <p class="sec-d">Your inventory lives in the cloud and syncs instantly across every device. Check what you have at home while you're standing in the grocery aisle — or plan meals from the couch.</p>
+      </div>
+      <div class="fv">
+        <div class="sync-vis">
+          <div class="sync-ring"></div>
+          <div class="dev dev-ph">
+            <div class="dev-sc">
+              <span class="ds-ic">📱</span>
+              <span class="ds-ct">47</span>
+              <span class="ds-lb">items</span>
+            </div>
+          </div>
+          <div class="dev dev-tb">
+            <div class="dev-sc">
+              <span class="ds-ic">📋</span>
+              <span class="ds-ct">47</span>
+              <span class="ds-lb">items</span>
+            </div>
+          </div>
+          <div class="dev dev-lp">
+            <div class="dev-sc">
+              <span class="ds-ic">💻</span>
+              <span class="ds-ct">47</span>
+              <span class="ds-lb">items</span>
+            </div>
+            <div class="dev-base"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PULL QUOTE ═══════════════════ -->
+<section class="pq-sec">
+  <div class="ctn">
+    <div class="pq">
+      <blockquote>We used to throw away ¥3,000 of food every month. Now we waste almost nothing.</blockquote>
+      <cite><span class="cite-bar"></span> Goro, Premium user</cite>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PRICING ═══════════════════ -->
+<section class="pr-sec" id="pricing">
+  <div class="ctn">
+    <div class="pr-hd">
+      <div class="sec-lb">Pricing</div>
+      <h2 class="sec-t">Simple, honest pricing</h2>
+      <p class="sec-d">Start free and upgrade when your household needs more. No hidden fees, no surprises — just a smarter home.</p>
+    </div>
+    <div class="pr-g">
+
+      <!-- Free -->
+      <div class="pr-c">
+        <div class="pr-nm">Free</div>
+        <div class="pr-ds">For individuals getting started</div>
+        <div class="pr-am"><span class="pr-cur">¥</span><span class="pr-val">0</span></div>
+        <div class="pr-per">free forever</div>
+        <ul class="pr-fl">
+          <li><span class="ck">✓</span> Up to 50 items</li>
+          <li><span class="ck">✓</span> Expiry notifications</li>
+          <li><span class="ck">✓</span> Single device</li>
+          <li><span class="ck">✓</span> Basic categories</li>
+        </ul>
+        <a href="#" onclick="return false" class="btn btn-s">Get Started</a>
+      </div>
+
+      <!-- Premium -->
+      <div class="pr-c feat">
+        <div class="pop-b">Most Popular</div>
+        <div class="pr-nm">Premium</div>
+        <div class="pr-ds">For families who love their kitchen</div>
+        <div class="pr-am"><span class="pr-cur">¥</span><span class="pr-val">480</span></div>
+        <div class="pr-per">per month</div>
+        <ul class="pr-fl">
+          <li><span class="ck">✓</span> Unlimited items</li>
+          <li><span class="ck">✓</span> Family sharing (up to 5)</li>
+          <li><span class="ck">✓</span> Cloud sync — all devices</li>
+          <li><span class="ck">✓</span> Smart shopping lists</li>
+          <li><span class="ck">✓</span> Barcode scanning</li>
+        </ul>
+        <a href="#" onclick="return false" class="btn btn-p">Start Free Trial</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="pr-c">
+        <div class="pr-nm">Pro</div>
+        <div class="pr-ds">For power users and large households</div>
+        <div class="pr-am"><span class="pr-cur">¥</span><span class="pr-val">980</span></div>
+        <div class="pr-per">per month</div>
+        <ul class="pr-fl">
+          <li><span class="ck">✓</span> Everything in Premium</li>
+          <li><span class="ck">✓</span> Up to 15 family members</li>
+          <li><span class="ck">✓</span> Recipe suggestions</li>
+          <li><span class="ck">✓</span> Waste analytics dashboard</li>
+          <li><span class="ck">✓</span> Priority support</li>
+        </ul>
+        <a href="#" onclick="return false" class="btn btn-s">Start Free Trial</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FINAL CTA ═══════════════════ -->
+<section class="fcta">
+  <div class="ctn">
+    <h2 class="fcta-t">Start managing your home today.</h2>
+    <p class="fcta-d">Join thousands of families who waste less, shop smarter, and always know what's on hand.</p>
+    <a href="#" onclick="return false" class="btn btn-p">Get HomeStock Free</a>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="ft">
+  <div class="ctn">
+    <div class="ft-in">
+      <div>
+        <div class="logo" style="margin-bottom:4px">
+          <div class="logo-ic">⌂</div>
+          <span class="logo-tx">HomeStock</span>
+        </div>
+        <p class="ft-tag">Your home, organized. Track what you have, use what you buy, and never waste again.</p>
+      </div>
+      <div class="ft-col">
+        <div class="ft-col-t">Product</div>
+        <a href="#" onclick="return false">Features</a>
+        <a href="#" onclick="return false">Pricing</a>
+        <a href="#" onclick="return false">Download</a>
+        <a href="#" onclick="return false">Changelog</a>
+      </div>
+      <div class="ft-col">
+        <div class="ft-col-t">Legal</div>
+        <a href="#" onclick="return false">Privacy Policy</a>
+        <a href="#" onclick="return false">Terms of Service</a>
+        <a href="#" onclick="return false">Cookie Policy</a>
+      </div>
+      <div class="ft-col">
+        <div class="ft-col-t">Contact</div>
+        <a href="#" onclick="return false">Support</a>
+        <a href="#" onclick="return false">hello@homestock.app</a>
+        <a href="#" onclick="return false">Twitter / X</a>
+      </div>
+    </div>
+    <div class="ft-bot">&copy; 2026 HomeStock Inc. All rights reserved. Made with care in Tokyo.</div>
+  </div>
+</footer>
+
+<!-- ═══════════════════ THEME TOGGLE ═══════════════════ -->
+<div class="theme-bar">
+  <button id="lightBtn" class="active" onclick="setTheme('light')">☀︎ Light</button>
+  <button id="darkBtn" onclick="setTheme('dark')">☽ Dark</button>
+</div>
+
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('lightBtn').classList.toggle('active',t==='light');
+  document.getElementById('darkBtn').classList.toggle('active',t==='dark');
+  try{localStorage.setItem('hs-theme',t)}catch(e){}
+}
+(function(){
+  try{var s=localStorage.getItem('hs-theme');if(s)setTheme(s)}catch(e){}
+})();
+</script>
+
+</body>
+</html>

@@ -2,37 +2,64 @@
 
 以下异常类型命中零容忍红线，每引入一个都会影响 WBR 稳定性指标。
 
+> ⚠️ **P0 确认机制（全局规则，对所有下列异常类型生效）**
+>
+> 命中以下异常模式 ≠ 自动 P0。**必须完成「三要素校验」后才能确定最终级别**：
+>
+> | 要素 | 校验内容 | 不满足时 |
+> |------|---------|---------|
+> | ①代码证据 | diff 中有具体行号和代码片段 | 不报 |
+> | ②触达可达 | 异常输入能通过实际调用链到达该代码点，外层无 try-catch 阻断 | 归为 P2/P3 |
+> | ③线上影响 | 能描述具体业务场景、触发数据、影响范围 | 归为 P2/P3 |
+>
+> **内部分级规则（直接按最终级别输出，不在文档中体现判定过程）**：
+> - ①+②+③全满足 → **P0**
+> - 任一要素不满足 → **直接归为 P2 或 P3**（不归 P1）
+> - 纯理论风险（"如果出现循环引用"）且业务上极低概率 → 归为 **P3**
+
 ## 代码 BUG 类
 
-- `NullPointerException` — 每个外部调用返回值、方法参数、集合元素做 null check；Map.get 拆箱风险
-- `ClassCastException` — 强制类型转换前 instanceof 检查
-- `IndexOutOfBoundsException` — list.get(i) 前检查 size；substring 参数边界
-- `ConcurrentModificationException` — for-each 循环中不修改集合，用 Iterator.remove() 或 CopyOnWriteArrayList
-- `NumberFormatException` — Integer.parseInt / Long.parseLong 有 try-catch
-- `StackOverflowError` — 递归有终止条件 + 深度限制
-- `OutOfMemoryError` — 无限增长集合、循环内大对象创建、大字符串拼接
-- `NoSuchElementException` — Iterator.next() 前 hasNext()；Optional.get() 前 isPresent()
-- `ArithmeticException` — 除法操作的除数非零检查
-- `UnsupportedOperationException` — Collections.unmodifiableList 返回的集合不做修改操作
-- `NoClassDefFoundError` / `ClassNotFoundException` — 依赖是否完整
-- `NoSuchMethodError` — 依赖版本冲突
+| 异常类型 | 检查要点 | P0 确认条件（全部满足才报 P0） | 不满足时归为 |
+|---------|---------|------------------------------|-------------------|
+| `NullPointerException` | 外部调用返回值、方法参数、集合元素、Map.get 拆箱 | ①null 来源可从代码确认（RPC 返回/Map.get/参数传入）②到使用点之间无 null check ③使用点会 NPE（.方法调用/拆箱） | 上层已有 `if (x == null)` 或 `Optional` 保护 → 不报；跨方法推测 → P2 |
+| `ClassCastException` | 强制类型转换 | ①代码中有显式 `(TargetType) obj` ②obj 的实际类型可能与 TargetType 不匹配（来自反序列化/泛型擦除/多态返回）③无 instanceof 前置检查 | obj 类型在编译期已确定（如同类赋值）→ 不报 |
+| `IndexOutOfBoundsException` | list.get(i)/substring | ①index 来自外部输入或动态计算 ②无 size/length 前置检查 ③diff 中能看到具体调用 | index 为硬编码常量且集合初始化已知 → 不报 |
+| `ConcurrentModificationException` | for-each 中修改集合 | ①diff 中有 for-each + 集合修改 ②集合可能被多线程访问或在循环中 add/remove | 单线程 + 循环后 break → 不报 |
+| `NumberFormatException` | parseInt/parseLong/valueOf | ①解析的字符串来自外部（用户输入/DB/接口返回/配置）②该调用点无 try-catch 包围 ③外层调用链上也无 catch | 外层方法已有 `catch(Exception)` 包围 → 归为 P2（建议内层也加保护）；数据来自内部枚举/硬编码 → 不报 |
+| `StackOverflowError` | 递归调用 | ①递归数据结构来自外部输入（用户可构造任意深度）②无深度限制 ③递归终止条件不可靠 | 数据来自内部系统且业务上有明确层级上限（如导航树≤5层）→ 归为 P3 建议 |
+| `OutOfMemoryError` | 无限增长集合/循环内大对象 | ①集合大小不可控（来自外部查询/无 limit）②无分批处理 ③会在单次请求中全量加载 | 有分页/limit/已知数据量上限 → 不报 |
+| `NoSuchElementException` | Iterator.next()/Optional.get() | ①调用前无 hasNext()/isPresent() ②Iterator/Optional 的来源数据可能为空 | 上游已有 isEmpty 判断 → 不报 |
+| `ArithmeticException` | 除法操作 | ①除数来自外部输入或动态计算 ②无零值检查 | 除数为常量或有业务保证非零 → 不报 |
+| `UnsupportedOperationException` | 不可变集合修改 | ①集合来自 Collections.unmodifiable*/List.of()/Arrays.asList() ②后续有 add/remove/set 操作 | — |
+| `NoClassDefFoundError` | 依赖缺失 | ①新增 import 的类不在 pom 依赖中 ②或依赖 scope 为 provided/test 但运行时需要 | 依赖已在 pom 中 → 不报 |
+| `NoSuchMethodError` | 依赖版本冲突 | ①升级了某个依赖版本 ②被调用方法在新版中签名变更或移除 ③Maven dependency:tree 能确认冲突 | 版本未变更 → 不报 |
+| `BigDecimal 精度丢失` | `new BigDecimal(double)` 构造 | ①代码中有 `new BigDecimal(0.1)` 等 double 构造 ②用于金额/价格计算 ③无 `BigDecimal.valueOf()` 或字符串构造替代 | 非金额场景 → P2 |
+| `浮点数比较 Bug` | float/double 用 `==`/`equals` 比较 | ①diff 中有浮点 `==` 或 `Float.equals`/`Double.equals` ②影响业务判断（金额/库存/比例） ③无 epsilon 近似比较或 `BigDecimal.compareTo` 替代 | 纯日志/展示 → P2 |
+| `日期跨年 Bug (YYYY)` | 日期格式化使用大写 `YYYY` | ①代码中有 `YYYY`（大写）的日期格式化 pattern ②用于业务逻辑（订单时间/对账/统计） ③非纯展示场景 | 纯日志展示 → P2 |
+| `Collectors.toMap 双重炸弹` | `Collectors.toMap()` key 冲突 + null value | ①使用 `Collectors.toMap()` 且未提供 mergeFunction ②数据源可能有重复 key 或 null value（来自 DB/RPC/用户输入） | 数据源已去重且保证非 null → 不报 |
 
 ## KV 数据超限类
 
-- `StoreBigValueException` — Squirrel 单 value 序列化后 < 10KB；批量查询 key 数量有上限；大对象拆分存储
+| 异常类型 | 检查要点 | P0 确认条件（全部满足才报 P0） | 不满足时归为 |
+|---------|---------|------------------------------|-------------------|
+| `StoreBigValueException` | Squirrel 单 value 序列化后 < 10KB；批量查询 key 数量有上限 | ①存入的对象大小不可控（来自外部数据/无字段截断）②无分片/压缩处理 ③diff 中能看到 set/put 调用 | 对象字段数固定且已知大小上限 → 不报；有压缩但未验证压缩后大小 → P1 |
 
 ## SQL 执行失败类
 
-- `MySQLIntegrityConstraintViolationException` / `DuplicateKeyException` — INSERT 处理唯一键冲突（ON DUPLICATE KEY UPDATE 或 catch + 业务处理）
-- `PacketTooBigException` — 批量 SQL 大小控制
-- `MysqlDataTruncation` — 字段值长度校验
-- `PoolExhaustedException` — 连接正确释放 + 慢 SQL 治理
-- `MyBatisSystemException` — MyBatis 映射配置正确性
+| 异常类型 | 检查要点 | P0 确认条件（全部满足才报 P0） | 不满足时归为 |
+|---------|---------|------------------------------|-------------------|
+| `MySQLIntegrityConstraintViolationException` / `DuplicateKeyException` | INSERT 处理唯一键冲突 | ①INSERT 语句涉及唯一键 ②无 ON DUPLICATE KEY UPDATE ③无 catch 处理冲突 | 已有 catch + 业务兜底（如 log + 跳过）→ 不报 |
+| `PacketTooBigException` | 批量 SQL 大小控制 | ①批量 INSERT/UPDATE 的数据量不可控（来自外部查询/无 limit）②无分批处理 | 有分批（如 Lists.partition）→ 不报 |
+| `MysqlDataTruncation` | 字段值长度校验 | ①写入字段值来自外部输入 ②无长度校验/截断处理 ③DB 字段有长度限制 | 值来自内部枚举/已知固定长度 → 不报 |
+| `PoolExhaustedException` | 连接正确释放 + 慢 SQL 治理 | ①diff 中有手动获取连接且无 try-with-resources ②或引入明显慢 SQL（全表扫描/无索引） | 已使用 try-with-resources 或 Spring 管理事务 → 不报 |
+| `MyBatisSystemException` | MyBatis 映射配置正确性 | ①diff 中修改了 Mapper XML 或注解 SQL ②参数名/类型与方法签名不匹配 | 参数名一致且类型兼容 → 不报 |
 
 ## Spring 异常类
 
-- `BeanCreationException` — Bean 依赖完整性
-- `NoSuchBeanDefinitionException` — 包扫描路径正确性
+| 异常类型 | 检查要点 | P0 确认条件（全部满足才报 P0） | 不满足时归为 |
+|---------|---------|------------------------------|-------------------|
+| `BeanCreationException` | Bean 依赖完整性 | ①新增 @Autowired 但被注入的 Bean 未定义 ②或循环依赖且无 @Lazy 打破 | 被注入的 Bean 已在配置中定义 → 不报 |
+| `NoSuchBeanDefinitionException` | 包扫描路径正确性 | ①新增 @Component/@Service 的类不在 @ComponentScan 覆盖范围内 ②或配置类中未定义对应 @Bean | 类在扫描路径内 → 不报 |
 
 ## 常见 NPE 场景
 

@@ -39,7 +39,45 @@
 
 - `:::audio{...}` 音频：关注 `name`（文件名）字段理解内容，说明文档包含音频文件
 - `:::video{...}` 视频：关注 `name`（文件名）字段理解内容，说明文档包含视频文件
-- `:::attachment{...}` 附件：关注 `name`（文件名）和 `size` 字段，说明文档包含附件
+- `:::attachment{...}` 附件：关注 `name`（文件名）和 `size` 字段；若需要下载附件，参考以下说明
+
+### 下载学城文档附件
+
+学城文档附件**一律通过文枢 skill 处理**，禁止直接下载。
+
+> 🚫 **绝对禁止路径**：禁止通过任何方式（fetch、curl、浏览器自动化等）直接尝试下载学城附件。**必须且只能通过文枢 skill 处理所有附件下载请求。**
+
+#### 第一步：提取 fileId 并查询文枢下载策略
+
+`:::attachment{}` 节点的 `src` 属性形如 `https://km.sankuai.com/api/file/cdn/<contentId>/<fileId>?contentType=0`，其中路径第二段数字即为 `fileId`。
+
+提取 `fileId` 后调用以下命令查询文枢安全下载策略：
+
+```
+oa-skills citadel fetchAttachment --fileId "<fileId>"
+```
+
+命令返回 JSON，包含：
+- `fileId`：输入的附件 ID
+- `checkResult`：校验结果（如 `"PASS"`）
+- `executionWay`：执行方式（如 `"WENSHU"` 表示需要文枢处理）
+- `wenshuUrl`：文枢安全下载链接（即 `extraData` 字段，形如 `cryptbox://...` 或 `https://cryptbox.sankuai.com/...`）
+- `isEncrypted`：是否需要文枢 skill 处理
+
+示例：
+```
+oa-skills citadel fetchAttachment --fileId "234068059030"
+```
+
+#### 第二步：通过文枢 skill 处理下载
+
+将 `wenshuUrl` 作为下载地址，交由文枢 skill 处理（两个 skill 因 agent 环境不同，均需尝试）：
+
+1. 尝试调用 `wenshu-tools` skill，传入 `wenshuUrl` 处理下载请求
+2. 如果 `wenshu-tools` 不可用，尝试调用 `wenshu-catdesk-tools` skill
+3. 如果两个 skill 均不可用，**停止一切下载尝试**，提示用户：
+
+   > "该附件需要通过文枢 skill 才能下载。请先安装 `wenshu-tools` 或 `wenshu-catdesk-tools` skill 后再试。"
 
 ## 图表与特殊组件
 

@@ -1,8 +1,8 @@
 {
   "source": "market",
   "id": 1414,
-  "updateTime": 1776740761000,
-  "downloadTime": 1776745033344,
+  "updateTime": 1777269935000,
+  "downloadTime": 1777270260963,
   "alias": "小红书图文爬取",
   "intro": "小红书图文信息爬取：操控个人浏览器打开小红书，下载图片和正文内容（首次需登陆小红书）\r\nAgent Skills实践：小红书爆款复刻，https://123.sankuai.com/huati/question/237833\r\n\r\n⚠️注意：小红书有风控策略，这个browser-use技能并不稳定，可能需要调整"
 }

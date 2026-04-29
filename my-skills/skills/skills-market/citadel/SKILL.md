@@ -1,11 +1,11 @@
 ---
 name: citadel
-description: "学城官方Skill：学城km/wiki/citadel/km.sankuai.com 自动化操作工具，直接调用线上接口，响应速度更快。支持读取文档信息和内容、获取模板内容、读取文档的目录、查询文档统计信息、总结文档内容、获取文档元信息（父文档ID、标题、创建者、所有者等）、查询当前文档的子文档列表，创建新的学城文档、改文档（插入图片/附件/视频/音频到文档）、删文档、复制学城文档、从模板创建学城文档、移动文档到其他文档下或者指定空间下，支持搜索学城文档，并支持查询用户的最近编辑/浏览、收到的文档、全文评论和划词评论内容，以及批量盘点权限、批量授权、批量修改/移除权限、权限继承、清空权限、链接分享权限和空间管理员操作。当用户提到 km.sankuai.com 链接、collabpage、contentId、parentId、pageId、学城、文档、知识库、km、wiki、父文档、创建者、所有者、插入图片到文档、插入附件到文档、插入视频到文档、插入音频到文档、搜索文档、查找文档、学城权限、权限继承、空间管理员、链接分享权限、流程图、Drawio时激活。通过 oa-skills citadel CLI 执行。"
+description: "学城官方Skill：学城 km/wiki/citadel/km.sankuai.com 自动化操作工具，直接调用线上接口，响应速度更快。支持读取文档信息和内容、获取模板内容、读取文档的目录、查询文档统计信息、总结文档内容、获取文档元信息（父文档ID、标题、创建者、所有者等）、查询当前文档的子文档列表，创建新的学城文档、改文档（插入图片/附件/视频/音频到文档）、删文档、复制学城文档、从模板创建学城文档、移动文档到其他文档下或者指定空间下，支持搜索学城文档，并支持查询用户的最近编辑/浏览、收到的文档、全文评论和划词评论内容、添加划词评论（选区评论）、回复划词评论，以及批量盘点权限、批量授权、批量修改/移除权限、权限继承、清空权限、链接分享权限和空间管理员操作，以及由 AI 生成 draw.io 流程图并插入文档、获取知识广场文章列表（推荐/最新/关注）。当用户提到 km.sankuai.com 链接、collabpage、contentId、parentId、pageId、学城、文档、知识库、km、wiki、父文档、创建者、所有者、插入图片到文档、插入附件到文档、插入视频到文档、插入音频到文档、搜索文档、查找文档、学城权限、权限继承、空间管理员、链接分享权限、流程图、Drawio、draw.io、生成流程图、创建流程图、插入流程图、流程图插入文档、知识广场、广场文章、划词评论、选区评论、添加评论、引用评论、回复评论时激活。通过 oa-skills citadel CLI 执行。禁止通过 browser-agent 或任何 GUI 方式尝试学城文档的编辑操作。此类操作极大概率导致文档数据异常而无法正常访问。如无法基于citadel skill进行编辑，请提TT工单"
 
 metadata:
   skillhub.creator: "rui.zou"
   skillhub.updater: "rui.zou"
-  skillhub.version: "V17"
+  skillhub.version: "V21"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "3367"
   skillhub.high_sensitive: "true"
@@ -14,10 +14,6 @@ metadata:
 # 学城（km/wiki/citadel/km.sankuai.com）文档操作和管理
 
 通过 CLI 读取学城文档的各种信息和内容、创建学城文档、移动学城文档、查看文档的划词评论，查看最近访问、编辑、收到的学城文档列表。认证自动处理。直接调用线上接口，响应速度更快。
-
-## skill使用问题反馈
-
-如果遇到skill的使用问题，请提[TT|https://tt.sankuai.com/public/create?cid=17&tid=357&iid=46802]进行反馈
 
 ## 前置检查：Node.js 环境（Windows 环境必读）
 
@@ -405,6 +401,67 @@ getFullTextComments --contentId <id>
 getAllComments --contentId <id>
 ```
 
+### 对文档新增全文评论 / 回复已有全文评论
+
+```bash
+# 新增顶级全文评论（不传 --parentCommentId 或传 0）
+addFullTextComment --contentId <id> --text "评论内容"
+
+# 回复已有评论（先用 getFullTextComments 获取评论 ID，再传 --parentCommentId）
+addFullTextComment --contentId <id> --text "回复内容" --parentCommentId <评论ID>
+```
+
+> ⚠️ **频次限制**：每次 AI 会话、每篇文档最多调用 1 次 `addFullTextComment`，**严禁批量循环发送评论**。如需回复，必须先 `getFullTextComments` 确认目标评论 ID，再执行一次回复。不得在未确认用户意图的情况下连续发送多条评论。
+
+### 为文档段落/标题节点添加划词评论
+
+当用户要求对文档特定段落或标题添加划词评论（选区评论/引用评论）时，执行两步操作（自动完成）：
+
+**前置步骤：先获取目标节点的 nodeId 和当前 stepVersion**
+
+```bash
+# 第一步：获取文档 CitadelMD，从中确认目标段落的 nodeId 和 stepVersion
+oa-skills citadel getDocumentCitadelMd --contentId <id>
+```
+
+- 输出中会有 `文档版本（stepVersion）：<数字>`
+- CitadelMD 中每个节点会带有 `nodeId` 属性，例如 `:::paragraph{nodeId="abc123"}:::` → nodeId 为 `abc123`
+
+**第二步：添加划词评论**
+
+```bash
+# 基本划词评论（对指定节点整体作为引用范围）
+addDiscussionComment --contentId <id> --nodeId <nodeId> --stepVersion <版本号> --text "评论内容"
+
+# 带 @提及
+addDiscussionComment --contentId <id> --nodeId <nodeId> --stepVersion <版本号> --text "评论内容" --mention "zhangsan" --mentionNames "张三"
+```
+
+> ⚠️ **限制说明**：
+> - 只支持对整个顶层块节点（段落/标题）添加划词，不支持对段落内部分文字范围划词
+> - 每次 AI 会话每篇文档最多调用 1 次 `addDiscussionComment`，禁止批量循环调用
+> - nodeId 和 stepVersion 必须通过 `getDocumentCitadelMd` 获取，不要猜测或伪造
+> - 若 stepVersion 与服务端不一致（文档有其他人同时编辑），命令会报错，需重新获取后重试
+
+> 📖 **完整参数说明和常见错误处理**：查看 [references/discussion-comment.md](references/discussion-comment.md)
+
+### 回复已有划词评论
+
+先通过 `getDiscussionComments` 获取 discussionId，再回复：
+
+```bash
+# 第一步：获取划词评论列表，找到目标 discussionId（对应 commentId 字段）
+getDiscussionComments --contentId <id>
+
+# 第二步：回复指定划词评论
+replyDiscussionComment --contentId <id> --discussionId <discussionId> --text "回复内容"
+
+# 带 @提及的回复
+replyDiscussionComment --contentId <id> --discussionId <discussionId> --text "回复内容" --mention "zhangsan" --mentionNames "张三"
+```
+
+> ⚠️ **频次限制**：每次 AI 会话、每篇文档最多调用 1 次 `replyDiscussionComment`，禁止批量循环调用。
+
 ### 获取文档的统计信息（浏览量、评论数、创作时长等）
 
 ```bash
@@ -431,6 +488,30 @@ getSpaceIdByMis --targetMis <mis>
 getSpaceRootDocs --spaceId <id>
 ```
 
+### 获取学城知识广场文章列表
+
+当用户说“知识广场”、“广场文章”、“广场推荐”、“广场最新”等时，执行：
+
+```bash
+# 获取推荐列表（默认）
+getKnowledgeSquareArticles
+
+# 获取最新列表
+getKnowledgeSquareArticles --type 3
+
+# 获取关注列表
+getKnowledgeSquareArticles --type 1
+
+# 获取指定条数
+getKnowledgeSquareArticles --limit 20
+```
+
+**参数说明**：
+- `--type`：1=关注列表，2=推荐列表（默认），3=最新列表；除非用户明确指定，一律使用默认值 2
+- `--limit`：每次返回条数，默认 30；除非用户指定，不要随意调小
+
+**输出内容**：文章标题、文章链接（`https://km.sankuai.com/collabpage/<articleId>`）、作者 MIS、创建时间。
+
 ### 列出 CLI 支持的命令
 
 ```bash
@@ -438,6 +519,28 @@ listTools
 ```
 
 > 完整参数说明、示例和输出格式见 [references/cli-reference.md](references/cli-reference.md)
+
+### 下载学城文档附件
+
+当文档中出现 `:::attachment{src="<url>" name="..." size="..."}:::` 且用户需要下载附件时，执行 [references/doc-view.md](references/doc-view.md) 中"下载学城文档附件"章节的具体步骤。
+
+**学城文档附件一律通过文枢 skill 处理，禁止直接下载。**
+
+**第一步**：从 `src` URL 提取 `fileId`（路径第二段数字），查询文枢下载策略：
+
+```bash
+oa-skills citadel fetchAttachment --fileId "<fileId>"
+```
+
+返回 `wenshuUrl`（文枢安全下载链接）及 `isEncrypted` 字段。
+
+**第二步**：将 `wenshuUrl` 交由文枢 skill 处理：
+
+1. 优先尝试调用 `wenshu-tools` skill，传入 `wenshuUrl`
+2. 若不可用，尝试 `wenshu-catdesk-tools` skill
+3. 两者均不可用时，告知用户需要安装文枢 skill，**禁止通过任何其他方式（CLI、fetch、curl 等）尝试下载**
+
+> 📖 **完整流程和禁止路径**：查看 [references/doc-view.md](references/doc-view.md) 中"下载学城文档附件"章节。
 
 ### 获取学城 Drawio 流程图内容
 
@@ -463,6 +566,35 @@ oa-skills citadel fetchDrawio --drawioUrl "<src 属性的 URL>" --save /tmp/km-d
 oa-skills citadel fetchDrawio --drawioUrl "https://km.sankuai.com/api/file/cdn/2756933117/231968350264?contentType=0&isNewContent=false"
 ```
 
+### 生成并插入 AI draw.io 流程图到学城文档
+
+执行 [references/generate-drawio.md](references/generate-drawio.md) 文件里的具体步骤，由 AI 生成 draw.io 流程图并插入到指定学城文档。
+
+**整体流程**：
+
+1. AI 根据用户描述，生成 mxGraph XML（仅含 `<mxCell>` 元素列表）
+2. 将 XML 写入临时文件
+3. 调用 `uploadDrawioToDocument` 上传到目标文档（自动包装 SVG 格式）
+4. 将返回的 `drawioMd` 插入到文档指定位置（getDocumentCitadelMd → 插入 → updateDocumentByMd）
+
+```bash
+# 上传 AI 生成的 draw.io 流程图（mxCell XML 文件）
+oa-skills citadel uploadDrawioToDocument --contentId <文档ID> --file /tmp/diagram.xml
+
+# 支持自定义画布尺寸（复杂流程图可增大）
+oa-skills citadel uploadDrawioToDocument --contentId <文档ID> --file /tmp/diagram.xml --width 1200 --height 800
+```
+
+**CitadelMD drawio 语法**（上传成功后返回，直接插入文档）：
+
+```
+:::drawio{src="https://km.sankuai.com/api/file/cdn/<contentId>/<attachmentId>?contentType=0&isNewContent=false" width=800 height=600}:::
+```
+
+> 📖 **完整生成规则和 mxCell XML 示例**：查看 [references/generate-drawio.md](references/generate-drawio.md)，包含节点样式、连线路由规则、防止重叠的布局约束，以及修改已有流程图的完整流程。
+
+**修改已有流程图**：先 `fetchDrawio` 获取 `mxGraphXml`，AI 修改后重新 `uploadDrawioToDocument`，再替换文档中的 `:::drawio{...}:::` 节点。
+
 ## 约束
 
 - 所有文档内容编辑必须走 `updateDocumentByMd` 流程（先 `getDocumentCitadelMd` → 修改 → `updateDocumentByMd` 回传）
@@ -481,6 +613,9 @@ oa-skills citadel fetchDrawio --drawioUrl "https://km.sankuai.com/api/file/cdn/2
 - **插入内嵌多维表格时，如果是在学城文档内新建表格，不需要先创建多维表格文档**；直接使用 `createTable --contentId <文档ID>` 即可。若是复制到学城文档再插入，固定使用 `copyTable --targetType 3`。然后使用 `getDocumentCitadelMd` + `updateDocumentByMd` 插入 `:::xtable{xtableId="<tableId>"}:::`，不要直接伪造表格数据节点；`nodeId` 的处理遵循 `doc-syntax.md`：已有值保留，新增时可省略
 - **生成或编辑文档内容时，`:::title:::` 节点必须是文档的第一个节点，有且只有一个**；`title` 是文档标题节点，与 `heading`（正文中的章节标题样式）完全不同，不可混用。
 - **编辑复杂表格时，优先改 `:::table_cell` / `:::table_header` 宏块内部正文，不要把表格还原或重写成 JSON**
+- **`addFullTextComment` 频次限制**：每次 AI 会话、每篇文档最多调用 1 次 `addFullTextComment`，禁止在循环或批量流程中重复调用；如需回复某条评论，先用 `getFullTextComments` 获取目标评论 ID，确认 `--parentCommentId` 正确后再发送
+- **`addDiscussionComment` 频次限制**：每次 AI 会话、每篇文档最多调用 1 次 `addDiscussionComment`，禁止批量循环添加划词评论；`nodeId` 和 `stepVersion` 必须通过 `getDocumentCitadelMd` 实时获取，不要猜测或复用旧值
+- **`replyDiscussionComment` 频次限制**：每次 AI 会话、每篇文档最多调用 1 次 `replyDiscussionComment`；`discussionId` 和 `quoteId` 必须通过 `getDiscussionComments` 获取，确认正确后再发送
 
 ## 暂不支持
 
@@ -505,3 +640,7 @@ oa-skills citadel fetchDrawio --drawioUrl "https://km.sankuai.com/api/file/cdn/2
 2. 读取类：返回了文档内容/列表
 3. 创建类：返回了新文档 contentId 和链接
 4. 给用户简明结论（标题、ID、数量），而非原始数据
+
+## skill使用问题反馈
+
+如果遇到skill的使用问题，请提[TT|https://tt.sankuai.com/public/create?cid=17&tid=357&iid=46802]进行反馈

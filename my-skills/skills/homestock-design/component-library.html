@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeStock — Component Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2/src/regular/style.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root, [data-theme="light"] {
+      --background: #F0F2F5; --surface1: #FFFFFF; --surface2: #F7F8FA; --surface3: #E4E7EC;
+      --border: #E4E7EC; --border-visible: #D0D5DD;
+      --text1: #101828; --text2: #475467; --text3: #667085; --text4: #98A2B3;
+      --accent: #43A047; --accent-subtle: #E8F5E9;
+      --success: #43A047; --success-bg: #E8F5E9;
+      --warning: #FF9800; --warning-bg: #FFF8E1;
+      --error: #E53935; --error-bg: #FEF3F2;
+      --cat-food: #43A047; --cat-food-bg: #E8F5E9;
+      --cat-daily: #4A90D9; --cat-daily-bg: #E3F2FD;
+      --cat-cleaning: #FF9800; --cat-cleaning-bg: #FFF8E1;
+      --cat-personal: #E91E63; --cat-personal-bg: #FCE4EC;
+      --cat-health: #9C27B0; --cat-health-bg: #F3E5F5;
+      --cat-other: #7C4DFF; --cat-other-bg: #EDE7F6;
+      --font-display: "Noto Sans SC", "PingFang SC", sans-serif;
+      --font-body: "Noto Sans SC", "PingFang SC", sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", monospace;
+      --shadow-1: 0 1px 3px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04);
+      --shadow-2: 0 4px 12px rgba(16,24,40,0.08), 0 2px 4px rgba(16,24,40,0.04);
+      --shadow-3: 0 12px 32px rgba(16,24,40,0.12), 0 4px 8px rgba(16,24,40,0.06);
+      --r-element: 4px; --r-control: 8px; --r-component: 12px; --r-container: 16px; --r-pill: 999px;
+    }
+    [data-theme="dark"] {
+      --background: #0C111D; --surface1: #101828; --surface2: #1D2939; --surface3: #344054;
+      --border: #1D2939; --border-visible: #344054;
+      --text1: #F7F8FA; --text2: #98A2B3; --text3: #667085; --text4: #475467;
+      --accent: #66BB6A; --accent-subtle: #0A2E0E;
+      --success: #43A047; --success-bg: #0A2E0E;
+      --warning: #FF9800; --warning-bg: #3D2200;
+      --error: #E53935; --error-bg: #3D0D0D;
+      --cat-food-bg: #0A2E0E; --cat-daily-bg: #0D1F33; --cat-cleaning-bg: #3D2200;
+      --cat-personal-bg: #3D0D1F; --cat-health-bg: #2A0A33; --cat-other-bg: #1A0D33;
+      --shadow-1: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-2: 0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
+      --shadow-3: 0 12px 32px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    html, body { font-family: var(--font-body); background: var(--background); color: var(--text1); -webkit-font-smoothing: antialiased; }
+
+    /* ── Layout ── */
+    .cl-shell { display: flex; min-height: 100vh; }
+    .cl-toc { width: 240px; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 32px 20px; border-right: 1px solid var(--border); background: var(--surface1); }
+    .cl-toc h1 { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-bottom: 24px; color: var(--accent); }
+    .cl-toc nav { display: flex; flex-direction: column; gap: 2px; }
+    .cl-toc-category { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: var(--text4); padding: 14px 0 4px; cursor: pointer; user-select: none; border: none; background: transparent; text-align: left; font-family: var(--font-body); }
+    .cl-toc-category.active { color: var(--accent); }
+    .cl-toc-sub { font-size: 13px; color: var(--text3); text-decoration: none; padding: 4px 0 4px 12px; display: block; transition: color 150ms; }
+    .cl-toc-sub:hover, .cl-toc-sub.active { color: var(--text1); }
+
+    .cl-main { flex: 1; padding: 48px; max-width: 960px; overflow-y: auto; }
+    .cl-category-panel { display: none; }
+    .cl-category-panel.active { display: block; }
+    .cl-component-group { margin-bottom: 64px; scroll-margin-top: 48px; }
+    .cl-component-group h3 { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .cl-component-group > p { font-size: 14px; color: var(--text2); margin-bottom: 24px; }
+    .cl-canvas { background: var(--surface1); border: 1px solid var(--border); border-radius: var(--r-component); padding: 32px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+    .cl-canvas--alt { background: var(--background); }
+    .cl-variant { display: flex; flex-direction: column; gap: 8px; }
+    .cl-variant-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--text4); }
+    .cl-spec-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 8px; }
+    .cl-spec-table th, .cl-spec-table td { text-align: left; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .cl-spec-table th { font-weight: 600; color: var(--text3); font-size: 10px; letter-spacing: 0.06em; }
+    .cl-spec-table td { color: var(--text2); }
+    .cl-spec-table .col-value { color: var(--text1); font-family: var(--font-mono); font-size: 12px; }
+
+    /* ── Component Styles ── */
+    /* Buttons */
+    .hs-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: var(--r-control); font-family: var(--font-body); font-weight: 500; cursor: pointer; transition: all 150ms ease; outline: none; }
+    .hs-btn--lg { height: 40px; padding: 0 20px; font-size: 14px; }
+    .hs-btn--sm { height: 32px; padding: 0 16px; font-size: 13px; }
+    .hs-btn--primary { background: var(--accent); color: #fff; }
+    .hs-btn--primary.is-hover { background: #388E3C; }
+    .hs-btn--primary.is-focus { box-shadow: 0 0 0 3px var(--accent-subtle); }
+    .hs-btn--primary.is-disabled { opacity: 0.4; cursor: not-allowed; }
+    .hs-btn--secondary { background: var(--surface1); color: var(--text1); border: 1px solid var(--border-visible); }
+    .hs-btn--secondary.is-hover { background: var(--surface2); }
+    .hs-btn--ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+    .hs-btn--ghost.is-hover { background: var(--accent-subtle); }
+    .hs-btn--destructive { background: var(--error); color: #fff; }
+    .hs-btn--destructive.is-hover { background: #C62828; }
+
+    /* Icon Button */
+    .hs-icon-btn { display: inline-flex; align-items: center; justify-content: center; border: none; border-radius: var(--r-control); cursor: pointer; transition: all 150ms; outline: none; background: transparent; }
+    .hs-icon-btn--lg { width: 40px; height: 40px; font-size: 20px; }
+    .hs-icon-btn--sm { width: 32px; height: 32px; font-size: 16px; }
+    .hs-icon-btn--primary { background: var(--accent); color: #fff; }
+    .hs-icon-btn--secondary { background: var(--surface1); color: var(--text2); border: 1px solid var(--border-visible); }
+    .hs-icon-btn--ghost { color: var(--text2); }
+    .hs-icon-btn.is-hover { background: var(--surface2); }
+    .hs-icon-btn--primary.is-hover { background: #388E3C; }
+
+    /* Toggle */
+    .hs-toggle { position: relative; width: 44px; height: 24px; border-radius: 12px; border: none; cursor: pointer; transition: background 200ms; outline: none; }
+    .hs-toggle--off { background: var(--surface3); }
+    .hs-toggle--on { background: var(--accent); }
+    .hs-toggle-thumb { position: absolute; top: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: var(--shadow-1); transition: left 200ms; }
+    .hs-toggle--off .hs-toggle-thumb { left: 2px; }
+    .hs-toggle--on .hs-toggle-thumb { left: 22px; }
+
+    /* Input */
+    .hs-input { height: 40px; padding: 0 12px; border: 1px solid var(--border-visible); border-radius: var(--r-control); background: var(--surface1); font-family: var(--font-body); font-size: 14px; color: var(--text1); outline: none; transition: border-color 150ms; min-width: 200px; }
+    .hs-input::placeholder { color: var(--text3); }
+    .hs-input.is-focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
+    .hs-input.is-error { border-color: var(--error); }
+    .hs-input.is-disabled { opacity: 0.4; }
+
+    /* Textarea */
+    .hs-textarea { min-height: 100px; padding: 10px 12px; border: 1px solid var(--border-visible); border-radius: var(--r-control); background: var(--surface1); font-family: var(--font-body); font-size: 14px; color: var(--text1); outline: none; resize: vertical; min-width: 200px; }
+    .hs-textarea.is-focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
+
+    /* Checkbox */
+    .hs-checkbox { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text1); }
+    .hs-checkbox-box { width: 20px; height: 20px; border: 2px solid var(--border-visible); border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: all 150ms; flex-shrink: 0; position: relative; }
+    .hs-checkbox-box.checked { background: var(--accent); border-color: var(--accent); }
+    .hs-checkbox-box.checked::after { content: ''; width: 10px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg); position: absolute; top: 4px; }
+    .hs-checkbox-box.indeterminate { background: var(--accent); border-color: var(--accent); }
+    .hs-checkbox-box.indeterminate::after { content: ''; width: 8px; height: 2px; background: #fff; position: absolute; }
+
+    /* Radio */
+    .hs-radio { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text1); }
+    .hs-radio-circle { width: 20px; height: 20px; border: 2px solid var(--border-visible); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 150ms; flex-shrink: 0; }
+    .hs-radio-circle.selected { border-color: var(--accent); }
+    .hs-radio-circle.selected::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+
+    /* Badge */
+    .hs-badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: var(--r-pill); font-size: 11px; font-weight: 500; line-height: 1; white-space: nowrap; }
+    .hs-badge--success { background: var(--success-bg); color: var(--success); }
+    .hs-badge--warning { background: var(--warning-bg); color: var(--warning); }
+    .hs-badge--error { background: var(--error-bg); color: var(--error); }
+    .hs-badge--neutral { background: var(--surface3); color: var(--text2); }
+    .hs-badge--info { background: var(--accent-subtle); color: var(--accent); }
+
+    /* Tag */
+    .hs-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: var(--r-pill); font-size: 12px; font-weight: 500; line-height: 1; }
+    .hs-tag--food { background: var(--cat-food-bg); color: var(--cat-food); }
+    .hs-tag--daily { background: var(--cat-daily-bg); color: var(--cat-daily); }
+    .hs-tag--cleaning { background: var(--cat-cleaning-bg); color: var(--cat-cleaning); }
+    .hs-tag--personal { background: var(--cat-personal-bg); color: var(--cat-personal); }
+    .hs-tag--health { background: var(--cat-health-bg); color: var(--cat-health); }
+    .hs-tag--other { background: var(--cat-other-bg); color: var(--cat-other); }
+
+    /* Avatar */
+    .hs-avatar { display: inline-flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; flex-shrink: 0; }
+    .hs-avatar--sm { width: 28px; height: 28px; border-radius: 8px; font-size: 11px; }
+    .hs-avatar--md { width: 36px; height: 36px; border-radius: 10px; font-size: 13px; }
+    .hs-avatar--lg { width: 48px; height: 48px; border-radius: 12px; font-size: 16px; }
+
+    /* Card */
+    .hs-card { background: var(--surface1); border-radius: var(--r-component); box-shadow: var(--shadow-1); padding: 20px; overflow: hidden; }
+    .hs-card.is-hover { box-shadow: var(--shadow-2); }
+    .hs-card--stat { display: flex; align-items: center; gap: 16px; }
+    .hs-icon-container { display: flex; align-items: center; justify-content: center; border-radius: 12px; flex-shrink: 0; }
+    .hs-icon-container--md { width: 48px; height: 48px; font-size: 24px; }
+    .hs-icon-container--sm { width: 40px; height: 40px; font-size: 20px; }
+
+    /* Tabs */
+    .hs-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+    .hs-tab { padding: 0 16px; height: 44px; display: flex; align-items: center; font-size: 14px; font-weight: 500; color: var(--text3); border: none; background: transparent; cursor: pointer; position: relative; font-family: var(--font-body); }
+    .hs-tab.active { color: var(--accent); }
+    .hs-tab.active::after { content: ''; position: absolute; bottom: -1px; left: 16px; right: 16px; height: 2px; background: var(--accent); border-radius: 1px; }
+
+    /* Alert */
+    .hs-alert { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-radius: var(--r-control); border-left: 3px solid; font-size: 14px; min-width: 320px; }
+    .hs-alert--success { background: var(--success-bg); border-left-color: var(--success); color: var(--text1); }
+    .hs-alert--warning { background: var(--warning-bg); border-left-color: var(--warning); color: var(--text1); }
+    .hs-alert--error { background: var(--error-bg); border-left-color: var(--error); color: var(--text1); }
+    .hs-alert--info { background: var(--accent-subtle); border-left-color: var(--accent); color: var(--text1); }
+    .hs-alert i { font-size: 20px; flex-shrink: 0; }
+    .hs-alert--success i { color: var(--success); }
+    .hs-alert--warning i { color: var(--warning); }
+    .hs-alert--error i { color: var(--error); }
+    .hs-alert--info i { color: var(--accent); }
+
+    /* Progress */
+    .hs-progress { height: 8px; border-radius: 4px; background: var(--surface3); overflow: hidden; width: 200px; }
+    .hs-progress-fill { height: 100%; border-radius: 4px; transition: width 350ms ease; }
+
+    /* Spinner */
+    .hs-spinner { width: 32px; height: 32px; border: 3px solid var(--surface3); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Tooltip */
+    .hs-tooltip { position: relative; display: inline-block; background: var(--text1); color: var(--surface1); padding: 6px 10px; border-radius: 6px; font-size: 12px; max-width: 240px; }
+    .hs-tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--text1); }
+
+    /* Breadcrumb */
+    .hs-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .hs-breadcrumb a { color: var(--text3); text-decoration: none; }
+    .hs-breadcrumb a:hover { color: var(--text1); }
+    .hs-breadcrumb .current { color: var(--text1); font-weight: 500; }
+    .hs-breadcrumb .sep { color: var(--text4); font-size: 12px; }
+
+    /* Pagination */
+    .hs-pagination { display: flex; gap: 4px; align-items: center; }
+    .hs-page-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: var(--r-control); border: none; background: transparent; color: var(--text2); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-body); }
+    .hs-page-btn:hover { background: var(--surface2); }
+    .hs-page-btn.active { background: var(--accent); color: #fff; }
+
+    /* Modal preview */
+    .hs-modal-preview { position: relative; width: 400px; background: var(--surface1); border-radius: var(--r-container); box-shadow: var(--shadow-3); padding: 24px; }
+    .hs-modal-preview h4 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+    .hs-modal-preview p { font-size: 14px; color: var(--text2); margin-bottom: 20px; }
+    .hs-modal-close { position: absolute; top: 16px; right: 16px; border: none; background: transparent; font-size: 20px; color: var(--text3); cursor: pointer; }
+
+    /* Accordion */
+    .hs-accordion { border: 1px solid var(--border); border-radius: var(--r-control); overflow: hidden; min-width: 320px; }
+    .hs-accordion-item { border-bottom: 1px solid var(--border); }
+    .hs-accordion-item:last-child { border-bottom: none; }
+    .hs-accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; height: 48px; font-size: 14px; font-weight: 500; color: var(--text1); cursor: pointer; background: transparent; border: none; width: 100%; text-align: left; font-family: var(--font-body); }
+    .hs-accordion-header i { font-size: 16px; color: var(--text3); transition: transform 250ms; }
+    .hs-accordion-header.open i { transform: rotate(180deg); }
+    .hs-accordion-content { padding: 0 16px 16px; font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+    /* Segmented Control */
+    .hs-segmented { display: inline-flex; background: var(--surface2); border-radius: var(--r-control); padding: 3px; gap: 2px; }
+    .hs-segment { padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; border: none; background: transparent; cursor: pointer; color: var(--text2); font-family: var(--font-body); transition: all 150ms; }
+    .hs-segment.active { background: var(--surface1); color: var(--text1); box-shadow: var(--shadow-1); }
+
+    /* Select mockup */
+    .hs-select { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 12px; border: 1px solid var(--border-visible); border-radius: var(--r-control); background: var(--surface1); font-family: var(--font-body); font-size: 14px; color: var(--text1); min-width: 200px; cursor: pointer; }
+    .hs-select i { color: var(--text3); font-size: 16px; }
+    .hs-select.is-focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
+
+    /* Slider mockup */
+    .hs-slider-track { width: 200px; height: 4px; background: var(--surface3); border-radius: 2px; position: relative; }
+    .hs-slider-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+    .hs-slider-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid var(--accent); box-shadow: var(--shadow-1); position: absolute; top: 50%; transform: translateY(-50%); }
+
+    /* Toast */
+    .hs-toast { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--surface1); box-shadow: var(--shadow-2); border-radius: var(--r-component); font-size: 14px; min-width: 300px; }
+    .hs-toast i:first-child { font-size: 20px; flex-shrink: 0; }
+
+    /* Skeleton */
+    .hs-skeleton { background: var(--surface3); border-radius: 4px; overflow: hidden; position: relative; }
+    .hs-skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+    /* Data Table */
+    .hs-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .hs-table th { background: var(--surface2); height: 44px; padding: 0 16px; text-align: left; font-weight: 500; color: var(--text3); border-bottom: 1px solid var(--border); }
+    .hs-table td { height: 56px; padding: 0 16px; border-bottom: 1px solid var(--border); color: var(--text1); }
+    .hs-table tr:hover td { background: var(--surface2); }
+
+    /* Nav Menu */
+    .hs-nav-menu { display: flex; gap: 4px; }
+    .hs-nav-item { padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: var(--r-control); border: none; background: transparent; cursor: pointer; color: var(--text2); font-family: var(--font-body); }
+    .hs-nav-item.active { background: var(--accent-subtle); color: var(--accent); }
+    .hs-nav-item:hover { background: var(--surface2); }
+
+    /* Link */
+    .hs-link { color: var(--accent); text-decoration: none; font-size: 14px; }
+    .hs-link:hover { text-decoration: underline; }
+
+    /* Empty State */
+    .hs-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 48px; text-align: center; }
+    .hs-empty i { font-size: 64px; color: var(--text4); }
+    .hs-empty h4 { font-size: 16px; font-weight: 500; color: var(--text2); }
+    .hs-empty p { font-size: 13px; color: var(--text3); max-width: 280px; }
+
+    /* Popover */
+    .hs-popover { background: var(--surface1); box-shadow: var(--shadow-2); border-radius: var(--r-component); padding: 12px; min-width: 200px; }
+    .hs-popover-item { padding: 8px 12px; font-size: 13px; color: var(--text1); border-radius: 6px; cursor: pointer; }
+    .hs-popover-item:hover { background: var(--surface2); }
+
+    /* Switch row */
+    .switch-row { display: flex; align-items: center; gap: 10px; }
+
+    /* Date Picker mockup */
+    .hs-datepicker { background: var(--surface1); border: 1px solid var(--border); border-radius: var(--r-component); padding: 16px; width: 280px; }
+    .hs-datepicker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; font-weight: 600; }
+    .hs-datepicker-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 13px; }
+    .hs-datepicker-day { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: var(--r-control); cursor: pointer; color: var(--text1); }
+    .hs-datepicker-day.today { background: var(--accent-subtle); color: var(--accent); font-weight: 600; }
+    .hs-datepicker-day.selected { background: var(--accent); color: #fff; }
+    .hs-datepicker-day.dim { color: var(--text4); }
+    .hs-datepicker-weekday { font-size: 11px; color: var(--text4); font-weight: 500; height: 28px; display: flex; align-items: center; justify-content: center; }
+
+    /* Floating Bar */
+    .floating-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface1); border: 1.5px solid var(--border); box-shadow: 0px 8px 32px rgba(0,0,0,0.12); transition: background 500ms ease, border-color 500ms ease; }
+    .mode-btn { height: 32px; border-radius: 999px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 0 14px; font-family: var(--font-body); font-size: 12px; font-weight: 500; color: var(--text3); transition: background 200ms ease, color 200ms ease; outline: none; }
+    .mode-btn:hover { color: var(--text1); }
+    .mode-btn.active { background: var(--surface3); color: var(--text1); }
+    .mode-btn i { font-size: 14px; }
+  </style>
+</head>
+<body>
+<div class="cl-shell">
+  <aside class="cl-toc">
+    <h1><i class="ph ph-package" style="margin-right:6px;"></i>HomeStock</h1>
+    <nav>
+      <button class="cl-toc-category active" data-cat="foundations">FOUNDATIONS</button>
+      <a class="cl-toc-sub" href="#colors" data-cat="foundations">Colors</a>
+      <a class="cl-toc-sub" href="#typography" data-cat="foundations">Typography</a>
+      <a class="cl-toc-sub" href="#radii" data-cat="foundations">Radii</a>
+      <a class="cl-toc-sub" href="#elevation" data-cat="foundations">Elevation</a>
+      <a class="cl-toc-sub" href="#spacing" data-cat="foundations">Spacing</a>
+      <a class="cl-toc-sub" href="#iconography" data-cat="foundations">Iconography</a>
+
+      <button class="cl-toc-category" data-cat="actions">ACTIONS</button>
+      <a class="cl-toc-sub" href="#button" data-cat="actions">Button</a>
+      <a class="cl-toc-sub" href="#icon-button" data-cat="actions">Icon Button</a>
+      <a class="cl-toc-sub" href="#toggle-button" data-cat="actions">Toggle / Switch</a>
+      <a class="cl-toc-sub" href="#segmented-control" data-cat="actions">Segmented Control</a>
+
+      <button class="cl-toc-category" data-cat="inputs">INPUTS</button>
+      <a class="cl-toc-sub" href="#text-input" data-cat="inputs">Text Input</a>
+      <a class="cl-toc-sub" href="#textarea" data-cat="inputs">Textarea</a>
+      <a class="cl-toc-sub" href="#select" data-cat="inputs">Select</a>
+      <a class="cl-toc-sub" href="#checkbox" data-cat="inputs">Checkbox</a>
+      <a class="cl-toc-sub" href="#radio-group" data-cat="inputs">Radio Group</a>
+      <a class="cl-toc-sub" href="#slider" data-cat="inputs">Slider</a>
+      <a class="cl-toc-sub" href="#date-picker" data-cat="inputs">Date Picker</a>
+
+      <button class="cl-toc-category" data-cat="data-display">DATA DISPLAY</button>
+      <a class="cl-toc-sub" href="#card" data-cat="data-display">Card</a>
+      <a class="cl-toc-sub" href="#avatar" data-cat="data-display">Avatar</a>
+      <a class="cl-toc-sub" href="#badge" data-cat="data-display">Badge</a>
+      <a class="cl-toc-sub" href="#tag" data-cat="data-display">Tag</a>
+      <a class="cl-toc-sub" href="#data-table" data-cat="data-display">Data Table</a>
+
+      <button class="cl-toc-category" data-cat="navigation">NAVIGATION</button>
+      <a class="cl-toc-sub" href="#tabs" data-cat="navigation">Tabs</a>
+      <a class="cl-toc-sub" href="#breadcrumb" data-cat="navigation">Breadcrumb</a>
+      <a class="cl-toc-sub" href="#pagination" data-cat="navigation">Pagination</a>
+      <a class="cl-toc-sub" href="#nav-menu" data-cat="navigation">Nav Menu</a>
+      <a class="cl-toc-sub" href="#link" data-cat="navigation">Link</a>
+
+      <button class="cl-toc-category" data-cat="feedback">FEEDBACK</button>
+      <a class="cl-toc-sub" href="#alert" data-cat="feedback">Alert</a>
+      <a class="cl-toc-sub" href="#toast" data-cat="feedback">Toast</a>
+      <a class="cl-toc-sub" href="#progress" data-cat="feedback">Progress</a>
+      <a class="cl-toc-sub" href="#spinner" data-cat="feedback">Spinner</a>
+      <a class="cl-toc-sub" href="#empty-state" data-cat="feedback">Empty State</a>
+
+      <button class="cl-toc-category" data-cat="overlays">OVERLAYS</button>
+      <a class="cl-toc-sub" href="#modal" data-cat="overlays">Modal</a>
+      <a class="cl-toc-sub" href="#popover" data-cat="overlays">Popover</a>
+      <a class="cl-toc-sub" href="#tooltip" data-cat="overlays">Tooltip</a>
+      <a class="cl-toc-sub" href="#accordion" data-cat="overlays">Accordion</a>
+    </nav>
+  </aside>
+
+  <main class="cl-main">
+    <!-- ═══════ FOUNDATIONS ═══════ -->
+    <section id="cat-foundations" class="cl-category-panel active">
+
+      <div id="colors" class="cl-component-group">
+        <h3>Colors</h3>
+        <p>完整的色彩系统，包含语义色和分类色。</p>
+        <div class="cl-canvas" style="gap:12px;">
+          <div class="cl-variant"><div class="cl-variant-label">BACKGROUND</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--background);border:1px solid var(--border);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">SURFACE 1</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--surface1);border:1px solid var(--border);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">SURFACE 2</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">SURFACE 3</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--surface3);border:1px solid var(--border);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">ACCENT</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--accent);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">SUCCESS</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--success);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">WARNING</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--warning);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">ERROR</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--error);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">食品</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--cat-food);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">日用</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--cat-daily);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">清洁</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--cat-cleaning);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">个护</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--cat-personal);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">健康</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--cat-health);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">其他</div><div class="swatch" style="width:48px;height:48px;border-radius:8px;background:var(--cat-other);"></div></div>
+        </div>
+        <table class="cl-spec-table">
+          <tr><th>Token</th><th>Light</th><th>Dark</th><th>Role</th></tr>
+          <tr><td>--accent</td><td class="col-value">#43A047</td><td class="col-value">#66BB6A</td><td>Primary CTA, active states</td></tr>
+          <tr><td>--success</td><td class="col-value">#43A047</td><td class="col-value">#43A047</td><td>Positive status</td></tr>
+          <tr><td>--warning</td><td class="col-value">#FF9800</td><td class="col-value">#FF9800</td><td>Caution, expiring items</td></tr>
+          <tr><td>--error</td><td class="col-value">#E53935</td><td class="col-value">#E53935</td><td>Expired, out-of-stock</td></tr>
+        </table>
+      </div>
+
+      <div id="typography" class="cl-component-group">
+        <h3>Typography</h3>
+        <p>基于 Noto Sans SC 的中文字型系统，数据展示使用 JetBrains Mono。</p>
+        <div class="cl-canvas" style="flex-direction:column;gap:16px;">
+          <div><div class="cl-variant-label">DISPLAY — 28px / 600</div><div style="font-family:var(--font-display);font-size:28px;font-weight:600;">家庭物资管理</div></div>
+          <div><div class="cl-variant-label">H1 — 24px / 700</div><div style="font-family:var(--font-display);font-size:24px;font-weight:700;">库存总览</div></div>
+          <div><div class="cl-variant-label">H2 — 20px / 600</div><div style="font-family:var(--font-display);font-size:20px;font-weight:600;">分类物资</div></div>
+          <div><div class="cl-variant-label">H3 — 16px / 600</div><div style="font-family:var(--font-display);font-size:16px;font-weight:600;">过期提醒</div></div>
+          <div><div class="cl-variant-label">BODY — 14px / 400</div><div style="font-size:14px;">日常家庭物资的高效管理工具，帮助您追踪库存、记录用量。</div></div>
+          <div><div class="cl-variant-label">BODY SM — 13px / 400</div><div style="font-size:13px;color:var(--text2);">最近一次补货：3天前</div></div>
+          <div><div class="cl-variant-label">CAPTION — 12px / 400</div><div style="font-size:12px;color:var(--text3);">更新于 2025-04-23 14:30</div></div>
+          <div><div class="cl-variant-label">MONO (METRICS) — 14px / 400</div><div style="font-family:var(--font-mono);font-size:14px;">256 件 · ¥4,568.00 · +12%</div></div>
+        </div>
+        <table class="cl-spec-table">
+          <tr><th>Token</th><th>Font</th><th class="col-value">Size</th><th>Weight</th><th>LH</th></tr>
+          <tr><td>display</td><td>Noto Sans SC</td><td class="col-value">28px</td><td>600</td><td>1.2</td></tr>
+          <tr><td>h1</td><td>Noto Sans SC</td><td class="col-value">24px</td><td>700</td><td>1.25</td></tr>
+          <tr><td>h2</td><td>Noto Sans SC</td><td class="col-value">20px</td><td>600</td><td>1.3</td></tr>
+          <tr><td>body</td><td>Noto Sans SC</td><td class="col-value">14px</td><td>400</td><td>1.5</td></tr>
+          <tr><td>mono</td><td>JetBrains Mono</td><td class="col-value">14px</td><td>400</td><td>1.5</td></tr>
+        </table>
+      </div>
+
+      <div id="radii" class="cl-component-group">
+        <h3>Radii</h3>
+        <p>从小型元素到大型容器的圆角层级。</p>
+        <div class="cl-canvas" style="gap:24px;">
+          <div class="cl-variant"><div class="cl-variant-label">ELEMENT 4px</div><div style="width:48px;height:48px;background:var(--accent);border-radius:4px;"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">CONTROL 8px</div><div style="width:48px;height:48px;background:var(--accent);border-radius:8px;"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">COMPONENT 12px</div><div style="width:64px;height:48px;background:var(--accent);border-radius:12px;"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">CONTAINER 16px</div><div style="width:80px;height:48px;background:var(--accent);border-radius:16px;"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">PILL 999px</div><div style="width:80px;height:32px;background:var(--accent);border-radius:999px;"></div></div>
+        </div>
+      </div>
+
+      <div id="elevation" class="cl-component-group">
+        <h3>Elevation</h3>
+        <p>三级阴影层级。</p>
+        <div class="cl-canvas" style="gap:32px;background:var(--background);">
+          <div class="cl-variant"><div class="cl-variant-label">SHADOW 1</div><div style="width:120px;height:80px;background:var(--surface1);border-radius:12px;box-shadow:var(--shadow-1);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">SHADOW 2</div><div style="width:120px;height:80px;background:var(--surface1);border-radius:12px;box-shadow:var(--shadow-2);"></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">SHADOW 3</div><div style="width:120px;height:80px;background:var(--surface1);border-radius:12px;box-shadow:var(--shadow-3);"></div></div>
+        </div>
+      </div>
+
+      <div id="spacing" class="cl-component-group">
+        <h3>Spacing</h3>
+        <p>基于 4px 的间距系统。</p>
+        <div class="cl-canvas" style="flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:12px;color:var(--text3);width:40px;">2px</span><div style="width:2px;height:16px;background:var(--accent);border-radius:1px;"></div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:12px;color:var(--text3);width:40px;">4px</span><div style="width:4px;height:16px;background:var(--accent);border-radius:2px;"></div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:12px;color:var(--text3);width:40px;">8px</span><div style="width:8px;height:16px;background:var(--accent);border-radius:2px;"></div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:12px;color:var(--text3);width:40px;">16px</span><div style="width:16px;height:16px;background:var(--accent);border-radius:2px;"></div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:12px;color:var(--text3);width:40px;">24px</span><div style="width:24px;height:16px;background:var(--accent);border-radius:2px;"></div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:12px;color:var(--text3);width:40px;">32px</span><div style="width:32px;height:16px;background:var(--accent);border-radius:2px;"></div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:12px;color:var(--text3);width:40px;">48px</span><div style="width:48px;height:16px;background:var(--accent);border-radius:2px;"></div></div>
+        </div>
+      </div>
+
+      <div id="iconography" class="cl-component-group">
+        <h3>Iconography</h3>
+        <p>使用 Phosphor Icons Regular 风格，三种尺寸。</p>
+        <div class="cl-canvas" style="gap:20px;">
+          <div class="cl-variant"><div class="cl-variant-label">16px</div><div style="display:flex;gap:12px;font-size:16px;color:var(--text2);"><i class="ph ph-package"></i><i class="ph ph-shopping-cart"></i><i class="ph ph-warning-circle"></i><i class="ph ph-chart-pie"></i></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">20px</div><div style="display:flex;gap:12px;font-size:20px;color:var(--text2);"><i class="ph ph-egg"></i><i class="ph ph-bread"></i><i class="ph ph-pill"></i><i class="ph ph-barcode"></i></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">24px</div><div style="display:flex;gap:12px;font-size:24px;color:var(--text2);"><i class="ph ph-snowflake"></i><i class="ph ph-door"></i><i class="ph ph-bathtub"></i><i class="ph ph-first-aid-kit"></i></div></div>
+        </div>
+        <table class="cl-spec-table">
+          <tr><th>Property</th><th class="col-value">Value</th></tr>
+          <tr><td>Kit</td><td class="col-value">Phosphor Regular</td></tr>
+          <tr><td>CDN</td><td class="col-value">unpkg.com/@phosphor-icons/web@2</td></tr>
+          <tr><td>Default size</td><td class="col-value">20px</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════ ACTIONS ═══════ -->
+    <section id="cat-actions" class="cl-category-panel">
+      <div id="button" class="cl-component-group">
+        <h3>Button</h3>
+        <p>四种变体，两种尺寸，完整交互状态。</p>
+        <div class="cl-canvas" style="flex-direction:column;gap:20px;">
+          <div><div class="cl-variant-label">PRIMARY</div><div style="display:flex;gap:12px;align-items:center;margin-top:6px;">
+            <button class="hs-btn hs-btn--primary hs-btn--lg">添加物资</button>
+            <button class="hs-btn hs-btn--primary hs-btn--lg is-hover">Hover</button>
+            <button class="hs-btn hs-btn--primary hs-btn--lg is-focus">Focus</button>
+            <button class="hs-btn hs-btn--primary hs-btn--lg is-disabled">Disabled</button>
+            <button class="hs-btn hs-btn--primary hs-btn--sm">Small</button>
+          </div></div>
+          <div><div class="cl-variant-label">SECONDARY</div><div style="display:flex;gap:12px;align-items:center;margin-top:6px;">
+            <button class="hs-btn hs-btn--secondary hs-btn--lg">取消</button>
+            <button class="hs-btn hs-btn--secondary hs-btn--lg is-hover">Hover</button>
+            <button class="hs-btn hs-btn--secondary hs-btn--sm">Small</button>
+          </div></div>
+          <div><div class="cl-variant-label">GHOST</div><div style="display:flex;gap:12px;align-items:center;margin-top:6px;">
+            <button class="hs-btn hs-btn--ghost hs-btn--lg">查看全部</button>
+            <button class="hs-btn hs-btn--ghost hs-btn--lg is-hover">Hover</button>
+            <button class="hs-btn hs-btn--ghost hs-btn--sm">Small</button>
+          </div></div>
+          <div><div class="cl-variant-label">DESTRUCTIVE</div><div style="display:flex;gap:12px;align-items:center;margin-top:6px;">
+            <button class="hs-btn hs-btn--destructive hs-btn--lg">删除</button>
+            <button class="hs-btn hs-btn--destructive hs-btn--lg is-hover">Hover</button>
+          </div></div>
+        </div>
+        <table class="cl-spec-table">
+          <tr><th>Property</th><th class="col-value">Value</th></tr>
+          <tr><td>Height (lg)</td><td class="col-value">40px</td></tr>
+          <tr><td>Height (sm)</td><td class="col-value">32px</td></tr>
+          <tr><td>Radius</td><td class="col-value">var(--r-control) 8px</td></tr>
+          <tr><td>Font</td><td class="col-value">Noto Sans SC 500, 14px</td></tr>
+        </table>
+      </div>
+
+      <div id="icon-button" class="cl-component-group">
+        <h3>Icon Button</h3>
+        <p>纯图标按钮。</p>
+        <div class="cl-canvas">
+          <div class="cl-variant"><div class="cl-variant-label">PRIMARY LG</div><button class="hs-icon-btn hs-icon-btn--lg hs-icon-btn--primary"><i class="ph ph-plus"></i></button></div>
+          <div class="cl-variant"><div class="cl-variant-label">SECONDARY LG</div><button class="hs-icon-btn hs-icon-btn--lg hs-icon-btn--secondary"><i class="ph ph-funnel"></i></button></div>
+          <div class="cl-variant"><div class="cl-variant-label">GHOST LG</div><button class="hs-icon-btn hs-icon-btn--lg hs-icon-btn--ghost"><i class="ph ph-dots-three"></i></button></div>
+          <div class="cl-variant"><div class="cl-variant-label">SM</div><button class="hs-icon-btn hs-icon-btn--sm hs-icon-btn--secondary"><i class="ph ph-x"></i></button></div>
+        </div>
+      </div>
+
+      <div id="toggle-button" class="cl-component-group">
+        <h3>Toggle / Switch</h3>
+        <p>开关切换。</p>
+        <div class="cl-canvas" style="gap:32px;">
+          <div class="cl-variant"><div class="cl-variant-label">OFF</div><div class="switch-row"><button class="hs-toggle hs-toggle--off"><span class="hs-toggle-thumb"></span></button><span style="font-size:13px;color:var(--text2);">关闭提醒</span></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">ON</div><div class="switch-row"><button class="hs-toggle hs-toggle--on"><span class="hs-toggle-thumb"></span></button><span style="font-size:13px;color:var(--text1);">过期提醒</span></div></div>
+        </div>
+      </div>
+
+      <div id="segmented-control" class="cl-component-group">
+        <h3>Segmented Control</h3>
+        <p>分段选择器。</p>
+        <div class="cl-canvas">
+          <div class="hs-segmented">
+            <button class="hs-segment active">全部</button>
+            <button class="hs-segment">食品</button>
+            <button class="hs-segment">日用</button>
+            <button class="hs-segment">清洁</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ INPUTS ═══════ -->
+    <section id="cat-inputs" class="cl-category-panel">
+      <div id="text-input" class="cl-component-group">
+        <h3>Text Input</h3>
+        <p>文本输入框。</p>
+        <div class="cl-canvas" style="flex-direction:column;gap:16px;">
+          <div><div class="cl-variant-label">DEFAULT</div><input class="hs-input" placeholder="输入物资名称..." style="margin-top:6px;"></div>
+          <div><div class="cl-variant-label">FOCUS</div><input class="hs-input is-focus" value="有机鸡蛋" style="margin-top:6px;"></div>
+          <div><div class="cl-variant-label">ERROR</div><input class="hs-input is-error" value="" style="margin-top:6px;"><div style="font-size:12px;color:var(--error);margin-top:4px;">物资名称不能为空</div></div>
+          <div><div class="cl-variant-label">DISABLED</div><input class="hs-input is-disabled" value="已归档" disabled style="margin-top:6px;"></div>
+        </div>
+      </div>
+
+      <div id="textarea" class="cl-component-group">
+        <h3>Textarea</h3>
+        <p>多行文本。</p>
+        <div class="cl-canvas" style="flex-direction:column;gap:16px;">
+          <div><div class="cl-variant-label">DEFAULT</div><textarea class="hs-textarea" placeholder="添加备注..." style="margin-top:6px;width:300px;"></textarea></div>
+          <div><div class="cl-variant-label">FOCUS</div><textarea class="hs-textarea is-focus" style="margin-top:6px;width:300px;">保质期至 2025-05-01，存放于冰箱第二层。</textarea></div>
+        </div>
+      </div>
+
+      <div id="select" class="cl-component-group">
+        <h3>Select</h3>
+        <p>下拉选择。</p>
+        <div class="cl-canvas">
+          <div class="cl-variant"><div class="cl-variant-label">DEFAULT</div><div class="hs-select" style="margin-top:6px;">选择分类 <i class="ph ph-caret-down"></i></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">FOCUS</div><div class="hs-select is-focus" style="margin-top:6px;">食品 <i class="ph ph-caret-down"></i></div></div>
+        </div>
+      </div>
+
+      <div id="checkbox" class="cl-component-group">
+        <h3>Checkbox</h3>
+        <p>复选框。</p>
+        <div class="cl-canvas" style="gap:32px;">
+          <div class="cl-variant"><div class="cl-variant-label">UNCHECKED</div><label class="hs-checkbox"><span class="hs-checkbox-box"></span>过期提醒</label></div>
+          <div class="cl-variant"><div class="cl-variant-label">CHECKED</div><label class="hs-checkbox"><span class="hs-checkbox-box checked"></span>库存不足提醒</label></div>
+          <div class="cl-variant"><div class="cl-variant-label">INDETERMINATE</div><label class="hs-checkbox"><span class="hs-checkbox-box indeterminate"></span>全选</label></div>
+        </div>
+      </div>
+
+      <div id="radio-group" class="cl-component-group">
+        <h3>Radio Group</h3>
+        <p>单选组。</p>
+        <div class="cl-canvas" style="flex-direction:column;gap:12px;">
+          <label class="hs-radio"><span class="hs-radio-circle selected"></span>按名称排序</label>
+          <label class="hs-radio"><span class="hs-radio-circle"></span>按数量排序</label>
+          <label class="hs-radio"><span class="hs-radio-circle"></span>按过期时间排序</label>
+        </div>
+      </div>
+
+      <div id="slider" class="cl-component-group">
+        <h3>Slider</h3>
+        <p>滑动条。</p>
+        <div class="cl-canvas">
+          <div class="cl-variant">
+            <div class="cl-variant-label">DEFAULT (60%)</div>
+            <div class="hs-slider-track" style="margin-top:12px;">
+              <div class="hs-slider-fill" style="width:60%;"></div>
+              <div class="hs-slider-thumb" style="left:calc(60% - 8px);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="date-picker" class="cl-component-group">
+        <h3>Date Picker</h3>
+        <p>日期选择器。</p>
+        <div class="cl-canvas">
+          <div class="hs-datepicker">
+            <div class="hs-datepicker-header"><i class="ph ph-caret-left" style="cursor:pointer;"></i><span>2025年4月</span><i class="ph ph-caret-right" style="cursor:pointer;"></i></div>
+            <div class="hs-datepicker-grid">
+              <div class="hs-datepicker-weekday">日</div><div class="hs-datepicker-weekday">一</div><div class="hs-datepicker-weekday">二</div><div class="hs-datepicker-weekday">三</div><div class="hs-datepicker-weekday">四</div><div class="hs-datepicker-weekday">五</div><div class="hs-datepicker-weekday">六</div>
+              <div class="hs-datepicker-day dim">30</div><div class="hs-datepicker-day dim">31</div><div class="hs-datepicker-day">1</div><div class="hs-datepicker-day">2</div><div class="hs-datepicker-day">3</div><div class="hs-datepicker-day">4</div><div class="hs-datepicker-day">5</div>
+              <div class="hs-datepicker-day">6</div><div class="hs-datepicker-day">7</div><div class="hs-datepicker-day">8</div><div class="hs-datepicker-day">9</div><div class="hs-datepicker-day">10</div><div class="hs-datepicker-day">11</div><div class="hs-datepicker-day">12</div>
+              <div class="hs-datepicker-day">13</div><div class="hs-datepicker-day">14</div><div class="hs-datepicker-day">15</div><div class="hs-datepicker-day">16</div><div class="hs-datepicker-day">17</div><div class="hs-datepicker-day">18</div><div class="hs-datepicker-day">19</div>
+              <div class="hs-datepicker-day">20</div><div class="hs-datepicker-day">21</div><div class="hs-datepicker-day">22</div><div class="hs-datepicker-day today">23</div><div class="hs-datepicker-day selected">24</div><div class="hs-datepicker-day">25</div><div class="hs-datepicker-day">26</div>
+              <div class="hs-datepicker-day">27</div><div class="hs-datepicker-day">28</div><div class="hs-datepicker-day">29</div><div class="hs-datepicker-day">30</div><div class="hs-datepicker-day dim">1</div><div class="hs-datepicker-day dim">2</div><div class="hs-datepicker-day dim">3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ DATA DISPLAY ═══════ -->
+    <section id="cat-data-display" class="cl-category-panel">
+      <div id="card" class="cl-component-group">
+        <h3>Card</h3>
+        <p>卡片组件：标准卡片、统计卡片。</p>
+        <div class="cl-canvas" style="gap:20px;background:var(--background);">
+          <div class="cl-variant">
+            <div class="cl-variant-label">STAT CARD</div>
+            <div class="hs-card hs-card--stat" style="min-width:220px;">
+              <div class="hs-icon-container hs-icon-container--md" style="background:var(--cat-food-bg);color:var(--cat-food);"><i class="ph ph-package"></i></div>
+              <div><div style="font-size:12px;color:var(--text3);">物资总数</div><div style="font-family:var(--font-mono);font-size:28px;font-weight:600;">256</div></div>
+            </div>
+          </div>
+          <div class="cl-variant">
+            <div class="cl-variant-label">DEFAULT</div>
+            <div class="hs-card" style="min-width:220px;">
+              <div style="font-size:16px;font-weight:600;margin-bottom:8px;">最近使用</div>
+              <div style="font-size:13px;color:var(--text2);">有机鸡蛋 · -1盒 · 10分钟前</div>
+            </div>
+          </div>
+          <div class="cl-variant">
+            <div class="cl-variant-label">HOVER</div>
+            <div class="hs-card is-hover" style="min-width:220px;">
+              <div style="font-size:16px;font-weight:600;margin-bottom:8px;">分类管理</div>
+              <div style="font-size:13px;color:var(--text2);">已建 6 个分类</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="avatar" class="cl-component-group">
+        <h3>Avatar</h3>
+        <p>头像。</p>
+        <div class="cl-canvas" style="gap:20px;">
+          <div class="cl-variant"><div class="cl-variant-label">SM 28px</div><div class="hs-avatar hs-avatar--sm" style="background:var(--accent);">张</div></div>
+          <div class="cl-variant"><div class="cl-variant-label">MD 36px</div><div class="hs-avatar hs-avatar--md" style="background:var(--cat-daily);">李</div></div>
+          <div class="cl-variant"><div class="cl-variant-label">LG 48px</div><div class="hs-avatar hs-avatar--lg" style="background:var(--cat-personal);">王</div></div>
+        </div>
+      </div>
+
+      <div id="badge" class="cl-component-group">
+        <h3>Badge</h3>
+        <p>状态徽标。</p>
+        <div class="cl-canvas" style="gap:12px;">
+          <span class="hs-badge hs-badge--success">充足</span>
+          <span class="hs-badge hs-badge--warning">库存不足</span>
+          <span class="hs-badge hs-badge--error">缺货</span>
+          <span class="hs-badge hs-badge--error">已过期</span>
+          <span class="hs-badge hs-badge--info">即将过期</span>
+          <span class="hs-badge hs-badge--neutral">已归档</span>
+        </div>
+      </div>
+
+      <div id="tag" class="cl-component-group">
+        <h3>Tag</h3>
+        <p>分类标签，使用六色系统。</p>
+        <div class="cl-canvas" style="gap:10px;">
+          <span class="hs-tag hs-tag--food">食品</span>
+          <span class="hs-tag hs-tag--daily">日用</span>
+          <span class="hs-tag hs-tag--cleaning">清洁</span>
+          <span class="hs-tag hs-tag--personal">个护</span>
+          <span class="hs-tag hs-tag--health">健康</span>
+          <span class="hs-tag hs-tag--other">其他</span>
+        </div>
+      </div>
+
+      <div id="data-table" class="cl-component-group">
+        <h3>Data Table</h3>
+        <p>数据表格，用于物资清单展示。</p>
+        <div class="cl-canvas" style="padding:0;overflow:auto;">
+          <table class="hs-table" style="min-width:600px;">
+            <thead><tr><th>物资名称</th><th>分类</th><th>数量</th><th>存放位置</th><th>状态</th></tr></thead>
+            <tbody>
+              <tr><td>有机鸡蛋</td><td><span class="hs-tag hs-tag--food">食品</span></td><td style="font-family:var(--font-mono);">12 枚</td><td>冰箱</td><td><span class="hs-badge hs-badge--success">充足</span></td></tr>
+              <tr><td>卫生纸</td><td><span class="hs-tag hs-tag--daily">日用</span></td><td style="font-family:var(--font-mono);">3 卷</td><td>储物柜</td><td><span class="hs-badge hs-badge--warning">库存不足</span></td></tr>
+              <tr><td>洗洁精</td><td><span class="hs-tag hs-tag--cleaning">清洁</span></td><td style="font-family:var(--font-mono);">1 瓶</td><td>厨房</td><td><span class="hs-badge hs-badge--warning">库存不足</span></td></tr>
+              <tr><td>维生素C</td><td><span class="hs-tag hs-tag--health">健康</span></td><td style="font-family:var(--font-mono);">0 瓶</td><td>药箱</td><td><span class="hs-badge hs-badge--error">缺货</span></td></tr>
+              <tr><td>牙膏</td><td><span class="hs-tag hs-tag--personal">个护</span></td><td style="font-family:var(--font-mono);">2 支</td><td>浴室</td><td><span class="hs-badge hs-badge--success">充足</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ NAVIGATION ═══════ -->
+    <section id="cat-navigation" class="cl-category-panel">
+      <div id="tabs" class="cl-component-group">
+        <h3>Tabs</h3>
+        <p>选项卡导航。</p>
+        <div class="cl-canvas">
+          <div class="hs-tabs" style="width:100%;">
+            <button class="hs-tab active">全部物资</button>
+            <button class="hs-tab">食品</button>
+            <button class="hs-tab">日用</button>
+            <button class="hs-tab">清洁</button>
+            <button class="hs-tab">个护</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="breadcrumb" class="cl-component-group">
+        <h3>Breadcrumb</h3>
+        <p>面包屑导航。</p>
+        <div class="cl-canvas">
+          <div class="hs-breadcrumb">
+            <a href="#">首页</a><span class="sep">/</span>
+            <a href="#">物资库</a><span class="sep">/</span>
+            <a href="#">食品</a><span class="sep">/</span>
+            <span class="current">有机鸡蛋</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="pagination" class="cl-component-group">
+        <h3>Pagination</h3>
+        <p>分页控件。</p>
+        <div class="cl-canvas">
+          <div class="hs-pagination">
+            <button class="hs-page-btn"><i class="ph ph-caret-left"></i></button>
+            <button class="hs-page-btn active">1</button>
+            <button class="hs-page-btn">2</button>
+            <button class="hs-page-btn">3</button>
+            <button class="hs-page-btn">4</button>
+            <button class="hs-page-btn">5</button>
+            <button class="hs-page-btn"><i class="ph ph-caret-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div id="nav-menu" class="cl-component-group">
+        <h3>Nav Menu</h3>
+        <p>水平导航菜单。</p>
+        <div class="cl-canvas">
+          <div class="hs-nav-menu">
+            <button class="hs-nav-item active">概览</button>
+            <button class="hs-nav-item">物资库</button>
+            <button class="hs-nav-item">分类</button>
+            <button class="hs-nav-item">统计</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="link" class="cl-component-group">
+        <h3>Link</h3>
+        <p>链接样式。</p>
+        <div class="cl-canvas" style="gap:24px;">
+          <div class="cl-variant"><div class="cl-variant-label">DEFAULT</div><a class="hs-link" href="#">查看全部物资</a></div>
+          <div class="cl-variant"><div class="cl-variant-label">HOVER</div><a class="hs-link" href="#" style="text-decoration:underline;">查看全部物资</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ FEEDBACK ═══════ -->
+    <section id="cat-feedback" class="cl-category-panel">
+      <div id="alert" class="cl-component-group">
+        <h3>Alert</h3>
+        <p>内联警告提示。</p>
+        <div class="cl-canvas" style="flex-direction:column;gap:12px;">
+          <div class="hs-alert hs-alert--success"><i class="ph ph-check-circle"></i><span>物资已成功入库。</span></div>
+          <div class="hs-alert hs-alert--warning"><i class="ph ph-warning"></i><span>5 件物资即将过期，请及时处理。</span></div>
+          <div class="hs-alert hs-alert--error"><i class="ph ph-x-circle"></i><span>纯牛奶已过期 1 天，建议丢弃。</span></div>
+          <div class="hs-alert hs-alert--info"><i class="ph ph-info"></i><span>每周日自动生成购物清单。</span></div>
+        </div>
+      </div>
+
+      <div id="toast" class="cl-component-group">
+        <h3>Toast</h3>
+        <p>顶部中央弹出提示（非右下角）。</p>
+        <div class="cl-canvas" style="flex-direction:column;gap:12px;">
+          <div class="hs-toast"><i class="ph ph-check-circle" style="color:var(--success);"></i><span>保存成功</span></div>
+          <div class="hs-toast"><i class="ph ph-warning" style="color:var(--warning);"></i><span>物资数量已更新</span></div>
+          <div class="hs-toast"><i class="ph ph-x-circle" style="color:var(--error);"></i><span>删除失败，请重试</span></div>
+        </div>
+      </div>
+
+      <div id="progress" class="cl-component-group">
+        <h3>Progress</h3>
+        <p>进度条。</p>
+        <div class="cl-canvas" style="flex-direction:column;gap:16px;">
+          <div class="cl-variant"><div class="cl-variant-label">NORMAL (65%)</div><div class="hs-progress" style="margin-top:6px;"><div class="hs-progress-fill" style="width:65%;background:var(--accent);"></div></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">WARNING (85%)</div><div class="hs-progress" style="margin-top:6px;"><div class="hs-progress-fill" style="width:85%;background:var(--warning);"></div></div></div>
+          <div class="cl-variant"><div class="cl-variant-label">ERROR (95%)</div><div class="hs-progress" style="margin-top:6px;"><div class="hs-progress-fill" style="width:95%;background:var(--error);"></div></div></div>
+        </div>
+      </div>
+
+      <div id="spinner" class="cl-component-group">
+        <h3>Spinner</h3>
+        <p>加载指示器（HomeStock 不使用骨架屏）。</p>
+        <div class="cl-canvas" style="justify-content:center;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+            <div class="hs-spinner"></div>
+            <span style="font-size:13px;color:var(--text3);">加载中...</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="empty-state" class="cl-component-group">
+        <h3>Empty State</h3>
+        <p>空状态占位。</p>
+        <div class="cl-canvas">
+          <div class="hs-empty">
+            <i class="ph ph-package"></i>
+            <h4>暂无物资记录</h4>
+            <p>添加第一件物资，开始管理你的家庭库存吧。</p>
+            <button class="hs-btn hs-btn--primary hs-btn--lg">添加物资</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ OVERLAYS ═══════ -->
+    <section id="cat-overlays" class="cl-category-panel">
+      <div id="modal" class="cl-component-group">
+        <h3>Modal</h3>
+        <p>模态弹窗。</p>
+        <div class="cl-canvas" style="background:rgba(16,24,40,0.15);justify-content:center;padding:48px;">
+          <div class="hs-modal-preview">
+            <button class="hs-modal-close"><i class="ph ph-x"></i></button>
+            <h4>确认删除</h4>
+            <p>确定要删除「纯牛奶」吗？此操作不可撤销。</p>
+            <div style="display:flex;justify-content:flex-end;gap:12px;">
+              <button class="hs-btn hs-btn--secondary hs-btn--lg">取消</button>
+              <button class="hs-btn hs-btn--destructive hs-btn--lg">删除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="popover" class="cl-component-group">
+        <h3>Popover</h3>
+        <p>弹出菜单。</p>
+        <div class="cl-canvas">
+          <div class="hs-popover">
+            <div class="hs-popover-item"><i class="ph ph-pencil-simple" style="margin-right:8px;"></i>编辑</div>
+            <div class="hs-popover-item"><i class="ph ph-copy" style="margin-right:8px;"></i>复制</div>
+            <div class="hs-popover-item"><i class="ph ph-archive" style="margin-right:8px;"></i>归档</div>
+            <div class="hs-popover-item" style="color:var(--error);"><i class="ph ph-trash" style="margin-right:8px;"></i>删除</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tooltip" class="cl-component-group">
+        <h3>Tooltip</h3>
+        <p>悬浮提示。</p>
+        <div class="cl-canvas" style="gap:32px;">
+          <div class="cl-variant"><div class="cl-variant-label">TOP</div><div class="hs-tooltip" style="margin-top:12px;">剩余 3 天过期</div></div>
+        </div>
+      </div>
+
+      <div id="accordion" class="cl-component-group">
+        <h3>Accordion</h3>
+        <p>手风琴折叠面板。</p>
+        <div class="cl-canvas">
+          <div class="hs-accordion">
+            <div class="hs-accordion-item">
+              <button class="hs-accordion-header open">食品类 (86件) <i class="ph ph-caret-down"></i></button>
+              <div class="hs-accordion-content">包含鸡蛋、牛奶、面包、调味品等日常食品物资。定期检查保质期，确保食品安全。</div>
+            </div>
+            <div class="hs-accordion-item">
+              <button class="hs-accordion-header">日用类 (52件) <i class="ph ph-caret-down"></i></button>
+            </div>
+            <div class="hs-accordion-item">
+              <button class="hs-accordion-header">清洁类 (38件) <i class="ph ph-caret-down"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="floating-bar">
+  <button class="mode-btn active" data-mode="light"><i class="ph ph-sun"></i> Light</button>
+  <button class="mode-btn" data-mode="dark"><i class="ph ph-moon"></i> Dark</button>
+</div>
+
+<script>
+  // 1. Dark/light mode toggle
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.documentElement.dataset.theme = btn.dataset.mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // 2. Category tab switching
+  function switchCategory(cat) {
+    document.querySelectorAll('.cl-category-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.cl-toc-category').forEach(h => h.classList.remove('active'));
+    const panel = document.getElementById('cat-' + cat);
+    const header = document.querySelector(`.cl-toc-category[data-cat="${cat}"]`);
+    if (panel) panel.classList.add('active');
+    if (header) header.classList.add('active');
+  }
+  document.querySelectorAll('.cl-toc-category').forEach(h => {
+    h.addEventListener('click', () => switchCategory(h.dataset.cat));
+  });
+
+  // 3. Sub-item deep-linking
+  document.querySelectorAll('.cl-toc-sub').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchCategory(a.dataset.cat);
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: 'smooth' }));
+    });
+  });
+
+  // 4. Scroll-tracking
+  const mainEl = document.querySelector('.cl-main');
+  const groups = document.querySelectorAll('.cl-component-group');
+  const tocSubs = document.querySelectorAll('.cl-toc-sub');
+  mainEl.addEventListener('scroll', () => {
+    let activeId = null;
+    groups.forEach(g => { if (g.getBoundingClientRect().top <= 120) activeId = g.id; });
+    if (activeId) tocSubs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + activeId));
+  }, { passive: true });
+
+  // 5. Disable non-TOC anchors
+  document.querySelectorAll('a').forEach(a => {
+    if (a.closest('.cl-toc')) return;
+    a.addEventListener('click', e => e.preventDefault());
+  });
+</script>
+</body>
+</html>

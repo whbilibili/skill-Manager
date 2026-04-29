@@ -1,11 +1,11 @@
 ---
 name: citadel-database
-description: "学城多维表格操作工具。支持:文档/表格创建与管理、数据增删改查、批量操作、筛选排序、文件上传、账号转换。当用户需要操作多维表格、批量处理表格数据、数据同步、数据收集、表格自动化时使用。触发词:表格、多维表格、XTable、批量操作、数据导入。"
+description: "学城多维表格操作工具。支持:文档/表格创建与管理、数据增删改查、批量操作、筛选排序、文件上传、账号转换。当用户需要操作多维表格、批量处理表格数据、数据同步、数据收集、表格自动化时使用。触发词:表格、多维表格、XTable、批量操作、数据导入、数据收集。"
 
 metadata:
   skillhub.creator: "zhangshufei02"
-  skillhub.updater: "zhangshufei02"
-  skillhub.version: "V14"
+  skillhub.updater: "zhaojingchao"
+  skillhub.version: "V18"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "3859"
   skillhub.high_sensitive: "true"
@@ -32,6 +32,7 @@ metadata:
     - [Node.js 版本检查](#nodejs-版本检查)
     - [CLI 可用性检查](#cli-可用性检查)
   - [意图路由](#意图路由)
+    - [用户贴入多维表格链接时的处理规则（必须遵守）](#用户贴入多维表格链接时的处理规则必须遵守)
   - [CLI 速查](#cli-速查)
   - [典型工作流](#典型工作流)
     - [📝 文档级别操作（使用 citadel 命令）](#-文档级别操作使用-citadel-命令)
@@ -90,16 +91,19 @@ node -e "const cp=require('child_process'); const probe=process.platform==='win3
 | 用户意图                    | 命令                                    |
 | -------------------------- | --------------------------------------- |
 | 创建一个新的多维表格文档     | `createDatabase [--contentTitle <标题>] [--tableTitle <表格>]` <br/>💡 标题可为空；不指定 `--parentId` 时创建在用户自己空间下，无需 `--mis` 参数 |
+| 复制整个多维表格文档         | `createDatabase --contentTitle <标题> --sourceContentId <原文档ID> [--keepData true]` |
 | 在现有文档中创建新数据表     | `createTable --contentId <id> [--tableTitle "任务表"] --columnMeta '[{"columnName":"任务名","columnType":1}]'` |
-| 复制数据表到指定文档/表格    | `copyTable --sourceTableId <源ID> --targetParentId <目标ID> [--targetType <3\|4>]` |
+| 复制数据表到多维文档/学城文档 | `copyTable --sourceTableId <源ID> --targetParentId <目标ID> [--targetType <3\|4>]` <br/>💡 目标是学城文档时需额外执行 `updateDocumentByMd` 插入 `:::xtable` |
 | 查看文档下有哪些表格         | `listTables --contentId <id>`                 |
 | 查询表格的列结构（columnId） | `getTableMeta --tableId <id>`                          |
-| 查询表格中的数据             | `queryTableData --tableId <id> [--columnIds <列ID>] [--filter <条件>] [--sort <排序>]` |
+| 查询表格中的数据             | `queryTableData --tableId <id> [--columnIds <列ID>] [--filter <条件>] [--sort <排序>] --max-pages 10` <br/>💡 默认加 `--max-pages 10` 预览前 10 页，需全量时再去掉 |
 | 向表格中添加新数据           | `addData --tableId <id> --columnIds <列ID> --data '[...]'` |
 | 更新表格中的数据             | `updateData --tableId <id> --rowIds <行ID> --data '[...]'` |
 | 删除表格中的数据             | `deleteData --tableId <id> --rowIds "123456,123457"` |
 | 重命名数据表                 | `renameTable --tableId <id> --title "新表格名称"`    |
 | 数据表排序                   | `sortTable --tableId <id> --to 2`                    |
+| 为数据表新增列               | `addTableColumns --tableId <id> --columnMetas '[{"columnName":"名称", "columnType": 1}]'` <br/>⚠️ 单选(3)/多选(5)列必须提供 `columnConfig.options`，例如：`{"columnName":"状态","columnType":3,"columnConfig":{"options":["选项1","选项2"]}}` |
+| 修改已有列名称          | `updateColumnConfig --tableId <id> --columnId <cid> --columnName "新名称"` |
 | **查询用户信息（账号转换）** | `getUserInfo --misList 'mis1,mis2'`                     |
 | **通过 UID 查询 MIS/empId** | `queryUserIdentityByUid --uidList 'uid1,uid2'`         |
 | **上传本地文件到表格**       | `uploadFile --contentId <id> --tableId <id> --file <路径>` |
@@ -128,7 +132,7 @@ node -e "const cp=require('child_process'); const probe=process.platform==='win3
 
 **阶段 3: 数据操作** — `addData` / `updateData` / `queryTableData` / `deleteData`
 
-**阶段 4: 验证** — `queryTableData` 确认修改成功
+**阶段 4: 验证** — `queryTableData` 确认修改成功；若操作涉及日期列，必须检查返回的 `dateCellValue` 对应日期是否与预期一致
 
 ### 📝 文档级别操作（使用 citadel 命令）
 
@@ -186,7 +190,7 @@ node -e "const cp=require('child_process'); const probe=process.platform==='win3
 
 ## 复制数据表
 
-将数据表复制到指定目标文档或表格。底层 `type` 仅支持：`3=学城文档`、`4=多维表格`；不传 `--targetType` 时会自动识别。详细参数见 `{baseDir}/references/cli-reference.md`。
+根据目标不同分三个场景：A) 复制整个多维表格文档用 `createDatabase --sourceContentId`；B) 复制数据表到学城文档需 `copyTable` 后再插入 `:::xtable`；C) 复制数据表到另一个多维文档用 `copyTable --targetType 4`。详细步骤见 `{baseDir}/references/cli-reference.md` 的 `createDatabase` / `copyTable` 章节。
 
 ## 账号转换（MIS ↔ empId ↔ UID）
 
@@ -207,7 +211,7 @@ node -e "const cp=require('child_process'); const probe=process.platform==='win3
 | 4 | 人员 | `empId[]` | `[2015738,2015739]` |
 | 5 | 多选 | `string[]` | `["标签1","标签2"]` |
 | 6 | 附件 | `string[]` (JSON) | `[JSON.stringify({attachmentId:0,name:"f.png",url:"…"})]` |
-| 7 | 日期 | `number` (timestamp ms) | `1704067200000` (2024-01-01) |
+| 7 | 日期 | `string` (日期字符串，推荐) 或 `number` (timestamp ms) | `"2026-04-27"` 或 `"2026-04-27T09:00"` |
 | 8 | 货币 | `number` | `99.99` |
 | 9 | 公式 | 只读 | 不支持写入 |
 | 10 | 查找引用 | 只读 | 不支持写入 |
@@ -229,13 +233,15 @@ oa-skills citadel-database getUserInfo --misList '["zhangsan", "lisi"]'
 - **列类型严格校验**：必须按列类型表传入正确格式，否则 API 报错
 - **数据量限制**：单次操作最多 500 行；批量写建议每批 ≤100 行，超 500 行自动分批
 - **列类型选择强制要求**：创建表格时必须根据数据用途选对应列类型，不要全部用文本列
+- **单选/多选列必须提供 options**：新增单选（columnType: 3）或多选（columnType: 5）列时，`columnConfig.options` 为必填项且至少需要一个选项，否则命令报错。示例：`{"columnName":"状态","columnType":3,"columnConfig":{"options":["未开始","进行中","已完成"]}}`
 - **筛选语法**：`operator` 只使用"筛选和排序"章节列出的枚举值；`filterValue` 始终传 `string[]`，`isnull`/`notnull` 传 `[]`
 - **风控要求**：不得在输出中包含内部 IP、Token、敏感密钥
+- **日期列推荐传字符串**：日期列（columnType: 7）推荐直接传 `"YYYY-MM-DD"` 或 `"YYYY-MM-DDTHH:mm"` 字符串，CLI 内部自动按本地时区转换为毫秒时间戳，无需手动计算。若传数字时间戳，禁止手写，必须通过代码计算
 
 ## 暂不支持
 
-- 列的删除和修改
-- 表格结构变更（添加/删除/修改列）
+- 修改列类型、列配置
+- 列的删除
 
 用户要求时明确说明"当前暂不支持"。替代方案：可通过 Web UI 手动操作。
 
@@ -274,9 +280,11 @@ https://km.it.test.sankuai.com/xtable/{contentId}?table={tableId}&view={viewId}
 1. **先查询元数据**：使用 `getTableMeta` 获取列 ID、列类型、列配置后再操作数据
    - 从 `columnConfig.options` 获取单选/多选的有效选项
    - 检查 `columnConfig.multiple` 确认人员列是否支持多选
-2. **数据格式准备**：单选/多选用 `options.label`；人员列用 empId；日期/数字直接用原始类型（`formatter` 只影响 UI 展示）
-3. **群场景建表后补权限**：在大象群创建文档后立即执行两步授权
-4. **错误排查**：检查错误信息中的 TraceID 用于问题追踪
+2. **数据查询默认用预览模式**：执行 `queryTableData` 时，除非用户明确说"获取全部数据""导出所有""分析全量"，否则**必须加 `--max-pages 10`**，取到数据后展示摘要并询问用户是否需要继续获取剩余数据
+3. **数据格式准备**：单选/多选用 `options.label`；人员列用 empId；日期/数字直接用原始类型（`formatter` 只影响 UI 展示）
+   - ✅ **日期列推荐直接传日期字符串**：传 `"2026-04-27"` 或 `"2026-04-27T09:00"`，CLI 自动按本地时区转换时间戳，无需计算。若必须传数字，须用 `node -e "console.log(new Date('2026-04-27 00:00:00').getTime())"` 实时计算，禁止手写
+4. **群场景建表后补权限**：在大象群创建文档后立即执行两步授权
+5. **错误排查**：检查错误信息中的 TraceID 用于问题追踪
 
 ## 常见问题
 
@@ -284,7 +292,19 @@ https://km.it.test.sankuai.com/xtable/{contentId}?table={tableId}&view={viewId}
 A: `getTableMeta` 查询表格元数据。
 
 **Q: 日期格式如何处理？**  
-A: 日期使用毫秒时间戳（13位数字），如 `1704067200000`（对应 2024-01-01）。可通过 `new Date("2024-01-01").getTime()` 转换。`formatter` 只影响 UI 展示，不影响读写。
+A: 推荐直接传日期字符串，CLI 自动按本地时区转换为时间戳：
+```bash
+# ✅ 推荐：传字符串，无需计算
+--data '[["2026-04-27"]]'
+--data '[["2026-04-27T09:00"]]'
+
+# ✅ 也支持：带时区的 ISO 字符串
+--data '[["2026-04-27T09:00:00+08:00"]]'
+
+# ⚠️ 兼容：传毫秒时间戳（须用代码计算，禁止手写）
+--data '[[1745712000000]]'
+```
+`formatter` 只影响 UI 展示，不影响读写。
 
 **Q: 如何处理人员类型？**  
 A: 人员类型使用 empId 数字数组，用 `getUserInfo` 命令转换 MIS → empId。

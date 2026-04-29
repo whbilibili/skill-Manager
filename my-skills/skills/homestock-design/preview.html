@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeStock — Design Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2/src/regular/style.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ── Light Mode ── */
+    :root,
+    [data-theme="light"] {
+      --background: #F0F2F5;
+      --surface1: #FFFFFF;
+      --surface2: #F7F8FA;
+      --surface3: #E4E7EC;
+      --border: #E4E7EC;
+      --border-visible: #D0D5DD;
+      --text1: #101828;
+      --text2: #475467;
+      --text3: #667085;
+      --text4: #98A2B3;
+      --accent: #43A047;
+      --accent-subtle: #E8F5E9;
+      --success: #43A047;
+      --success-bg: #E8F5E9;
+      --warning: #FF9800;
+      --warning-bg: #FFF8E1;
+      --error: #E53935;
+      --error-bg: #FEF3F2;
+      --cat-food: #43A047;
+      --cat-food-bg: #E8F5E9;
+      --cat-daily: #4A90D9;
+      --cat-daily-bg: #E3F2FD;
+      --cat-cleaning: #FF9800;
+      --cat-cleaning-bg: #FFF8E1;
+      --cat-personal: #E91E63;
+      --cat-personal-bg: #FCE4EC;
+      --cat-health: #9C27B0;
+      --cat-health-bg: #F3E5F5;
+      --cat-other: #7C4DFF;
+      --cat-other-bg: #EDE7F6;
+      --font-display: "Noto Sans SC", "PingFang SC", -apple-system, sans-serif;
+      --font-body: "Noto Sans SC", "PingFang SC", -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+      --shadow-1: 0 1px 3px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04);
+      --shadow-2: 0 4px 12px rgba(16,24,40,0.08), 0 2px 4px rgba(16,24,40,0.04);
+    }
+
+    /* ── Dark Mode ── */
+    [data-theme="dark"] {
+      --background: #0C111D;
+      --surface1: #101828;
+      --surface2: #1D2939;
+      --surface3: #344054;
+      --border: #1D2939;
+      --border-visible: #344054;
+      --text1: #F7F8FA;
+      --text2: #98A2B3;
+      --text3: #667085;
+      --text4: #475467;
+      --accent: #66BB6A;
+      --accent-subtle: #0A2E0E;
+      --success: #43A047;
+      --success-bg: #0A2E0E;
+      --warning: #FF9800;
+      --warning-bg: #3D2200;
+      --error: #E53935;
+      --error-bg: #3D0D0D;
+      --cat-food-bg: #0A2E0E;
+      --cat-daily-bg: #0D1F33;
+      --cat-cleaning-bg: #3D2200;
+      --cat-personal-bg: #3D0D1F;
+      --cat-health-bg: #2A0A33;
+      --cat-other-bg: #1A0D33;
+      --shadow-1: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-2: 0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    html, body {
+      font-family: var(--font-body);
+      background: var(--background);
+      color: var(--text1);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      transition: background 500ms ease, color 500ms ease;
+    }
+
+    .grid {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 160px 220px 240px 200px auto;
+      gap: 16px;
+      padding-bottom: 96px;
+    }
+
+    .card {
+      background: var(--surface1);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
+      min-width: 0;
+      min-height: 0;
+      transition: background 500ms ease, box-shadow 500ms ease;
+    }
+
+    .card-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text3);
+      margin-bottom: 12px;
+    }
+
+    /* ── Icon Container (signature) ── */
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    /* ── 1. Total Items (stat) ── */
+    .stat-total { grid-column: 1; grid-row: 1; }
+    .stat-row { display: flex; align-items: center; gap: 16px; }
+    .stat-value { font-family: var(--font-mono); font-size: 28px; font-weight: 600; color: var(--text1); }
+    .stat-change { font-size: 12px; display: flex; align-items: center; gap: 4px; }
+    .stat-change.up { color: var(--success); }
+    .stat-change.down { color: var(--error); }
+
+    /* ── 2. Total Value (stat) ── */
+    .stat-value-card { grid-column: 2; grid-row: 1; }
+
+    /* ── 3. Categories (stat) ── */
+    .stat-categories { grid-column: 3; grid-row: 1; }
+
+    /* ── 4. Expiring Soon (stat) ── */
+    .stat-expiring { grid-column: 4; grid-row: 1; }
+
+    /* ── 5. Recent Usage (list) ── */
+    .usage-list { grid-column: 1 / 3; grid-row: 2; }
+    .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .list-title { font-size: 16px; font-weight: 600; color: var(--text1); }
+    .list-link { font-size: 12px; color: var(--accent); text-decoration: none; cursor: pointer; }
+    .list-link:hover { text-decoration: underline; }
+    .usage-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .usage-row:last-child { border-bottom: none; }
+    .usage-img {
+      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .usage-info { flex: 1; min-width: 0; }
+    .usage-name { font-size: 14px; color: var(--text1); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .usage-cat { font-size: 12px; color: var(--text3); }
+    .usage-qty { font-family: var(--font-mono); font-size: 14px; color: var(--text1); white-space: nowrap; }
+    .usage-time { font-size: 12px; color: var(--text3); white-space: nowrap; }
+
+    /* ── 6. Category Breakdown (chart) ── */
+    .cat-breakdown { grid-column: 3 / 5; grid-row: 2; }
+    .bar-chart { display: flex; gap: 10px; align-items: flex-end; height: 120px; margin-top: 8px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+    .bar-track { width: 28px; border-radius: 6px; position: relative; }
+    .bar-label { font-size: 11px; color: var(--text3); text-align: center; }
+    .bar-value { font-family: var(--font-mono); font-size: 11px; color: var(--text2); }
+
+    /* ── 7. Expiry Alerts (list) ── */
+    .expiry-alerts { grid-column: 1 / 3; grid-row: 3; }
+    .alert-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .alert-row:last-child { border-bottom: none; }
+    .alert-badge {
+      display: inline-flex; align-items: center; padding: 4px 10px;
+      border-radius: 999px; font-size: 11px; font-weight: 500; line-height: 1; white-space: nowrap;
+    }
+    .alert-badge.expired { background: var(--error-bg); color: var(--error); }
+    .alert-badge.expiring { background: var(--warning-bg); color: var(--warning); }
+    .alert-action {
+      font-size: 12px; color: var(--accent); background: transparent;
+      border: 1px solid var(--accent); border-radius: 8px; padding: 4px 12px;
+      cursor: pointer; white-space: nowrap; font-family: var(--font-body);
+    }
+
+    /* ── 8. Quick Actions ── */
+    .quick-actions { grid-column: 3; grid-row: 3; }
+    .action-grid { display: flex; flex-direction: column; gap: 10px; }
+    .action-btn {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-radius: 8px;
+      background: var(--surface2); border: none; cursor: pointer;
+      font-family: var(--font-body); font-size: 14px; color: var(--text1);
+      transition: background 150ms ease;
+    }
+    .action-btn:hover { background: var(--surface3); }
+    .action-btn i { font-size: 20px; color: var(--accent); }
+
+    /* ── 9. Storage Locations ── */
+    .storage-locations { grid-column: 4; grid-row: 3; }
+    .location-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .location-row:last-child { border-bottom: none; }
+    .location-left { display: flex; align-items: center; gap: 10px; }
+    .location-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; font-size: 16px;
+    }
+    .location-name { font-size: 13px; color: var(--text1); }
+    .location-count { font-family: var(--font-mono); font-size: 13px; color: var(--text2); }
+
+    /* ── 10. Monthly Cost Trend ── */
+    .cost-trend { grid-column: 1 / 3; grid-row: 4; }
+    .sparkline-container { display: flex; align-items: flex-end; gap: 8px; height: 100px; margin-top: 8px; }
+    .spark-bar { flex: 1; border-radius: 4px; background: var(--accent); opacity: 0.6; transition: opacity 150ms; position: relative; }
+    .spark-bar:last-child { opacity: 1; }
+    .spark-bar:hover { opacity: 1; }
+    .spark-labels { display: flex; gap: 8px; margin-top: 6px; }
+    .spark-label { flex: 1; text-align: center; font-size: 10px; color: var(--text4); }
+    .trend-header { display: flex; justify-content: space-between; align-items: baseline; }
+    .trend-amount { font-family: var(--font-mono); font-size: 24px; font-weight: 600; color: var(--text1); }
+
+    /* ── 11. Token Key ── */
+    .token-key { grid-column: 3 / 5; grid-row: 4; }
+    .swatch-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    .swatch {
+      width: 32px; height: 32px; border-radius: 8px; position: relative;
+      border: 1px solid var(--border);
+    }
+    .swatch-label { font-size: 9px; color: var(--text4); text-align: center; margin-top: 2px; }
+    .type-sample { margin-bottom: 4px; }
+    .type-display { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--text1); }
+    .type-body { font-family: var(--font-body); font-size: 14px; color: var(--text2); }
+    .type-mono { font-family: var(--font-mono); font-size: 13px; color: var(--text3); }
+    .spacing-row { display: flex; gap: 4px; align-items: flex-end; margin-top: 8px; }
+    .spacing-block { background: var(--accent); border-radius: 2px; opacity: 0.5; }
+
+    /* ── Floating Bar ── */
+    .floating-bar {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 999px;
+      background: var(--surface1);
+      border: 1.5px solid var(--border);
+      box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.12);
+      transition: background 500ms ease, border-color 500ms ease;
+    }
+    .mode-btn {
+      height: 32px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text3);
+      transition: background 200ms ease, color 200ms ease;
+      outline: none;
+    }
+    .mode-btn:hover { color: var(--text1); }
+    .mode-btn.active {
+      background: var(--surface3);
+      color: var(--text1);
+    }
+    .mode-btn i { font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="grid">
+
+  <!-- 1. Total Items -->
+  <div class="card stat-total">
+    <div class="card-label">物资总数</div>
+    <div class="stat-row">
+      <div class="icon-box" style="background: var(--cat-food-bg); color: var(--cat-food);">
+        <i class="ph ph-package"></i>
+      </div>
+      <div>
+        <div class="stat-value">256</div>
+        <div class="stat-change up"><i class="ph ph-arrow-up"></i> +12 本月</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Total Value -->
+  <div class="card stat-value-card">
+    <div class="card-label">库存总值</div>
+    <div class="stat-row">
+      <div class="icon-box" style="background: var(--cat-daily-bg); color: var(--cat-daily);">
+        <i class="ph ph-currency-cny"></i>
+      </div>
+      <div>
+        <div class="stat-value" style="font-size: 24px;">&yen;4,568</div>
+        <div class="stat-change down"><i class="ph ph-arrow-down"></i> -8% 较上月</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Categories -->
+  <div class="card stat-categories">
+    <div class="card-label">分类数量</div>
+    <div class="stat-row">
+      <div class="icon-box" style="background: var(--cat-cleaning-bg); color: var(--cat-cleaning);">
+        <i class="ph ph-squares-four"></i>
+      </div>
+      <div>
+        <div class="stat-value">6</div>
+        <div class="stat-change" style="color: var(--text3);">已覆盖全部</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Expiring Soon -->
+  <div class="card stat-expiring">
+    <div class="card-label">即将过期</div>
+    <div class="stat-row">
+      <div class="icon-box" style="background: var(--error-bg); color: var(--error);">
+        <i class="ph ph-warning-circle"></i>
+      </div>
+      <div>
+        <div class="stat-value">7</div>
+        <div class="stat-change down"><i class="ph ph-arrow-up"></i> +3 件</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Recent Usage -->
+  <div class="card usage-list">
+    <div class="list-header">
+      <span class="list-title">最近使用</span>
+      <a class="list-link" href="#">查看全部 &gt;</a>
+    </div>
+    <div class="usage-row">
+      <div class="usage-img" style="background: var(--cat-food-bg); color: var(--cat-food);"><i class="ph ph-egg"></i></div>
+      <div class="usage-info"><div class="usage-name">有机鸡蛋</div><div class="usage-cat">食品</div></div>
+      <div class="usage-qty">-1 盒</div>
+      <div class="usage-time">10分钟前</div>
+    </div>
+    <div class="usage-row">
+      <div class="usage-img" style="background: var(--cat-daily-bg); color: var(--cat-daily);"><i class="ph ph-toilet-paper"></i></div>
+      <div class="usage-info"><div class="usage-name">卫生纸</div><div class="usage-cat">日用</div></div>
+      <div class="usage-qty">-2 卷</div>
+      <div class="usage-time">1小时前</div>
+    </div>
+    <div class="usage-row">
+      <div class="usage-img" style="background: var(--cat-cleaning-bg); color: var(--cat-cleaning);"><i class="ph ph-spray-bottle"></i></div>
+      <div class="usage-info"><div class="usage-name">洗洁精</div><div class="usage-cat">清洁</div></div>
+      <div class="usage-qty">-1 瓶</div>
+      <div class="usage-time">3小时前</div>
+    </div>
+    <div class="usage-row">
+      <div class="usage-img" style="background: var(--cat-personal-bg); color: var(--cat-personal);"><i class="ph ph-tooth"></i></div>
+      <div class="usage-info"><div class="usage-name">牙膏</div><div class="usage-cat">个护</div></div>
+      <div class="usage-qty">-1 支</div>
+      <div class="usage-time">昨天</div>
+    </div>
+  </div>
+
+  <!-- 6. Category Breakdown -->
+  <div class="card cat-breakdown">
+    <div class="card-label">分类物资分布</div>
+    <div class="bar-chart">
+      <div class="bar-col">
+        <div class="bar-value">86</div>
+        <div class="bar-track" style="height: 86%; background: var(--cat-food);"></div>
+        <div class="bar-label">食品</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-value">52</div>
+        <div class="bar-track" style="height: 52%; background: var(--cat-daily);"></div>
+        <div class="bar-label">日用</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-value">38</div>
+        <div class="bar-track" style="height: 38%; background: var(--cat-cleaning);"></div>
+        <div class="bar-label">清洁</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-value">34</div>
+        <div class="bar-track" style="height: 34%; background: var(--cat-personal);"></div>
+        <div class="bar-label">个护</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-value">28</div>
+        <div class="bar-track" style="height: 28%; background: var(--cat-health);"></div>
+        <div class="bar-label">健康</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-value">18</div>
+        <div class="bar-track" style="height: 18%; background: var(--cat-other);"></div>
+        <div class="bar-label">其他</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Expiry Alerts -->
+  <div class="card expiry-alerts">
+    <div class="list-header">
+      <span class="list-title">过期预警</span>
+      <a class="list-link" href="#">查看全部 &gt;</a>
+    </div>
+    <div class="alert-row">
+      <div class="usage-img" style="background: var(--cat-food-bg); color: var(--cat-food);"><i class="ph ph-bread"></i></div>
+      <div class="usage-info"><div class="usage-name">全麦面包</div><div class="usage-cat">食品 · 剩余 2 天</div></div>
+      <span class="alert-badge expiring">即将过期</span>
+      <button class="alert-action">去补货</button>
+    </div>
+    <div class="alert-row">
+      <div class="usage-img" style="background: var(--cat-food-bg); color: var(--cat-food);"><i class="ph ph-drop"></i></div>
+      <div class="usage-info"><div class="usage-name">纯牛奶</div><div class="usage-cat">食品 · 已过期 1 天</div></div>
+      <span class="alert-badge expired">已过期</span>
+      <button class="alert-action">去补货</button>
+    </div>
+    <div class="alert-row">
+      <div class="usage-img" style="background: var(--cat-health-bg); color: var(--cat-health);"><i class="ph ph-pill"></i></div>
+      <div class="usage-info"><div class="usage-name">维生素C</div><div class="usage-cat">健康 · 剩余 5 天</div></div>
+      <span class="alert-badge expiring">即将过期</span>
+      <button class="alert-action">去补货</button>
+    </div>
+    <div class="alert-row">
+      <div class="usage-img" style="background: var(--cat-personal-bg); color: var(--cat-personal);"><i class="ph ph-eye"></i></div>
+      <div class="usage-info"><div class="usage-name">眼药水</div><div class="usage-cat">个护 · 剩余 3 天</div></div>
+      <span class="alert-badge expiring">即将过期</span>
+      <button class="alert-action">去补货</button>
+    </div>
+  </div>
+
+  <!-- 8. Quick Actions -->
+  <div class="card quick-actions">
+    <div class="card-label">快捷操作</div>
+    <div class="action-grid">
+      <button class="action-btn"><i class="ph ph-plus-circle"></i> 添加物资</button>
+      <button class="action-btn"><i class="ph ph-barcode"></i> 扫码入库</button>
+      <button class="action-btn"><i class="ph ph-shopping-cart"></i> 生成购物清单</button>
+      <button class="action-btn"><i class="ph ph-chart-pie"></i> 查看统计</button>
+    </div>
+  </div>
+
+  <!-- 9. Storage Locations -->
+  <div class="card storage-locations">
+    <div class="card-label">存放位置</div>
+    <div class="location-row">
+      <div class="location-left">
+        <div class="location-icon" style="background: var(--cat-food-bg); color: var(--cat-food);"><i class="ph ph-snowflake"></i></div>
+        <span class="location-name">冰箱</span>
+      </div>
+      <span class="location-count">68</span>
+    </div>
+    <div class="location-row">
+      <div class="location-left">
+        <div class="location-icon" style="background: var(--cat-daily-bg); color: var(--cat-daily);"><i class="ph ph-door"></i></div>
+        <span class="location-name">储物柜</span>
+      </div>
+      <span class="location-count">52</span>
+    </div>
+    <div class="location-row">
+      <div class="location-left">
+        <div class="location-icon" style="background: var(--cat-cleaning-bg); color: var(--cat-cleaning);"><i class="ph ph-bathtub"></i></div>
+        <span class="location-name">浴室</span>
+      </div>
+      <span class="location-count">34</span>
+    </div>
+    <div class="location-row">
+      <div class="location-left">
+        <div class="location-icon" style="background: var(--cat-health-bg); color: var(--cat-health);"><i class="ph ph-first-aid-kit"></i></div>
+        <span class="location-name">药箱</span>
+      </div>
+      <span class="location-count">18</span>
+    </div>
+  </div>
+
+  <!-- 10. Monthly Cost Trend -->
+  <div class="card cost-trend">
+    <div class="trend-header">
+      <div>
+        <div class="card-label">月度支出趋势</div>
+        <div class="trend-amount">&yen;1,280</div>
+      </div>
+      <div class="stat-change down" style="font-size: 13px;"><i class="ph ph-arrow-down"></i> -12%</div>
+    </div>
+    <div class="sparkline-container">
+      <div class="spark-bar" style="height: 60%;"></div>
+      <div class="spark-bar" style="height: 75%;"></div>
+      <div class="spark-bar" style="height: 55%;"></div>
+      <div class="spark-bar" style="height: 90%;"></div>
+      <div class="spark-bar" style="height: 82%;"></div>
+      <div class="spark-bar" style="height: 65%;"></div>
+      <div class="spark-bar" style="height: 70%;"></div>
+      <div class="spark-bar" style="height: 95%;"></div>
+      <div class="spark-bar" style="height: 78%;"></div>
+      <div class="spark-bar" style="height: 60%;"></div>
+      <div class="spark-bar" style="height: 85%;"></div>
+      <div class="spark-bar" style="height: 68%;"></div>
+    </div>
+    <div class="spark-labels">
+      <span class="spark-label">1月</span><span class="spark-label">2月</span>
+      <span class="spark-label">3月</span><span class="spark-label">4月</span>
+      <span class="spark-label">5月</span><span class="spark-label">6月</span>
+      <span class="spark-label">7月</span><span class="spark-label">8月</span>
+      <span class="spark-label">9月</span><span class="spark-label">10月</span>
+      <span class="spark-label">11月</span><span class="spark-label">12月</span>
+    </div>
+  </div>
+
+  <!-- 11. Token Key -->
+  <div class="card token-key">
+    <div class="card-label">Token 速查</div>
+    <div class="swatch-row">
+      <div>
+        <div class="swatch" style="background: var(--background);"></div>
+        <div class="swatch-label">bg</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--surface1);"></div>
+        <div class="swatch-label">s1</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--surface2);"></div>
+        <div class="swatch-label">s2</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--accent);"></div>
+        <div class="swatch-label">accent</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--success);"></div>
+        <div class="swatch-label">success</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--warning);"></div>
+        <div class="swatch-label">warning</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--error);"></div>
+        <div class="swatch-label">error</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--cat-daily);"></div>
+        <div class="swatch-label">daily</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--cat-personal);"></div>
+        <div class="swatch-label">personal</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--cat-health);"></div>
+        <div class="swatch-label">health</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: var(--cat-other);"></div>
+        <div class="swatch-label">other</div>
+      </div>
+    </div>
+    <div class="type-sample"><span class="type-display">Aa Display 显示</span></div>
+    <div class="type-sample"><span class="type-body">Aa Body 正文文本</span></div>
+    <div class="type-sample"><span class="type-mono">Aa Mono 1,234.56</span></div>
+    <div class="spacing-row">
+      <div class="spacing-block" style="width: 4px; height: 4px;"></div>
+      <div class="spacing-block" style="width: 8px; height: 8px;"></div>
+      <div class="spacing-block" style="width: 16px; height: 16px;"></div>
+      <div class="spacing-block" style="width: 24px; height: 24px;"></div>
+      <div class="spacing-block" style="width: 32px; height: 32px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Floating Bar -->
+<div class="floating-bar">
+  <button class="mode-btn active" data-mode="light" aria-label="Light mode">
+    <i class="ph ph-sun"></i> Light
+  </button>
+  <button class="mode-btn" data-mode="dark" aria-label="Dark mode">
+    <i class="ph ph-moon"></i> Dark
+  </button>
+</div>
+
+<script>
+  // Dark/Light mode toggle
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.documentElement.dataset.theme = btn.dataset.mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelector(`.mode-btn[data-mode="${document.documentElement.dataset.theme}"]`)?.classList.add('active');
+
+  // Disable all anchor clicks (mockup)
+  document.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', e => e.preventDefault());
+  });
+</script>
+
+</body>
+</html>

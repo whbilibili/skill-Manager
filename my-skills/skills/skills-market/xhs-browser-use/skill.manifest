@@ -1,7 +1,7 @@
 skill-manifest-version: 1
-skill-id: b3ca8608d8195717a6e7318e77831178610298a7bd06b970738463c4309ae27f
+skill-id: 58adf26688e9f37492e8a2f0230702846b4caf0e3e7fba34f3258bea8f8b1ad4
 
 files:
-  d4e13c597be517195c3b8c5d0a542a2bea003c5ccc81277f2e37d9791a556b26  SKILL.md
-  17c957a5470e35c10e26f85b32a82bab2d764b6fe6e00954a28664e16437af60  scripts/xhs-browser-use.mjs
+  2086c822a99c39a89efc952f7d51757db3cf83d9c5d1318aff41fbd83311b1c7  SKILL.md
+  eb9f88675936be3b4b975bc5e006f30bdaa46c0932f3243eac9a03794d34420d  scripts/xhs-browser-use.mjs
   a6f31c2decd2779fa943c298536eb6fbcdd7da8ffb74903a58811f78e7b4d8d5  scripts/xhs-browser-use.mjs.bak

@@ -335,6 +335,10 @@ try {
 | CONC-04 | **线程池参数** | 自定义线程池，拒绝 Executors.newXxx | `newFixedThreadPool` 用无界队列会 OOM |
 | CONC-05 | **HashMap 并发写** | 多线程写 HashMap → ConcurrentHashMap | 否则死循环（JDK7）或数据丢失（JDK8+） |
 | CONC-06 | **锁粒度最小化** | synchronized 锁住最小代码块 | 不要锁整个方法，只锁临界区 |
+| CONC-07 | **禁用 DiscardPolicy/DiscardOldestPolicy** | 任务被丢弃后 FutureTask 状态仍为 NEW | `future.get()` 永久阻塞；如必须使用需自定义策略 + get 设超时 |
+| CONC-08 | **在线服务禁用 CallerRunsPolicy** | 被拒任务在调用线程执行 → RT 不可控 | 有父子任务依赖时可能死锁 |
+| CONC-09 | **Runnable 任务内部处理异常** | 未捕获异常 → 线程终止 → 线程池缩水 | 用 Callable 替代，或设置 UncaughtExceptionHandler |
+| CONC-10 | **自定义线程名称** | 默认 `pool-1-thread-1` 无业务含义 | 用 ThreadFactoryBuilder 设 `setNameFormat("biz-%d")` |
 
 ```java
 // ❌ Executors 的隐患
@@ -364,6 +368,17 @@ ThreadPoolExecutor pool = new ThreadPoolExecutor(
 | MW-06 | **Zebra** | 读写分离正确标注 | 写操作走主库，读操作走从库 |
 | MW-07 | **Cat** | 核心链路有 Transaction 埋点 | 缺少埋点 = 线上黑盒，出问题无法排查 |
 | MW-08 | **Crane** | 定时任务有幂等保护 | 重复调度不产生脏数据 |
+| MW-09 | **Lion(@MtConfig)** | @MtConfig 字段**必须** static | 非 static → Lion 配置不生效（COE-278569） |
+| MW-10 | **MDP(@MdpConfig)** | @MdpConfig 字段**禁止** static | static → 注入失败，字段为 null |
+| MW-11 | **MDP(@MdpConfig)** | @MdpConfig key 不加 appkey 前缀 | 框架自动拼接，手动加会导致 key 不匹配 |
+| MW-12 | **MDP(@MdpConfig)** | @MdpConfig 默认值不能为空字符串 | 空字符串默认值会导致解析异常 |
+| MW-13 | **MDP(@MdpConfig)** | @MdpConfig 所在类必须是 Spring Bean | 非 Bean 类注解不生效，配置无法注入 |
+| MW-14 | **MDP(@MdpConfig)** | 构造方法中禁止使用 @MdpConfig 字段 | 构造时尚未注入，值为 null |
+| MW-15 | **MDP(@MdpConfig)** | AOP 代理类访问 @MdpConfig 必须走 getter | 直接访问字段绕过代理，获取未注入值 |
+| MW-16 | **Lion(@MtConfig)** | @MtConfig 只支持 6 种基本类型 | 不支持 List/Set/Map，需自定义 Converter |
+| MW-17 | **Lion** | 配置加载模式禁止 mcc-lion | 已废弃，会触发两次监听器回调 |
+| MW-18 | **MDP(@MdpConfig)** | 复杂类型必须用具体实现类+泛型 | 不能用 Map/List 接口，不能用裸类型 |
+| MW-19 | **Rhino** | 必须使用 Rhino 动态线程池 | 原生 ThreadPoolExecutor 不支持运行时动态调参和实时监控 |
 
 ---
 

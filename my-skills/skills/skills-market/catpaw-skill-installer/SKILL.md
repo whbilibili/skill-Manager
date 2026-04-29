@@ -4,10 +4,11 @@ description: Discover and install skills for CatPaw. Use when a user wants to fi
 
 metadata:
   skillhub.creator: "zhuyiwei"
-  skillhub.updater: "zhuyiwei"
-  skillhub.version: "V4"
+  skillhub.updater: "zhangyunkai05"
+  skillhub.version: "V5"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "1489"
+  skillhub.high_sensitive: "false"
 ---
 
 # CatPaw Skill Installer

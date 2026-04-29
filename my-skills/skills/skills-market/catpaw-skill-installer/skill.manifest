@@ -1,0 +1,11 @@
+skill-manifest-version: 1
+skill-id: 5e745d98a244e796e395490e5fcb6c71f9c1276c00f754b685194006a2540857
+
+files:
+  e01648d81dcf4314576b8b428de5d0797ea78bd40507383037d31da70feac25c  SKILL.md
+  a7f2fb499ea616d97ececa213c530b127469b235d4fbddbc4ff3d75a2185dcd8  scripts/bin/catpaw-skills-darwin-amd64
+  f6939e42c4fa6bd01b5674c0b204c15d791380a4685c2249adf3f29c41ac1099  scripts/bin/catpaw-skills-darwin-arm64
+  921d77115b4ab72db6c4f1ffe5e6a6bb1179f856ff42126dfbd292999d37d3ca  scripts/bin/catpaw-skills-linux-amd64
+  0b2031049e29dd3e824d3aab4a6960471558d3c93959f5c1efded9d7d80bb1c7  scripts/bin/catpaw-skills-linux-arm64
+  066c5c68a242517b4387dbe2cd7cd31fcb3f681879d45c60803e52c84855b06e  scripts/bin/catpaw-skills-windows-amd64.exe
+  8d189932a5e76c59e4d682b21eb76625325e0a7dd02261ed1055f4db801c6f20  scripts/bin/catpaw-skills-windows-arm64.exe
