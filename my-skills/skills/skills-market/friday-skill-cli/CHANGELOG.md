@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v2.3.1 (2026-05-01)
+
+### Fixed
+- `misId` 正则匹配 `USER.md` 时，`**misId:** yeshaozhi` 格式匹配到 `**` 而非 `yeshaozhi`，导致 CIBA 认证失败
+- `MTSSO_REGISTRY` 作为 `--registry` 参数传入 `mtsso-moa-feature-probe` / `mtsso-moa-local-exchange`，两个命令不支持该参数导致 MOA 换票失败
+
 ## v2.3.0 (2026-04-07)
 
 ### Changed

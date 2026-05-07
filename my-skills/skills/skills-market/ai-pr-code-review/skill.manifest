@@ -1,8 +1,8 @@
 skill-manifest-version: 1
-skill-id: 728634c895ef7ab3db608b3117eb97b4c96466bfe2baeacb0ee9fe1123e66e51
+skill-id: 52d23f3eb888c1bfab6bbff142631ed8e0284ab1fbbbf8146387ae89cb5b6aea
 
 files:
-  9da79b7da8e1a8f551b8189fb8225c614b44bf2d53c5642e5908d0c6e3530b9b  SKILL.md
+  26e09534b3bd55c47334b04e84b5f7142fcde325d41fe361c22367f4e07e413b  SKILL.md
   46fef4d74d8812254528a939f972cb2535472c8d7b062f298d14eb8fbfd7fe2e  cr-config.yaml
   4d1c07a29153d0cc46abe27392acf378b8651f448a84ae1cabbc99e0181bcf26  references/citadel-write-guide.md
   5207a6a63cd754dc0514812580731254eed51e996f8a0862041f1f6595f98dab  references/coding-standards-checklist.md

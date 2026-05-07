@@ -1,6 +1,6 @@
 # Learning Mechanics
 
-## What Triggers Learning
+## Triggers
 
 | Trigger | Confidence | Action |
 |---------|------------|--------|
@@ -11,18 +11,14 @@
 | Same correction 3x | Confirmed | Ask to make permanent |
 | "For this project..." | Scoped | Write to project namespace |
 
-## What Does NOT Trigger Learning
+## Does NOT Trigger
 
-- Silence (not confirmation)
-- Single instance of anything
-- Hypothetical discussions
-- Third-party preferences ("John likes...")
-- Group chat patterns (unless user confirms)
+- Silence, single instance, hypotheticals
+- Third-party preferences, group chat patterns (unless confirmed)
 - Implied preferences (never infer)
 
 ## Correction Classification
 
-### By Type
 | Type | Example | Namespace |
 |------|---------|-----------|
 | Format | "Use bullets not prose" | global |
@@ -31,76 +27,34 @@
 | Project-specific | "This repo uses Tailwind" | projects/{name} |
 | Person-specific | "Marcus wants BLUF" | domains/comms |
 
-### By Scope
+Scope hierarchy: `Global > Domain > Project > Temporary (session only)`
+
+## Confirmation Flow (after 3 corrections)
+
 ```
-Global: applies everywhere
-  └── Domain: applies to category (code, writing, comms)
-       └── Project: applies to specific context
-            └── Temporary: applies to this session only
-```
-
-## Confirmation Flow
-
-After 3 similar corrections:
-```
-Agent: "I've noticed you prefer X over Y (corrected 3 times).
-        Should I always do this?
-        - Yes, always
-        - Only in [context]
-        - No, case by case"
-
-User: "Yes, always"
-
-Agent: → Moves to Confirmed Preferences
-       → Removes from correction counter
-       → Cites source on future use
+Agent: "I've noticed you prefer X over Y (corrected 3 times). Always do this?"
+→ Yes → Confirmed Preferences, remove from counter
+→ Only in [context] → Scoped preference
+→ No → Case by case
 ```
 
-## Pattern Evolution
+## Pattern Stages
 
-### Stages
-1. **Tentative** — Single correction, watch for repetition
-2. **Emerging** — 2 corrections, likely pattern
-3. **Pending** — 3 corrections, ask for confirmation
-4. **Confirmed** — User approved, permanent unless reversed
-5. **Archived** — Unused 90+ days, preserved but inactive
+1. **Tentative** — Single correction
+2. **Emerging** — 2 corrections
+3. **Pending** — 3 corrections, ask confirmation
+4. **Confirmed** — User approved, permanent
+5. **Archived** — Unused 90+ days
 
-### Reversal
-User can always reverse:
-```
-User: "Actually, I changed my mind about X"
-
-Agent: 
-1. Archive old pattern (keep history)
-2. Log reversal with timestamp
-3. Add new preference as tentative
-4. "Got it. I'll do Y now. (Previous: X, archived)"
-```
+**Reversal**: Archive old, log reversal + timestamp, new preference as tentative.
 
 ## Anti-Patterns
 
-### Never Learn
-- What makes user comply faster (manipulation)
-- Emotional triggers or vulnerabilities
-- Patterns from other users (even if shared device)
-- Anything that feels "creepy" to surface
+**Never learn**: Manipulation triggers, emotional vulnerabilities, other users' patterns, anything "creepy".
 
-### Avoid
-- Over-generalizing from single instance
-- Learning style over substance
-- Assuming preference stability
-- Ignoring context shifts
+**Avoid**: Over-generalizing from one instance, assuming preference stability, ignoring context shifts.
 
 ## Quality Signals
 
-### Good Learning
-- User explicitly states preference
-- Pattern consistent across contexts
-- Correction improves outcomes
-- User confirms when asked
-
-### Bad Learning
-- Inferred from silence
-- Contradicts recent behavior
-- Only works in narrow context
-- User never confirmed
+✅ Explicit preference, consistent across contexts, user confirmed
+❌ Inferred from silence, contradicts recent behavior, narrow context, never confirmed

@@ -1,8 +1,8 @@
 {
   "source": "market",
   "id": 1802,
-  "updateTime": 1774688063000,
-  "downloadTime": 1774688605494,
+  "updateTime": 1777994772000,
+  "downloadTime": 1777997461349,
   "alias": "self-improving-agent",
-  "intro": "\"Agent 自我反思与自动模式提取。当用户明确纠正 agent 行为（'你刚才做错了'）、agent 发现自身错误、或需要从错误中提取教训时触发。含自动知识提取（Claudeception 式）和置信度晋升机制。触发词：你做错了、agent 行为纠正、self-reflect、从错误中学习、learn from mistake、记住这个教训、/learn。\""
+  "intro": "自我改进 Agent：从用户纠正、错误发现、复杂任务后 Auto-Extraction 中提取行为模式，写入持久文件。质量门控：Reusable/Verified/Specific/Non-duplicate 四原则。触发词：self improve、行为模式、提取教训、Auto-Extraction、记住这个模式、经验提取。NOT: 记录情绪/心理偏好、记录仅出现一次的偶发解法。"
 }

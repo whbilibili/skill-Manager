@@ -1,7 +1,7 @@
 ---
 name: friday-skill-cli
 description: Friday Skills 广场 CLI 工具。认证优先级：(1) MOA 无感登录（@mtfe/mtsso-auth-official，无需确认）(2) CIBA 降级（需大象确认）(3) --browser（浏览器 cookie）(4) --app-auth（client credentials，无用户身份）。
-version: 2.3.0
+version: 2.3.2
 tags: 技术开发,CLI
 
 skill-dependencies:
@@ -14,7 +14,7 @@ skill-dependencies:
 metadata:
   skillhub.creator: "yeshaozhi"
   skillhub.updater: "yeshaozhi"
-  skillhub.version: "V28"
+  skillhub.version: "V29"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "2030"
   skillhub.high_sensitive: "false"

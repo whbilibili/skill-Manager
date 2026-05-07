@@ -48,6 +48,13 @@ console.log(hello);
 > - `title` 若使用，必须是一行普通文本；代码正文必须放在代码块内容区，不能塞进标题里
 > - `language` **不能为 `null`**，未指定时使用 `Plain Text`
 > - `theme` **不能为 `null`**，未指定时使用默认值 `xq-light`
+> - ⚠️ **`language` 大小写必须严格匹配**，例如必须写 `Mermaid` 而非 `mermaid`，`Plain Text` 而非 `plain text`，`JavaScript` 而非 `javascript`
+> - 支持的 `language` 枚举值：
+>   `Plain Text`、`JavaScript`、`Java`、`JSON`、`Shell`、`HTML`、`PlantUML`、`Mermaid`、
+>   `C`、`C++`、`C#`、`CSS`、`Dart`、`Elm`、`Go`、`Groovy`、`HTTP`、`JSX`、`Kotlin`、
+>   `LaTeX`、`Lua`、`Markdown`、`Nginx`、`Objective-C`、`Perl`、`PHP`、`PowerShell`、
+>   `Python`、`R`、`Ruby`、`Sass`、`Scala`、`SQL`、`Stylus`、`TypeScript`、`Swift`、
+>   `Vue.js Component`、`XML`、`YAML`、`Mindmap`
 
 ---
 
@@ -594,3 +601,48 @@ C
 - `language` **不能为 `null`**，未指定时必须使用字符串 `"Plain Text"`
 - `theme` **不能为 `null`**，未指定时必须使用字符串 `"xq-light"`
 - `title` 必须是一行纯文本，不能包含换行符；未指定时使用 `"代码块"`
+- ⚠️ **`language` 大小写必须严格匹配**，例如必须写 `"Mermaid"` 而非 `"mermaid"`，`"Plain Text"` 而非 `"plain text"`，`"JavaScript"` 而非 `"javascript"`
+- 支持的 `language` 枚举值（共 40 种）：
+
+| 语言 | language 值 |
+| --- | --- |
+| 纯文本 | `Plain Text` |
+| JavaScript | `JavaScript` |
+| Java | `Java` |
+| JSON | `JSON` |
+| Shell/Bash | `Shell` |
+| HTML | `HTML` |
+| PlantUML | `PlantUML` |
+| Mermaid | `Mermaid` |
+| C | `C` |
+| C++ | `C++` |
+| C# | `C#` |
+| CSS | `CSS` |
+| Dart | `Dart` |
+| Elm | `Elm` |
+| Go | `Go` |
+| Groovy | `Groovy` |
+| HTTP | `HTTP` |
+| JSX | `JSX` |
+| Kotlin | `Kotlin` |
+| LaTeX | `LaTeX` |
+| Lua | `Lua` |
+| Markdown | `Markdown` |
+| Nginx | `Nginx` |
+| Objective-C | `Objective-C` |
+| Perl | `Perl` |
+| PHP | `PHP` |
+| PowerShell | `PowerShell` |
+| Python | `Python` |
+| R | `R` |
+| Ruby | `Ruby` |
+| Sass | `Sass` |
+| Scala | `Scala` |
+| SQL | `SQL` |
+| Stylus | `Stylus` |
+| TypeScript | `TypeScript` |
+| Swift | `Swift` |
+| Vue.js | `Vue.js Component` |
+| XML | `XML` |
+| YAML | `YAML` |
+| 思维导图 | `Mindmap` |
