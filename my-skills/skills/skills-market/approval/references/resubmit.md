@@ -1,4 +1,4 @@
-> **说明**：Step 3 采用 **A+B 双轨制**——内置控件速查表覆盖常见场景（零依赖）；遇到复杂控件时自动安装 [kuaida-submit](https://friday.sankuai.com/skills/skill-detail?id=3060) skill 并引用其完整格式规范。详见 Step 3。
+> **说明**：Step 3 采用 **A+B 双轨制**——内置控件速查表覆盖常见场景（零依赖）；遇到复杂控件时自动安装 [快搭助手](https://friday.sankuai.com/skills/skill-detail?id=32795) skill 并引用其完整格式规范。详见 Step 3。
 
 ---
 
@@ -92,9 +92,9 @@
 
 **入口条件**：Step 2.5 完成，已确认所有字段新值
 
-> 与 `kuaida-submit` skill 的差异如下（其余完全相同）：
+> 与 `快搭助手` skill 的差异如下（其余完全相同）：
 
-| 项目            | kuaida-submit        | 本章（重新提交）                                             |
+| 项目            | 快搭助手        | 本章（重新提交）                                             |
 | --------------- | -------------------- | ------------------------------------------------------------ |
 | formSchema 来源 | 调用 `getFormSchema` | 复用 Step 2 返回的 `formSchema`，**跳过 getFormSchema 调用** |
 | 字段初始值      | 空（用户从头填）     | 以 `billDataList` 原值预填，用户只需说明修改项               |
@@ -109,10 +109,10 @@ Step 3b · 对照下方「控件格式速查」判断是否全部覆盖
   ├─ 全部覆盖 → 直接用速查表构建 billData（走 A 方案）
   └─ 存在速查表未涵盖的控件类型 → 走 B 方案 ↓
        │
-       Step 3c · 检测 kuaida-submit skill 是否已安装
+       Step 3c · 检测 快搭助手 skill 是否已安装
        ├─ 已安装 → 读取其 references/fill-form.md 获取完整格式规范后构建
        └─ 未安装 → 自动执行安装：
-                      oa-skills skill install --id 3060 -g
+                      oa-skills skill install --id 32795 -g
                     安装成功 → 读取 fill-form.md 获取完整规范后构建
                     安装失败 → 用速查表尽力构建 + 提示用户该字段可能需要手动确认
 ```
@@ -132,7 +132,7 @@ Step 3b · 对照下方「控件格式速查」判断是否全部覆盖
 | Date                    | 日期字符串，如 `2026-04-07`                                                                                                      |
 | Cascader / 级联         | `{path, fullName}` object，如 `{"path": "330000/330100/330105", "fullName": "浙江省/杭州市/拱墅区"}`                             |
 
-**B 方案——当字段类型不在上表中时**：自动安装并引用 [kuaida-submit](https://friday.sankuai.com/skills/skill-detail?id=3060) skill 的 `references/fill-form.md` 获取完整控件格式规范。
+**B 方案——当字段类型不在上表中时**：自动安装并引用 [快搭助手](https://friday.sankuai.com/skills/skill-detail?id=32795) skill 的 `references/fill-form.md` 获取完整控件格式规范。
 
 ### Step 3d · 必填字段兜底检查（⚠️ 必须执行）
 

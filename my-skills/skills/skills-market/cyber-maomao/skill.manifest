@@ -1,0 +1,9 @@
+skill-manifest-version: 1
+skill-id: d13d8798e8ebe8bd953bbb187f6be98f1d4c6eb65c4b456e02b240adb6dd244c
+
+files:
+  06a9ee237f556c106baeefb62baeeada9855d58cbbd3fcaef94651f08a724ae3  README.md
+  175b837020c79fa3095dd0169fc284cac3480042741a9f0ee6c673c5449c0b1f  SKILL.md
+  c9a6878f26af79cb0f602c96b75764c17ab6fee62521fae34c967b511b230248  examples/example-1-quick.md
+  6b8ce0eef5a6237510cea790983e4f7658a875134a81358b829fad81652fadb5  examples/example-2-pressure.md
+  510ca8b739de0223cbb94081da2d3422f03a170820e1f4badf0b37fa216568a3  examples/example-3-intro.md

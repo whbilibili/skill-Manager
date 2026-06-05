@@ -1,64 +1,40 @@
-# CHANGELOG
+## v0.3.0 — 2026-04-09
 
-## v2.3.1 (2026-05-01)
+- 补全 SKILL.md 描述：覆盖全部 9 个 CLI 命令（新增 create/update/delete/skillmd/tags）
+- 补全触发词：新增"上传 skill"、"发布 skill"、"创建 skill"、"更新 skill"、"删除 skill"、"skill 标签"
+- 补全 Commands 章节：为 create/update/delete/skillmd/tags 添加用法示例
+- 新增 test_skillmd_coverage.sh：自动检查 SKILL.md 的 description、Commands 章节和触发词是否覆盖所有 CLI 命令，防止后续迭代遗漏
 
-### Fixed
-- `misId` 正则匹配 `USER.md` 时，`**misId:** yeshaozhi` 格式匹配到 `**` 而非 `yeshaozhi`，导致 CIBA 认证失败
-- `MTSSO_REGISTRY` 作为 `--registry` 参数传入 `mtsso-moa-feature-probe` / `mtsso-moa-local-exchange`，两个命令不支持该参数导致 MOA 换票失败
+## v0.2.0 — 2026-04-08
 
-## v2.3.0 (2026-04-07)
+- 自包含 CLI 实现：内置 scripts/friday-skill，无需额外安装
+- 添加 release 测试：确保 CLI 随 skill 一起发布
+- 更新 SKILL.md：添加安装说明和测试指南
 
-### Changed
-- **Auth: MOA 无感登录优先**（参考《业务 Skill 接入 SSO 身份体系》开发者指南）
-  - 默认认证改为 `npx mtsso-moa-local-exchange`（@mtfe/mtsso-auth-official）
-  - MOA 不可用时自动降级为 CIBA 手动确认，保持向后兼容
-  - 认证前通过 `npx mtsso-moa-feature-probe` 探测 MOA 支持情况
-- **SKILL.md 新增 `skill-dependencies`**，声明 `mtsso-skills-official` 依赖及 audience
+## v0.1.5 — 2026-04-08
 
-### Added
-- `download` 命令支持 `--extract` / `-x` 参数：自动解压下载的 Skill zip 包
+- Version bump after release
 
-### Fixed
-- CIBA 等待进度输出改为 `process.stderr.write`（避免污染 stdout JSON 输出）
+## v0.1.5 — 2026-04-08
 
-## v2.2.0 (2026-03-31)
+- Friday 发布成功
 
-### Breaking
-- **Removed bundled `node_modules/`** — zero external dependencies now
+## v0.1.4 — 2026-04-08
 
-### Changed
-- Replaced `jsonwebtoken` with hand-rolled HS256 JWT (Node.js `crypto` built-in)
-- Replaced `axios` with built-in `fetch` (Node.js 18+)
-- `zipDir` now respects `.skillignore` for custom exclusion patterns
-- Default exclusions always applied: `tests/*`, `evals/*`, `pending/*`, `node_modules/*`, `__pycache__/*`, `*.bak`, `.git/*`
-- Directory patterns in `.skillignore` (e.g. `scratch/`) auto-normalized to `scratch/*`
-- Zip size: 900K → ~30K
+- 修复 avatar：将失效的 URL 改为 emoji 🛠️
 
-### Added
-- `tests/test_friday_skill.sh`: 28 unit tests (JWT, parseArgs, parseSkillMd, zipDir)
+## v0.1.3 — 2026-04-08
 
-## v2.1.0 (2026-03-24)
+- Version bump after release
 
-### 新增
-- `install --id <id>`：从 Friday 广场下载 skill、解压到 `~/.openclaw/skills/`，并自动写入 skill-lock.json（source=friday, installedAt, policy=auto）
-- `status [--all]`：查看本地已安装 skill 状态，无需认证，直接读 skill-lock.json；`--all` 展示完整表格含 local skill
+## v0.1.2 — 2026-04-08
 
-### 改进
-- skill-lock.json 兼容：install 写入标准化字段（source/id/name/updateTime/installedAt/installPath/updatePolicy），与 skill-updater 完全兼容
+- 添加 avatar 图标修复图裂问题
 
-## v2.0.0 (2026-03-15)
+## v0.1.1 — 2026-04-08
 
-### 重写
-- 底层认证从 App Auth 迁移到 SSO CIBA（用户身份正确传递，防凭据泄漏）
-  - 新增 `--browser` 模式：通过 Chrome DevTools Protocol 读取浏览器 Cookie 进行 SSO 认证
-  - 保留 `--app-auth` 作为自动化场景（无用户身份）
-- Token 缓存：首次认证后缓存到 `~/.openclaw/credentials/friday-ciba-token.json`
-- 网络重试：3 次 + 指数退避
-- 用户身份验证：防止 token 所属用户冒用
+- Version bump after release
 
-### 新增命令
-- `download --id <id> [--out skill.zip]`：下载 skill zip 到本地路径，适合离线分发，不自动解压、不写 lock
+## v0.1.0 — 2026-04-08
 
-## v1.0.0 (2026-03-07)
-
-- 初始版本：App Auth 认证，基础 CRUD 命令
+- 初始版本，封装 friday-skill CLI

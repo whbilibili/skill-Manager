@@ -74,11 +74,11 @@ nocode env set <chatId> VITE_ENV test --chatEnv test
 nocode env switch <chatId> --chatEnv test
 
 # 5. 使用对话/作品线下环境变量部署
-nocode deploy <chatId> --chatEnv test
+nocode deploy <chatId> --chatEnv test --skillId <SKILL_ID>
 
 # 6. 切回对话/作品线上，使用线上环境变量部署
 nocode env switch <chatId> --chatEnv prod
-nocode deploy <chatId> --chatEnv prod
+nocode deploy <chatId> --chatEnv prod --skillId <SKILL_ID>
 ```
 
 ## ⚠️ 注意事项

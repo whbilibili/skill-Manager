@@ -117,6 +117,10 @@
 
 已给 id → `fsd test detail --id <id>`。要列表或未定 id → 见 [pageList](#sec-test-list)。
 
+### 环境字段展示
+
+`env` 表示环境大类，`swimlane` 表示具体泳道。`env=test` 下也可能有泳道；仅当 `swimlane` 为空时，才可描述为骨干测试环境。
+
 ---
 
 <a id="sec-test-list"></a>

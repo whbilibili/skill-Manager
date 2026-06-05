@@ -160,78 +160,134 @@ style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;"
 
 ## 连接线规范
 
-### 1. 基础连接线
+### 0. 强制规则：必须写明双端出入口（⚠️ 最重要）
+
+**所有连接线必须同时指定 `exitX/exitY` 和 `entryX/entryY`，禁止省略任何一端。**
+
+不写出入口时，渲染器会猜测连接点，不同环境下猜测结果不同，导致连线位置不稳定、出现斜线或奇怪折线。
+
 ```xml
-<mxCell id="连接线ID" 
-        style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" 
-        parent="1" 
-        source="源元素ID" 
-        target="目标元素ID" 
-        edge="1">
+<!-- ✅ 正确：双端出入口完整 -->
+<mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;
+        exitX=1;exitY=0.5;exitDx=0;exitDy=0;
+        entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+        parent="1" source="A" target="B" edge="1">
+  <mxGeometry relative="1" as="geometry" />
+</mxCell>
+
+<!-- ❌ 错误：缺少 entryX/Y，渲染器行为不确定 -->
+<mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;"
+        parent="1" source="A" target="B" edge="1">
+```
+
+### 1. 菱形节点的出入口规范（⚠️ 必须遵守）
+
+菱形（rhombus）有 4 个出口方向，必须为每条连线明确指定，否则多条线会从同一个点引出，挤在一起无法辨认。
+
+| 方向 | exitX | exitY | 对应场景 |
+|------|-------|-------|----------|
+| 右侧出口 | 1 | 0.5 | 是/通过/正向分支 |
+| 左侧出口 | 0 | 0.5 | 否/失败/反向分支 |
+| 底部出口 | 0.5 | 1 | 主流程向下继续 |
+| 顶部出口 | 0.5 | 0 | 循环返回上游 |
+
+菱形连线完整示例：
+```xml
+<!-- 菱形 -> 右侧节点（是） -->
+<mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;
+        exitX=1;exitY=0.5;exitDx=0;exitDy=0;
+        entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+        parent="1" source="菱形ID" target="右节点ID" edge="1">
+  <mxGeometry relative="1" as="geometry" />
+</mxCell>
+
+<!-- 菱形 -> 左侧节点（否） -->
+<mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;
+        exitX=0;exitY=0.5;exitDx=0;exitDy=0;
+        entryX=1;entryY=0.5;entryDx=0;entryDy=0;"
+        parent="1" source="菱形ID" target="左节点ID" edge="1">
+  <mxGeometry relative="1" as="geometry" />
+</mxCell>
+
+<!-- 菱形 -> 下方节点（主流程） -->
+<mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;
+        exitX=0.5;exitY=1;exitDx=0;exitDy=0;
+        entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+        parent="1" source="菱形ID" target="下节点ID" edge="1">
   <mxGeometry relative="1" as="geometry" />
 </mxCell>
 ```
 
-### 2. 带箭头连接线
+### 2. 连接线标签规范
+
+标签用 `edgeLabel` 子节点，必须是连接线的直接子节点（`parent="连接线ID"`）。
+
+`x` 值控制标签在连线上的相对位置，取值范围 `-1 ~ 1`（0 为中点）：
+- 水平方向连线：`x` 取 0（居中）即可，如需避开节点可用 `-0.3` 或 `0.3`
+- 标签较多时，在靠近源端用负值、靠近目标端用正值错开
+
 ```xml
-style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;"
-```
+<!-- 连线标签：居中 -->
+<mxCell id="e1l" value="是" 
+        style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];"
+        parent="e1" vertex="1" connectable="0">
+  <mxGeometry x="0" relative="1" as="geometry">
+    <mxPoint as="offset" />
+  </mxGeometry>
+</mxCell>
 
-### 3. 连接线样式属性
-
-| 属性 | 说明 | 可选值 |
-|------|------|--------|
-| edgeStyle | 边缘样式 | orthogonalEdgeStyle, elbowEdgeStyle, entityRelationEdgeStyle |
-| rounded | 是否圆角 | 0, 1 |
-| orthogonalLoop | 正交循环 | 0, 1 |
-| jettySize | 喷口大小 | auto, 数字 |
-| endArrow | 结束箭头 | classic, open, diamond, none |
-| startArrow | 开始箭头 | classic, open, diamond, none |
-
-### 4. 连接线标签
-```xml
-<mxCell id="标签ID" 
-        value="标签文本" 
-        style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" 
-        parent="连接线ID" 
-        vertex="1" 
-        connectable="0">
-  <mxGeometry x="偏移量" relative="1" as="geometry">
+<!-- 连线标签：靠近源端（避开中间节点） -->
+<mxCell id="e2l" value="否" 
+        style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];"
+        parent="e2" vertex="1" connectable="0">
+  <mxGeometry x="-0.3" relative="1" as="geometry">
     <mxPoint as="offset" />
   </mxGeometry>
 </mxCell>
 ```
 
-## 入口/出口点定义
+### 3. 长距离/跨容器连线的 waypoint 规范
 
-### 1. 入口点配置
+跨越多个容器或绕行的连线，使用 `<Array as="points">` 指定中间折点，避免连线穿过其他节点。
+
+waypoint 坐标相对于连线的 `parent` 容器（通常是 `parent="1"`，即画布绝对坐标）。
+
 ```xml
-entryX="0"     <!-- 入口X坐标比例 (0-1) -->
-entryY="0.5"   <!-- 入口Y坐标比例 (0-1) -->
-entryDx="0"    <!-- 入口X偏移 -->
-entryDy="0"    <!-- 入口Y偏移 -->
-entryPerimeter="0"  <!-- 是否使用周长计算 -->
+<mxCell id="e_long" style="edgeStyle=orthogonalEdgeStyle;html=1;
+        exitX=0;exitY=0.5;exitDx=0;exitDy=0;
+        entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+        parent="1" source="A" target="B" edge="1">
+  <mxGeometry relative="1" as="geometry">
+    <!-- 先水平向左，再垂直向上绕行 -->
+    <Array as="points">
+      <mxPoint x="50" y="300" />
+      <mxPoint x="50" y="100" />
+    </Array>
+  </mxGeometry>
+</mxCell>
 ```
 
-### 2. 出口点配置
-```xml
-exitX="1"      <!-- 出口X坐标比例 (0-1) -->
-exitY="0.5"    <!-- 出口Y坐标比例 (0-1) -->
-exitDx="0"     <!-- 出口X偏移 -->
-exitDy="0"     <!-- 出口Y偏移 -->
-exitPerimeter="0"   <!-- 是否使用周长计算 -->
-```
+**注意**：指定了 waypoint 后，连线端点（startPt/endPt）会自动与第一/最后个 waypoint 对齐，因此 `exitX/Y` 和 `entryX/Y` 仍需填写，以确定从节点哪一侧出发。
 
-### 3. 常用连接点位置
+### 4. 连接线样式属性
 
-| 位置 | entryX | entryY | exitX | exitY |
-|------|--------|--------|-------|-------|
-| 左侧中点 | 0 | 0.5 | - | - |
-| 右侧中点 | 1 | 0.5 | - | - |
-| 顶部中点 | 0.5 | 0 | - | - |
-| 底部中点 | 0.5 | 1 | - | - |
-| 左上角 | 0 | 0 | - | - |
-| 右下角 | 1 | 1 | - | - |
+| 属性 | 说明 | 可选值 |
+|------|------|--------|
+| edgeStyle | 边缘样式 | orthogonalEdgeStyle（推荐）, elbowEdgeStyle, entityRelationEdgeStyle |
+| rounded | 是否圆角折点 | 0, 1 |
+| orthogonalLoop | 正交循环 | 0, 1 |
+| jettySize | 喷口大小 | auto |
+| endArrow | 结束箭头 | classic（默认）, open, none |
+| startArrow | 开始箭头 | none（默认）, classic, open |
+
+### 5. 常用连接点速查
+
+| 节点位置 | exitX | exitY | entryX | entryY |
+|----------|-------|-------|--------|--------|
+| 右侧中点出 / 左侧中点入 | 1 | 0.5 | 0 | 0.5 |
+| 左侧中点出 / 右侧中点入 | 0 | 0.5 | 1 | 0.5 |
+| 底部中点出 / 顶部中点入 | 0.5 | 1 | 0.5 | 0 |
+| 顶部中点出 / 底部中点入 | 0.5 | 0 | 0.5 | 1 |
 
 ## 尺寸规范
 

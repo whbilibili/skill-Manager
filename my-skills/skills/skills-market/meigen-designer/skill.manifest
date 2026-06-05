@@ -1,0 +1,11 @@
+skill-manifest-version: 1
+skill-id: 9eb672a9d435d5158629028abdc68bb981c700c6bc33c99754f000f66c9d1274
+
+files:
+  8e27d80816142edfd25f9e686767a27180cd3598a7bc2d0dc99980ac2ba73e8f  SKILL.md
+  b47f0cf476e210f4933ac914f81d99d59de851dba6c939eccab7d6147229574e  evals/evals.json
+  9b30a8dfd18c2a0a544dcc42e026651fd7bd9ac34bbaccedf1d7e2e1d52ac6f0  meigen/conversation_id
+  7f5a5ed8bcb3342b07cb01c9bde3bb524c598d1c84f02d77af72ce8f56f5802e  scripts/__pycache__/generate.cpython-312.pyc
+  ce96c6533d825299a4c0223eeea97975c9e87f3f89e4fb0ae424a925ca723c43  scripts/__pycache__/upload-to-s3.cpython-312.pyc
+  9a9aa61e76a92009930265916d2dbec86da81cea6f52922b85d3030d398b3751  scripts/generate.py
+  25a07a79593dfc277ee1ee51e021acfbf48534b33be6eab0782a12397b8dcb2a  scripts/upload-to-s3.py

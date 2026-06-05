@@ -7,12 +7,12 @@
 用户给了 km.sankuai.com 链接或者文档ID，读取学城文档内容：
 
 ```bash
-getMarkdown --contentId <id>
+getSimpleMarkdown --contentId <id>
 ```
 
 ## 第二步：理解文档内容
 
-按照 [doc-view.md](doc-view.md) 中的指南，正确理解 CitadelMD 格式中各类节点（折叠块、图片、图表、行内元素等）的含义。
+按照 [doc-view.md](doc-view.md) 中的指南，正确理解简化版 Markdown 中各类节点（折叠块、图片、图表、行内元素等）的含义。
 
 ## 第三步：分析与总结
 
@@ -49,9 +49,9 @@ getMarkdown --contentId <id>
 思考：我需要运行
 
 ```bash
-getMarkdown --contentId 2751093476
+getSimpleMarkdown --contentId 2751093476
 ```
 
 来获取内容。
 
-... 按照 doc-view.md 的指南理解 CitadelMD 内容，提取核心信息进行总结 ...
+... 按照 doc-view.md 的指南理解简化 Markdown 内容，提取核心信息进行总结 ...

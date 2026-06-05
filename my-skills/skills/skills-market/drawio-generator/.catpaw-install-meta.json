@@ -1,8 +1,10 @@
 {
   "source": "market",
   "id": 1535,
-  "updateTime": 1777273196000,
-  "downloadTime": 1777277460441,
+  "updateTime": 1779794585000,
+  "downloadTime": 1779800170608,
   "alias": "AI生成drawio流程图",
-  "intro": "AI生成draw.io流程图xml脚本，并提供可复制产物，一键粘贴到学城draw.io编辑器即可使用。\r\nhttps://km.sankuai.com/collabpage/2748970969"
+  "intro": "AI生成draw.io流程图xml脚本，并提供可复制产物，一键粘贴到学城draw.io编辑器即可使用。\r\nhttps://km.sankuai.com/collabpage/2748970969",
+  "creator": "panheyi",
+  "visibility": "partial"
 }

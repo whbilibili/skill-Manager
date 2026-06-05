@@ -81,9 +81,22 @@ fsd deploy staging --online-program <上线计划ID> --env liteSet [-a <jobName>
 
 ### `--deploy-template`
 
-- 可选。值为接口返回项的 **`name` 或 `id`**（trim 后全等即视为命中）。
-- **未传**：取该 `jobName` + `env` 下返回列表的**首项**（`id` 优先，否则 `name`）。
+- 可选。**命中规则**（与用户输入比对 `getTemplates` 列表）：**非 npm** — 与返回项 **`name` 或 `id`**（trim 后全等）；**npm**（`bdsMode === 'npm'`）— 另见 [npm 与 --deploy-template](#npm-bds-deploy-template)。**未传**时在对应 `jobName` + `env` 下取列表**首项**再按**实际调用的部署接口**转成提交串（**不要**与「命中用的 name/id」混淆）。
+- **提交给后端的 `template` 取值（随接口分叉，与 skill-dev 一致）**：
+  - **独立部署 REST**（Talos **`id` 优先**，否则 **`name`**）：`executeAuto`（`fsd deploy test` 骨干及交付准出兜底）、`deployStagingAutoV2`（`fsd deploy staging`）、`createStackExecuteCargo` / `executeCargo`（`fsd deploy swimlane`）。
+  - **交付 `triggerPipeline`、测试计划/交付 `deliveryPipeline/triggerPipeline`**：CLI 组装 `jobList` 时为 **`name` 优先**，否则 **`id`**（npm 常为完整 composite **`name`**）。
 - **传入且不命中**：拒绝触发，错误信息含 `FSD_JOB_DEPLOY_TEMPLATE_DOC_URL`（见仓库 `fsd/cli/scripts/shared/config.js`）。
+
+<a id="npm-bds-deploy-template"></a>
+
+### npm（`bdsMode === 'npm'`）与 `--deploy-template`
+
+对齐 skill-dev：`getTemplates` 项中 **Talos id** 在接口 **`id`**；列表项 **`name` 常为「环境段(模板段)」**（例 `test01(dev)`），括号内为业务侧「模板」语义。
+
+- **校验**：除与 **`name`、`id` 全等**外，若某项 `name` 以 **一对圆括号**结尾，则 **括号内字符串**（trim）与用户输入 trim 全等也视为命中（**不变**）。
+- **提交**：**命中到唯一一行后**，**独立 REST 部署**（见上列表）一律 **`id` 优先**；**流水线类 trigger**（交付/测试计划）用 **`name` 优先**（npm 即完整 composite **`name`**）；无首选字段时再回落另一字段。
+- **歧义**：多条仅括号内片段相同、整体 `name` 不同时 **拒绝触发**，错误中列出完整 `name`，需改用全名或 **`id`**。
+- **未传模板默认首项**：**`fsd deploy test` / `staging` / `swimlane`** 均属独立 REST → **`id` 优先**；**交付/测试计划 trigger** → **`name` 优先**。
 
 ### `fsd deploy templates`
 
@@ -96,11 +109,11 @@ fsd deploy templates <scene> [-a <应用或仓库 ssh>] [-t <部署分支>] [-v]
 - `<scene>`：`test` | `staging` | `swimlane`。
 - **jobName 解析**：与 `fsd deploy <scene>` 一致（依赖 `-a`、`-t` 或仓库内当前分支）。
 - **默认输出**：JSON，字段含 `jobName`、`scene`、`templatesApiEnv`、`templates`（每项含 `name`、`id`、`url`、`releasePlatform` 等接口字段）。
-- **`--pretty`**：表格化列出，便于人工选择后再执行 `fsd deploy <scene> … --deploy-template <name或id>`。
+- **`--pretty`**：表格化列出，便于人工选择后再执行 `fsd deploy <scene> … --deploy-template <name或id>`（npm：`name` 常为 `环境(模板)`，CLI 校验亦接受仅 **括号内模板段**，见 [npm 与 --deploy-template](#npm-bds-deploy-template)）。
 
 ### 与交付侧差异
 
-交付 `triggerPipeline` 多应用时，`--deploy-template` 为「并集命中后仅对含该模板的服务触发，无则跳过；全无则拒绝」（见 [delivery.md · --deploy-template](delivery.md#delivery-deploy-env-template)）；交付详情含 `stackUuid` 时 `getTemplates` 的 `env` 为 **`cargo`**。**应用维度独立部署**单次仅一个 `jobName`，无并集分支；泳道场景拉模板列表 **`env` 仍为 `test`**，与上表一致。
+交付 `triggerPipeline` 多应用且非 **liteSet**、且显式传了 **`--deploy-template`**：**每个**应用在各自 `getTemplates` 中对该模板名为 **恰好一条匹配** 或 **零条**；任一服务 **>1 条匹配**（歧义）立即失败。**所有服务均为零条**：立即失败。**至少一条命中且至少一条未命中**：stderr 列已匹配/未匹配，`y/N` 确认或使用 **`--yes-partial-deploy-template`**（非 TTY 必用其一）后才仅对已命中服务组装 `jobList`；否则终止。**`delivery trigger-retry --dry-run`** 不读取 stdin，按「仅已匹配」收窄后输出预览。**liteSet** 仍须 **`liteSetExplicitFilterJobNames`** 全体通过。详见 [delivery.md · --deploy-template](delivery.md#delivery-deploy-env-template)。交付详情含 `stackUuid` 时 `getTemplates` 的 `env` 为 **`cargo`**。**应用维度独立部署**单次仅一个 `jobName`；泳道场景拉模板列表 **`env` 仍为 `test`**。
 
 ---
 

@@ -4,5 +4,7 @@
   "updateTime": 1777994772000,
   "downloadTime": 1777997461349,
   "alias": "self-improving-agent",
-  "intro": "自我改进 Agent：从用户纠正、错误发现、复杂任务后 Auto-Extraction 中提取行为模式，写入持久文件。质量门控：Reusable/Verified/Specific/Non-duplicate 四原则。触发词：self improve、行为模式、提取教训、Auto-Extraction、记住这个模式、经验提取。NOT: 记录情绪/心理偏好、记录仅出现一次的偶发解法。"
+  "intro": "自我改进 Agent：从用户纠正、错误发现、复杂任务后 Auto-Extraction 中提取行为模式，写入持久文件。质量门控：Reusable/Verified/Specific/Non-duplicate 四原则。触发词：self improve、行为模式、提取教训、Auto-Extraction、记住这个模式、经验提取。NOT: 记录情绪/心理偏好、记录仅出现一次的偶发解法。",
+  "creator": "guohanru",
+  "visibility": "public"
 }

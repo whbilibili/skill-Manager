@@ -1,8 +1,10 @@
 {
   "source": "market",
   "id": 2030,
-  "updateTime": 1777994640000,
-  "downloadTime": 1777997461262,
+  "updateTime": 1779083643000,
+  "downloadTime": 1779088753052,
   "alias": "friday-skill-cli",
-  "intro": "Friday Skill 广场 CLI 工具封装，支持发布、更新、搜索、列表、下载、删除技能。触发词：'friday skill'、'发布 skill'、'上传 skill'、'更新 skill'、'skill 搜索'、'skill 列表'、'下载 skill'、'删除 skill'。"
+  "intro": "Friday Skills 广场 CLI 工具。认证优先级：(1) MOA 无感登录（@mtfe/mtsso-auth-official，无需确认）(2) CatDesk auth exchange（CatDesk/CatPaw 环境，无需确认）(3) CIBA 降级（需大象确认）(4) --browser（浏览器 cookie）(5) --app-auth（client credentials，无用户身份）。",
+  "creator": "yeshaozhi",
+  "visibility": "public"
 }

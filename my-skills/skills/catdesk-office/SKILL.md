@@ -1,9 +1,9 @@
 ---
 name: catdesk-office
 description: >
-  CatDesk 办公自动化 CLI。支持大象消息发送（含 @ 人、超链接）、群成员查询、邮件发送/联系人搜索、会议室查询/预订/取消/监测、查看已有日程。
+  CatDesk 办公自动化 CLI。支持大象消息发送（含 @ 人、超链接）、群成员查询、邮件发送/联系人搜索。
   命令由 services.json 动态生成，运行 `catdesk --help` 查看最新命令列表。
-  当用户提到发大象消息、@ 某人、发链接/发超链接、搜索联系人/群、查群成员、发邮件、发送邮件、搜索邮件联系人、订会议室、查会议室、取消会议室预订、查看我的日程/会议、监测空闲会议室时使用。
+  当用户提到发大象消息、@ 某人、发链接/发超链接、搜索联系人/群、查群成员、发邮件、发送邮件、搜索邮件联系人时使用。
 ---
 
 # catdesk -- CatDesk 办公自动化 CLI
@@ -25,7 +25,7 @@ description: >
 
 命令从 `services.json` 动态生成，随时可能新增服务。首次使用或不确定参数时，先运行 `catdesk <service> <command> --help` 查看最新选项。
 
-> ⚠️ 本文档所有示例中的 ID（user-id、group-id、uid、room-id、schedule-id 等）和 URL 均为虚构占位值，**绝对不要直接复制使用**。搜索不到目标、匹配到多个结果、或用户描述不明确时，**必须停下来向用户确认**，不得自行猜测或使用文档中的示例 ID。
+> ⚠️ **本文档是调用模板，不是真实业务数据来源**。所有示例中的 ID（user-id、group-id、uid、room-id、schedule-id 等）、URL/链接（包括 `km.sankuai.com/...`、`x.sankuai.com/...` 等任何看起来像真实内网链接的形式）、邮箱、文件路径全部是**虚构占位值**，**绝对不要直接复制使用**，更不要把示例 URL 作为消息内容、邮件正文、文档链接发送给任何人。所有真实参数必须来自用户的明确指令；搜索不到目标、匹配到多个结果、或用户描述不明确时，**必须停下来向用户确认**，不得自行猜测、不得拿示例值兜底。
 
 在 CatPaw 内运行时自动连接内置浏览器（免登录）。
 
@@ -98,21 +98,24 @@ catdesk daxiang send --group-id 67890 --message "全员注意" \
 
 ### 发送超链接消息
 
+> ⚠️ **以下示例 URL 全部为占位模板**：`https://example.com/<doc-id>`、`<URL>` 都是调用模板的占位符，**严禁原样发送给用户**。真实链接必须来自用户的明确指令；用户没给链接时**停下来询问**，不要从本文档复制示例 URL 当真实内容发出去。
+
 消息中的 URL **默认自动转为可点击的超链接**。系统会自动获取页面标题作为链接显示文本，获取不到则保持 URL 原文。
 
 ```bash
 # 默认：URL 自动变成超链接（自动获取页面标题）
-catdesk daxiang send --group-id 67890 --message "请看 https://km.sankuai.com/collabpage/2750990140"
+# 注意：下方 URL 是占位示例，实际调用时必须替换为用户提供的真实链接
+catdesk daxiang send --group-id <group-id> --message "请看 <用户提供的真实链接>"
 # → 发送: "请看 [页面标题|URL]"（标题可点击）
 
 # 指定标题（跳过自动获取）
-catdesk daxiang send --group-id 67890 \
-  --message "请看 https://km.sankuai.com/collabpage/2750990140" \
-  --link-title "技术方案文档"
+catdesk daxiang send --group-id <group-id> \
+  --message "请看 <用户提供的真实链接>" \
+  --link-title "<标题>"
 
 # 发送纯文本（URL 不做超链接转换）
-catdesk daxiang send --group-id 67890 \
-  --message "请看 https://km.sankuai.com/collabpage/2750990140" \
+catdesk daxiang send --group-id <group-id> \
+  --message "请看 <用户提供的真实链接>" \
   --plain-links
 ```
 
@@ -235,95 +238,8 @@ catdesk mail search-contact --keyword "张三"
 | `--bcc`        | 密送（逗号分隔）                 | 否   | `boss`                                      |
 | `--importance` | 优先级：Low / Normal / High      | 否   | `High`                                      |
 
-## 会议室查询
-
-```bash
-# 查询城市楼宇信息
-catdesk meeting buildings --city 北京
-
-# 查询空闲会议室（自动过滤下线和已占用的会议室，不传 capacity 查询所有容量）
-catdesk meeting rooms --city 北京 --building "保利广场西座" --start 10:00 --end 11:00
-
-# 指定日期、最低容量、楼层（capacity 表示最少能容纳的人数，会查询该容量及更大的会议室）
-catdesk meeting rooms --city 上海 --building D2 --date 2026-03-15 --start 14:00 --end 15:00 --capacity 10 --floor 3层
-
-```
-
-## 会议室预订
-
-```bash
-# 一步查找并预订（自动使用当前登录用户作为组织者）
-catdesk meeting quick-book --city 北京 --building "保利广场西座" --start 10:00 --end 11:00
-
-# 预订并邀请参会人（空格分隔多个 MIS 账号）
-catdesk meeting quick-book --city 上海 --building D2 --start 14:00 --end 15:00 \
-  --attendees lisi wangwu zhaoliu
-
-# 自定义会议标题、容量和楼层
-catdesk meeting quick-book --city 北京 --building 保利 --start 10:00 --end 12:00 \
-  --title "周会" --capacity 15 --floor 4层
-
-# 按指定会议室 ID 预订（ID 从 rooms 命令获取）
-catdesk meeting book --room-id 1234 --date 2026-03-15 --start 10:00 --end 11:00
-
-# 按 ID 预订并邀请参会人
-catdesk meeting book --room-id 1234 --date 2026-03-15 --start 10:00 --end 11:00 \
-  --attendees lisi wangwu
-```
-
-**quick-book 智能行为：**
-
-- 按容量匹配度排序，优先选最接近需求的会议室
-- 某间会议室预订失败（已被抢占/已下线）时自动尝试下一间
-- 所有会议室都不可用时，自动创建空闲监测任务（会在有空闲时通知你）
-
-## 查看我的日程/会议
-
-```bash
-# 查看未来 7 天的日程（默认）
-catdesk meeting list
-
-# 查看指定日期开始的日程
-catdesk meeting list --date 2026-03-15
-
-# 查看未来 3 天的日程
-catdesk meeting list --days 3
-
-# 查看指定日期开始 14 天内的日程
-catdesk meeting list --date 2026-03-10 --days 14
-```
-
-- 返回结果包含日程的 `id`（即 scheduleId），可用于 `cancel` 命令取消预订
-- 自动使用当前登录用户查询
-
-## 取消会议室预订
-
-```bash
-# 取消指定的会议室预订（scheduleId 从预订结果或预订情况查询中获取）
-catdesk meeting cancel --schedule-id calendar1234567890
-```
-
-- 只有预订发起人可以取消自己的预订
-- scheduleId 格式为 `calendar` + 数字 ID
-
-## 空闲会议室监测
-
-当没有空闲会议室时，可以手动创建监测任务。系统会持续监测，有空闲会议室时自动通知。
-
-```bash
-# 创建空闲监测（不指定楼层则监测整栋楼）
-catdesk meeting monitor --city 北京 --building 保利 --start 14:00 --end 15:00
-
-# 指定楼层和人数
-catdesk meeting monitor --city 上海 --building D2 --date 2026-03-15 --start 10:00 --end 11:00 --capacity 10 --floor 3层
-```
-
 ## 注意事项
 
 - 所有命令默认返回结构化 JSON 输出，无需额外标志
 - 文件路径必须使用绝对路径
-- 楼宇名称支持模糊匹配（如 `保利`、`D2` 即可）
-- 会议室预订自动使用当前登录用户作为组织者
-- `--attendees` 支持空格分隔多个 MIS 账号，也支持逗号分隔（如 `lisi,wangwu`）
-- `--date` 默认为今天，`--capacity` 可选（不传则查询所有容量的会议室，传了则筛选容量 ≥ 该值的会议室）
 - 如果 `catdesk` 未找到，使用 `npx catdesk` 替代

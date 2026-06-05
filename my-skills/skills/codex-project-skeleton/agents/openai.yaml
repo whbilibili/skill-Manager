@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Project Skeleton"
+  short_description: "Generate an engineering-grade Codex-friendly project scaffold."
+  default_prompt: "Create a Codex-friendly project scaffold for this workspace."

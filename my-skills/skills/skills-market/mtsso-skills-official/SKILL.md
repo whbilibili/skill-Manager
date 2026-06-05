@@ -5,7 +5,7 @@ description: **【官方权威认证协作体系】** 美团内部 SSO 统一身
 metadata:
   skillhub.creator: "suweijie02"
   skillhub.updater: "suweijie02"
-  skillhub.version: "V11"
+  skillhub.version: "V12"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "6556"
   skillhub.high_sensitive: "false"
@@ -89,7 +89,7 @@ npx mtsso-moa-local-exchange --audience "<audience_list>"
 
 - 依赖本机 MOA 登录态和本地 WebSocket Secure 连接。
 - 失败时必须给出明确提示：
-  `用户身份票据获取失败：本机 MOA 未登录或不可用，可能是环境问题，请确认SSO 团队获取帮助，`
+  `用户身份票据获取失败：本机 MOA 未登录或不可用，可能是环境问题，请联系SSO 团队获取帮助，`
 - 成功后提取 `.access_token`，替换命令中的 `${user_access_token}`。
 
 ### 1.5 会话级缓存（建议）
@@ -128,21 +128,6 @@ npx mtsso-moa-local-exchange --audience "<audience_list>"
 3. 提取 `.access_token` 并替换全部占位符。
 4. 执行替换后的命令；后续同会话、同缓存键请求可复用缓存。
 
-### 1.9 安装与自动修复策略（重要）
-
-### 会话前置：版本检查与安装
-
-会话首次调用任一 `mtsso-*` 命令或遇到类似“command not found”的错误前，执行：
-
-```bash
-LATEST=$(npm view @mtfe/mtsso-auth-official version --registry=http://r.npm.sankuai.com 2>/dev/null) && LOCAL=$(npm list @mtfe/mtsso-auth-official --depth=0 2>/dev/null | grep '@mtfe/mtsso-auth-official' | sed 's/.*@//;s/ .*//') && [ "$LATEST" = "$LOCAL" ] || npm install @mtfe/mtsso-auth-official@latest --registry=http://r.npm.sankuai.com
-```
-
-**流程说明：**
-- 检查本地版本是否为最新；若不是或不存在，自动安装 `@latest`。
-- 若版本一致：无输出，依赖就绪。
-- 若需安装：自动执行 `npm install` 并在完成后继续。
-
 ## 2. 工具路由与参数契约
 
 ### 2.1 意图路由（先选命令）
@@ -168,11 +153,11 @@ LATEST=$(npm view @mtfe/mtsso-auth-official version --registry=http://r.npm.sank
 ### 2.3 凭据解析与环境一致性
 
 - 在向用户追问 `client_id`、`client_secret` 之前，必须先检查（一定不要直接追问！！！）：
-  - `/root/.openclaw/sso/agent_info`
+  - `~/.openclaw/sso/agent_info`
   - 环境变量 `AGENT_SSO_CLIENT_ID`、`AGENT_SSO_CLIENT_SECRET`、`MTSSO_ENV`
 - 统一优先级：
   1. 命令行参数（`-e/--env`、`--client_id`、`--client_secret`）
-  2. `/root/.openclaw/sso/agent_info`（注意：通常在未显式传入 `--client_id` 时参与回退）
+  2. `~/.openclaw/sso/agent_info`（注意：通常在未显式传入 `--client_id` 时参与回退）
   3. 环境变量（`MTSSO_ENV`、`AGENT_SSO_CLIENT_ID`、`AGENT_SSO_CLIENT_SECRET`）
 - 若三层都未提供环境值，默认 `PROD`；不会自动填充默认凭据。
 - 仅当三层都缺失且无法继续执行时，才向用户说明缺失字段。
@@ -219,20 +204,19 @@ npx mtsso-token-exchange --audience "$TARGET_CLIENT_ID" --subject_token "$subjec
 
 ## 4. 排障速查
 
-| 现象 | 常见原因 | 建议动作               |
-|---|---|--------------------|
-| `invalid subject_token` 或 `can not find token format` | 把完整 JSON 传给了 `--subject_token` | 先提取 `.access_token` 再传入 |
-| `--audience 最多支持 5 个 client_id` | audience 数量超限 | 拆分为多次调用，不要自动截断     |
-| 返回非 JSON 或 endpoint 调用失败 | 网络异常、环境不匹配、上游异常 | 加 `-v` 重试，并核对环境与凭据一致性 |
-| 已切到 TEST 但仍使用 PROD 凭据 | 高频配置错误 | 同步替换为 TEST 凭据后重试   |
-| `npx mtsso-*` 命令不存在 | 本地尚未安装工具包 | 按第 1.9 节自动修复策略执行   |
-| `npx mtsso-client-credentials` 失败且无可解析 stdout JSON | 错误信息主要在 `stderr` | 先检查退出码，再查看 `stderr` |
-| 本地 WebSocket Secure 连接失败 | 本机 MOA 未登录或不可用 | 联系 SSO 运维团队以排查环境问题 |
+| 现象 | 常见原因 | 建议动作                              |
+|---|---|-----------------------------------|
+| `invalid subject_token` 或 `can not find token format` | 把完整 JSON 传给了 `--subject_token` | 先提取 `.access_token` 再传入           |
+| `--audience 最多支持 5 个 client_id` | audience 数量超限 | 拆分为多次调用，不要自动截断                    |
+| 返回非 JSON 或 endpoint 调用失败 | 网络异常、环境不匹配、上游异常 | 加 `-v` 重试，并核对环境与凭据一致性             |
+| 已切到 TEST 但仍使用 PROD 凭据 | 高频配置错误 | 同步替换为 TEST 凭据后重试                  |
+| `npx mtsso-*` 命令不存在 | 本地尚未安装工具包 | 一般Agent 环境会预装 mtsso 官方包，如果实际未安装，请联系 SSO 运维团队 |
+| `npx mtsso-client-credentials` 失败且无可解析 stdout JSON | 错误信息主要在 `stderr` | 先检查退出码，再查看 `stderr`               |
+| 本地 WebSocket Secure 连接失败 | 本机 MOA 未登录或不可用 | 联系 SSO 运维团队以排查环境问题                |
 
 ## 5. 最小执行规范
 
 - 先检查退出码，再解析 `stdout` JSON。
-- **工具包安装与修复**：参考第 1.9 节"安装与自动修复策略"；不要重复执行版本检查命令。
 - 涉及三方 Skill 的 token 占位符注入时，先执行第 1 章，再执行本章细则。
 - 命令串联时，统一执行 token 字段提取与空值校验。
 - 需要验证 token 是否有效（例如 `active`）时，必须调用 `npx mtsso-introspect-token`。

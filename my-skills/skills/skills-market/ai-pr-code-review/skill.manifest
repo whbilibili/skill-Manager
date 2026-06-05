@@ -1,8 +1,8 @@
 skill-manifest-version: 1
-skill-id: 52d23f3eb888c1bfab6bbff142631ed8e0284ab1fbbbf8146387ae89cb5b6aea
+skill-id: 3798675a860bebd45d0bdd898e3c59ed76d0d18085d0c46d977acb5ea2164d56
 
 files:
-  26e09534b3bd55c47334b04e84b5f7142fcde325d41fe361c22367f4e07e413b  SKILL.md
+  89db5895ebf443a35bd3c82f0a42cee91dd486e1ee0d254210205b9f48172eea  SKILL.md
   46fef4d74d8812254528a939f972cb2535472c8d7b062f298d14eb8fbfd7fe2e  cr-config.yaml
   4d1c07a29153d0cc46abe27392acf378b8651f448a84ae1cabbc99e0181bcf26  references/citadel-write-guide.md
   5207a6a63cd754dc0514812580731254eed51e996f8a0862041f1f6595f98dab  references/coding-standards-checklist.md
@@ -11,7 +11,7 @@ files:
   0f28b0670c81a606b1edb92c5ea16278210a8edd062a3c290dcd3bb8fac6c35d  references/cr-comment.sh
   77978a49b1e250e0f1570c963e83400deeb562c0b4bd8d2ef1b3a3c289987e3a  references/daxiang-notify-api.md
   8fc7b8ac484f610d7633aed34071ff1ff5d6408f225cae99626c90130404bb45  references/domain-knowledge.md
-  1f90f46ee2b0d646e5f8836b260454caa201aa37fcf0e41869f5f2cbac34c92f  references/env-setup-guide.md
+  13c94ea9f5467ea2bbfbdb7d9852ae96e26b3db46c4671c471aa5061bd9211d8  references/env-setup-guide.md
   7de9d0e25f18458376d06f87ae02444c08a2874d950a0a81f28af6ad0b4b0c2a  references/performance-checklist.md
   9af0dcebd66edbb4044b080ef5c032f26468899f02ef7ff31daca07281fba27e  references/pr-comment-guide.md
   90fc74e7f347b728a6c31e73e901b6c25aa5534078943585117219f9ea3b1bdf  references/stability-security-checklist.md

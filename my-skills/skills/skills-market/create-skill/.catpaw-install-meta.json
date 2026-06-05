@@ -4,5 +4,7 @@
   "updateTime": 1776915909000,
   "downloadTime": 1776917071378,
   "alias": "create_skill",
-  "intro": "帮助用户在 CatPaw 中创建 Agent Skills 的指南型 skill"
+  "intro": "帮助用户在 CatPaw 中创建 Agent Skills 的指南型 skill",
+  "creator": "chenhaoling",
+  "visibility": "public"
 }

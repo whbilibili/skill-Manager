@@ -47,10 +47,10 @@ const CONFIG = {
     cachePrefix: 'friday-ciba-'
 };
 
-const BASE_URL = 'https://skill.sankuai.com';
+const BASE_URL = 'https://friday.sankuai.com';
 const TOKEN_ENDPOINT = 'https://ssosv.sankuai.com/sson/auth/oidc/v1/token';
 const DEFAULT_AUDIENCE = '0968168675';
-// Token exchange always uses DEFAULT_AUDIENCE (Friday's SSO client_id)
+const EXCHANGE_CLIENT_ID = '27b7bcceef';
 
 // NPX binary for official SSO package (installed via @mtfe/mtsso-auth-official)
 const MTSSO_REGISTRY = '--registry http://r.npm.sankuai.com';
@@ -229,10 +229,9 @@ async function getToken(appAuth, audience) {
  * Returns true if supported, false otherwise.
  */
 function probeMoaSeamless() {
-
     try {
         const result = execSync(
-            `${NPX_CMD} --yes mtsso-moa-feature-probe ${MTSSO_REGISTRY} 2>/dev/null`,
+            `${NPX_CMD} --yes -p @mtfe/mtsso-auth-official mtsso-moa-feature-probe 2>/dev/null`,
             { encoding: 'utf8', timeout: 10000 }
         );
         const json = JSON.parse(result.trim());
@@ -249,7 +248,7 @@ function probeMoaSeamless() {
 function getMoaToken(audience) {
     const aud = audience || DEFAULT_AUDIENCE;
     const result = execSync(
-        `${NPX_CMD} --yes mtsso-moa-local-exchange --audience "${aud}" ${MTSSO_REGISTRY} 2>/dev/null`,
+            `${NPX_CMD} --yes -p @mtfe/mtsso-auth-official mtsso-moa-local-exchange --audience "${aud}" 2>/dev/null`,
         { encoding: 'utf8', timeout: 30000 }
     );
     const json = JSON.parse(result.trim());
@@ -267,8 +266,8 @@ function getMoaToken(audience) {
  * plaintext scanning; the real security is the CIBA phone confirmation step.
  */
 const _K = "openclaw-oa";
-const _CID_B64 = "DEB" + "UC1" + "EJUh" + "YeCg==";
-const _CSE_B64 = "CUIB" + "WVYOU" + "kZMWV" + "FWRFBZ" + "AA0HTh" + "pdVAlD" + "BltaXA" + "dGHV0=";
+const _CID_B64 = "DEBUC1EJUhYeCg==";
+const _CSE_B64 = "CUIBWVYOUkZMWVFWRFBZAA0HThpdVAlDBltaXAdGHV0=";
 
 function _decode(encoded) {
     const buf = Buffer.from(encoded, "base64");
@@ -278,36 +277,21 @@ function _decode(encoded) {
 }
 
 function getUserIdFromConfig() {
-    // 1. Try USER.md first — return with source marker
     for (const p of CONFIG.userMdPaths) {
         if (fs.existsSync(p)) {
-            const m = fs.readFileSync(p, 'utf-8').match(/misId:\*\*?\s*(\S+)/);
-            if (m) return { userId: m[1], source: 'usermd' };
+            const m = fs.readFileSync(p, 'utf-8').match(/misId:\s*\*\*\s*(\S+)/);
+            if (m) return m[1];
         }
     }
-    // 2. Fallback: try git config user.name
-    try {
-        const gitUser = execSync('git config --global user.name', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-        if (gitUser) return { userId: gitUser, source: 'fallback' };
-    } catch { /* ignore */ }
-    // 3. Fallback: try cached credential filename pattern
-    try {
-        const files = fs.readdirSync(CONFIG.credentialDir).filter(f => f.startsWith(CONFIG.cachePrefix) && f.endsWith('.json'));
-        if (files.length > 0) {
-            const match = files[0].match(new RegExp(`^${CONFIG.cachePrefix}(.+)\.json$`));
-            if (match) return { userId: match[1], source: 'fallback' };
-        }
-    } catch { /* ignore */ }
     return null;
 }
 
 async function authenticateWithCIBA() {
     const clientId = _decode(_CID_B64);
     const clientSecret = _decode(_CSE_B64);
-    const userInfo = getUserIdFromConfig();
-    if (!userInfo) throw new Error('Cannot determine user ID');
-    const userId = userInfo.userId;
-    console.error(`   User: ${userId} (source: ${userInfo.source})`);
+    const userId = getUserIdFromConfig();
+    if (!userId) throw new Error('Cannot determine user ID from USER.md');
+    console.error(`   User: ${userId}`);
 
     const cached = loadTokenCache(userId);
     if (cached?.token) { console.error('🔁 Using cached token (valid)'); return cached.token; }
@@ -355,12 +339,11 @@ async function authenticateWithCIBA() {
 
         if (pollResult.access_token) {
             console.error('\n✅ CIBA auth success!');
-            // Exchange token with DEFAULT_AUDIENCE (Friday's SSO client_id)
             const exParams = new URLSearchParams({
                 grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
                 subject_token: pollResult.access_token,
                 subject_token_type: 'urn:ietf:params:oauth:token-type:access_token',
-                audience: DEFAULT_AUDIENCE,
+                audience: EXCHANGE_CLIENT_ID,
                 client_id: clientId,
                 client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
                 client_assertion: makeClientAssertion(clientId, clientSecret, TOKEN_ENDPOINT)
@@ -435,7 +418,7 @@ async function getBrowserSSOCookie() {
     return new Promise((resolve, reject) => {
         ws.onopen = () => ws.send(JSON.stringify({
             id: 1, method: 'Network.getCookies',
-            params: { urls: ['https://skill.sankuai.com'] }
+            params: { urls: ['https://friday.sankuai.com'] }
         }));
         ws.onmessage = msg => {
             const result = JSON.parse(msg.data || msg);
@@ -443,9 +426,9 @@ async function getBrowserSSOCookie() {
                 ws.close();
                 const cookies = {};
                 for (const c of (result.result?.cookies || [])) cookies[c.name] = c.value;
-                const ssoid = cookies['0968168675_ssoid'];
-                if (!ssoid) { reject(new Error('No SSO cookie found. Please login to skill.sankuai.com first.')); return; }
-                resolve({ ssoid, cookieHeader: `0968168675_ssoid=${ssoid}` });
+                const ssoid = cookies['12d702aa62_ssoid'];
+                if (!ssoid) { reject(new Error('No SSO cookie found. Please login to friday.sankuai.com first.')); return; }
+                resolve({ ssoid, cookieHeader: `12d702aa62_ssoid=${ssoid}` });
             }
         };
         ws.onerror = reject;
@@ -522,13 +505,18 @@ function buildCurlMultipart(authInfo, url, fields, zipFile) {
     const authHeaders = [];
     if (authInfo.token) authHeaders.push('-H', `access-token: ${authInfo.token}`);
     if (authInfo.cookieHeader) authHeaders.push('-b', authInfo.cookieHeader);
-    return ['curl', '-s', '-X', 'POST', url, ...authHeaders, ...parts];
+    return ['curl', '-s', '-L', '-X', 'POST', url, ...authHeaders, ...parts];
 }
 
 function curlExec(args) {
     const escaped = args.map(a => `'${a.replace(/'/g, "'\\''")}'`).join(' ');
     const result = execSync(escaped, { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 });
-    return JSON.parse(result);
+    try {
+        return JSON.parse(result);
+    } catch (e) {
+        console.error('Raw response:', result.substring(0, 500));
+        throw new Error(`Invalid JSON response: ${e.message}`);
+    }
 }
 
 // ─── Commands ──────────────────────────────────────────────────────────
@@ -620,17 +608,13 @@ async function cmdList(client, args) {
     const page = args.page || '1', size = args.size || '20';
     const endpoint = mine ? '/mcphub-api/skill/my/list' : '/mcphub-api/skill/authorized/list';
     const r = await client.get(endpoint, { params: { page, pageSize: size } });
-    // Handle different API response structures
-    const items = r?.items || r?.result?.items || r?.data?.items || (Array.isArray(r) ? r : []);
-    const total = r?.total ?? r?.result?.total ?? r?.data?.total ?? items.length;
-    const currentPage = r?.currentPage ?? r?.result?.currentPage ?? r?.data?.currentPage ?? page;
-    console.log(`Total: ${total} | Page: ${currentPage} | Showing: ${items.length}`);
+    console.log(`Total: ${r.total} | Page: ${r.currentPage} | Showing: ${r.items.length}`);
     console.log('─'.repeat(80));
-    for (const s of items) {
-        const verified = s?.verified ? '✓' : ' ';
-        console.log(`[${verified}] #${s?.id}  ${s?.name}  (${s?.alias || 'no alias'})`);
-        console.log(`    ${s?.intro?.substring(0, 100) || '(no intro)'}`);
-        console.log(`    tags: ${s?.tags || '-'}  |  downloads: ${s?.downloadCount || 0}  |  appkey: ${s?.appkey || '-'}`);
+    for (const s of r.items) {
+        const verified = s.verified ? '✓' : ' ';
+        console.log(`[${verified}] #${s.id}  ${s.name}  (${s.alias})`);
+        console.log(`    ${s.intro?.substring(0, 100) || '(no intro)'}`);
+        console.log(`    tags: ${s.tags || '-'}  |  downloads: ${s.downloadCount}  |  appkey: ${s.appkey}`);
         console.log('');
     }
 }
@@ -638,15 +622,13 @@ async function cmdList(client, args) {
 async function cmdSearch(client, args) {
     if (!args.query) throw new Error('--query is required');
     const r = await client.get('/mcphub-api/skill/list', { params: { keyword: args.query, page: 1, pageSize: 50 } });
-    // Handle different API response structures
-    const skills = r?.items || r?.result?.items || r?.data?.items || (Array.isArray(r) ? r : []);
-    if (!skills || skills.length === 0) { console.log('No skills found.'); return; }
+    const skills = r?.items || r?.result?.items || (Array.isArray(r) ? r : []);
+    if (skills.length === 0) { console.log('No skills found.'); return; }
     for (const s of skills) {
-        if (!s) continue;
-        const verified = s?.verified ? '✓' : ' ';
-        console.log(`[${verified}] #${s?.id}  ${s?.name}  (${s?.alias || 'no alias'})`);
-        console.log(`    ${s?.intro?.substring(0, 100) || ''}`);
-        console.log(`    tags: ${s?.tags || '-'}  |  downloads: ${s?.downloadCount || 0}`);
+        const verified = s.verified ? '✓' : ' ';
+        console.log(`[${verified}] #${s.id}  ${s.name}  (${s.alias})`);
+        console.log(`    ${s.intro?.substring(0, 100) || ''}`);
+        console.log(`    tags: ${s.tags || '-'}  |  downloads: ${s.downloadCount || 0}`);
         console.log('');
     }
 }

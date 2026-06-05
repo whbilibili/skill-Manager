@@ -1,21 +1,15 @@
 ---
 name: approval
-description: '审批中心官方技能。查询待审批、已发起、已审批、抄送我的审批列表，查可发起的审批流程，执行快捷通过或驳回，批量审批，加签，撤回单据，重新提交已撤回或已驳回单据。触发词：我的审批、审批单据、待办、已办、我发起的、查流程、通过、驳回、同意、审批进度、批量审批、全部通过、加签、前加签、后加签、撤回、撤销、催办、催审、重新提交、重新发起、撤回后修改重提、修改已撤回单据、转交、移交审批、让别人处理、修改记录、更新记录、修改表单内容、查看记录、查询记录详情。不适用：与审批无关的一般问题（如查天气、写文档）；如需搭建审批流程，请使用快搭帮助答疑 Skill。'
+description: '审批中心官方技能。查询待审批、已发起、已审批、抄送我的审批列表，查可发起的审批流程，执行快捷通过或驳回，批量审批，加签，撤回单据，重新提交已撤回或已驳回单据，发起单据智能路由（快搭/三方流程识别与分发），设置/查询/终止审批授权（委托代办人）。触发词：我的审批、审批单据、待办、已办、我发起的、查流程、通过、驳回、同意、审批进度、批量审批、全部通过、加签、前加签、后加签、撤回、撤销、催办、催审、重新提交、重新发起、撤回后修改重提、修改已撤回单据、转交、移交审批、让别人处理、修改记录、更新记录、修改表单内容、查看记录、查询记录详情、发起审批、提交单据、帮我提一个、发起个流程、审批授权、设置代办人、委托审批、取消授权、终止授权、代办人、休假审批。不适用：与审批无关的一般问题（如查天气、写文档）；如需搭建审批流程，请使用快搭帮助答疑 Skill。'
 
 metadata:
   skillhub.creator: "yidongqin"
-  skillhub.updater: "zhangyi173"
-  skillhub.version: "V9"
+  skillhub.updater: "dingjian13"
+  skillhub.version: "V13"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "4550"
   skillhub.high_sensitive: "false"
 ---
-
-## [MANDATORY] SKILLHUB_METRIC_REPORTER_START
-执行本 Skill 的任何操作之前，必须先执行 Skill：`skill-metric-reporter`。
-按照 `skill-metric-reporter` 的要求完成 `skill_start` 上报后，才可继续本 Skill 正文。
-本 Skill 全部操作完成后，同样按照 `skill-metric-reporter` 的要求完成 `skill_end` 上报。
-## [MANDATORY] SKILLHUB_METRIC_REPORTER_END
 
 # ✅ 审批 Skill
 
@@ -38,6 +32,27 @@ node -e "const cp=require('child_process'); const probe=process.platform==='win3
 - `references/resubmit.md` — 重新提交表单规则（触发「重新提交/重新发起」时加载）
 - `references/update.md` — 修改快搭表单记录规则（触发「修改记录/修改表单」时加载）
 - `references/process-routing.md` — 业务 Skill 路由表（采购试点）
+- `references/initiate-routing.md` — 发起单据路由（判断快搭 vs 三方，触发「发起/提交/提报」时加载）
+- `references/third-party-flows.md` — 三方流程映射表（由 initiate-routing.md 引用）
+- `references/delegate.md` — 审批授权（委托代办人）操作流程（设置/查询/终止授权）
+
+---
+
+## 〇、发起单据意图路由
+
+> 触发：用户说「帮我发起」「提交单据」「提报」「我要提一个XXX」「发起个流程」，或提供了发起链接
+> 详细流程见 → [references/initiate-routing.md](references/initiate-routing.md)
+
+**入口判断（必须先执行）：**
+
+| 判断依据 | 结果 | 动作 |
+|---------|------|------|
+| 用户给了 `shenpi.sankuai.com/p/submit` 或 `kuaida.sankuai.com` 含 `form-` 的链接 | 快搭流程 | 调用「快搭助手」skill |
+| 用户给了其他域名链接 | 三方流程 | 查 `references/third-party-flows.md` |
+| 无链接，模糊描述 | 待确认 | 按 initiate-routing.md Step 2 逐步搜索判断 |
+
+> ⚠️ **approval skill 不执行发起逻辑**，仅做路由判断后分发到对应 skill。
+> ⚠️ 当确认为快搭流程时，若「快搭助手」skill 未安装，引导用户安装：`👉 [安装快搭助手](https://friday.sankuai.com/skills/skill-detail?id=32795)`
 
 ---
 
@@ -55,6 +70,7 @@ node -e "const cp=require('child_process'); const probe=process.platform==='win3
 | 「这个单子审批到哪了」「现在在谁手里」（未说明角色） | 您是该单据的**发起人**、**审批人**，还是**抄送人**？（决定用哪个列表接口反查 billId） |
 | 「全部通过」「全部批掉」「一键审批」 | **必须追问范围**：是当前所有待审批，还是某类流程？请说明关键词或条件后再执行 |
 | 「把XXX都通过」「XXX全批了」（无筛选条件） | **必须追问范围**：是当前所有待审批，还是某类流程？请说明关键词或条件后再执行 |
+| 「审批授权」「设置代办人」「委托审批」「休假审批」「代办人」「取消授权」 | 加载 `references/delegate.md`，按其流程执行 |
 
 ---
 
@@ -70,6 +86,31 @@ node -e "const cp=require('child_process'); const probe=process.platform==='win3
 | `billId`（抄送） | `getCCApprovals` | 审批流查询（抄送人，仅可查进度，无法操作） |
 
 > 若角色不明确，先追问「您是发起人、审批人，还是抄送人？」再按对应路径查询。
+
+### ⚠️ 快搭平台（platformId=14）billId / procInstId 解析规则（最高优先级）
+
+**当 `platformId=14` 时，所有操作（审批、撤回、催办、审批流查询、审批详情等）传入的 `billId` 或 `procInstId` 必须从 `detailUrl` 链接参数中提取 `procInstId` 的值，而不是使用接口返回的 `billId` 字段。**
+
+**原因**：快搭平台的列表接口返回的 `billId` 字段是内部记录 ID，并非流程实例 ID；而操作接口（`operateApprove`、`withdrawApprove`、`urgeApproval`、`getApproveFlowDetail`、`getApproveDetail` 等）需要的是流程实例 ID（即 `detailUrl` 中的 `procInstId` 参数）。
+
+**提取方法**：
+```
+detailUrl 示例：https://kuaida.xxx.com/app-xxx/workflow?procInstId=fn917x0cnesfnj44qdf1o&taskInstId=hnaifz24a8esb30uf17jp
+提取 procInstId 参数值：fn917x0cnesfnj44qdf1o
+```
+
+**⚠️ 当 `platformId=14` 且 `detailUrl` 中不包含 `procInstId` 参数时，该单据暂不支持通过 Skill 进行操作（撤回、催办），需告知用户「该单据暂不支持通过 Skill 操作，请前往审批系统手动处理」并附上 `detailUrl` 链接。**
+
+**适用操作汇总**：
+| 操作 | platformId=1（审批平台） | platformId=14（快搭平台） |
+|------|--------------------------|---------------------------|
+| `operateApprove --billId` | 使用列表返回的 `billId` | 使用 `detailUrl` 中的 `procInstId` 参数值 |
+| `withdrawApprove --billId` | 使用列表返回的 `billId` | 使用 `detailUrl` 中的 `procInstId` 参数值 |
+| `urgeApproval --procInstId` | 不适用（用 `--billId`） | 使用 `detailUrl` 中的 `procInstId` 参数值 |
+| `getApproveFlowDetail --billId` | 使用列表返回的 `billId` | 使用 `detailUrl` 中的 `procInstId` 参数值 |
+| `getApproveDetail --billId` | 使用列表返回的 `billId` | 使用 `detailUrl` 中的 `procInstId` 参数值 |
+
+> ⚠️ 此规则为强制规则，所有涉及快搭平台操作的流程都必须遵守，不得直接使用列表返回的 `billId` 字段。
 
 ---
 
@@ -351,7 +392,20 @@ oa-skills shenpi getSubmittedApprovals --billStatus 1
 
 ---
 
-## 十、审批流详情
+## 十、审批授权（委托代办人）
+
+> 触发：「审批授权」「设置代办人」「委托审批」「休假审批」「代办人」「取消授权」「终止授权」
+
+支持三种操作：
+- **设置授权**：指定代办人、时间范围、授权流程范围（支持智能推荐近期高频流程）
+- **查询授权**：查看当前生效中/历史全部授权记录
+- **终止授权**：提前终止生效中的授权
+
+详细流程见 → [references/delegate.md](references/delegate.md)
+
+---
+
+## 十一、审批流详情
 
 > 触发：「查询审批进度」「审批流详情」「当前在谁手里」「审批到哪了」
 
@@ -370,7 +424,7 @@ oa-skills shenpi getSubmittedApprovals --billStatus 1
 
 ---
 
-## 十一、可用能力
+## 十二、可用能力
 
 | 能力                   | CLI 方法                  |
 | ---------------------- | ------------------------- |
@@ -393,6 +447,7 @@ oa-skills shenpi getSubmittedApprovals --billStatus 1
 | 查询应用下表单（快搭） | `getFormListByAppCode`    |
 | 查询记录详情（快搭）   | `getRecordInfo`           |
 | 修改表单记录（快搭）   | `updateRecord`            |
+| 审批授权管理（设置/查询/终止） | 见 `references/delegate.md` |
 
 > ⚠️ `submitApproval`、`queryAppList`、`getFormListByAppCode` 的详细 SOP 待下版本补充，当前可参考 `references/cli-cheatsheet.md` 中的参数说明直接使用。
 
@@ -413,7 +468,7 @@ oa-skills shenpi getPendingApprovals --sponsorId 1234567
 
 ---
 
-## 十二、查询结果展示规范
+## 十三、查询结果展示规范
 
 - 「已审批」和「抄送我的」**分离为两个独立表格，不合并**
 - 默认展示最新 **10 条**，末尾提示「如需更多请说明」
@@ -450,13 +505,13 @@ oa-skills shenpi getPendingApprovals --sponsorId 1234567
 
 ---
 
-## 十三、CLI 速查
+## 十四、CLI 速查
 
 详见 → [references/cli-cheatsheet.md](references/cli-cheatsheet.md)
 
 ---
 
-## 十四、错误处理
+## 十五、错误处理
 
 | 场景                    | 处理方式                                                                                               |
 | ----------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -496,7 +551,7 @@ oa-skills shenpi getPendingApprovals --sponsorId 1234567
 
 ---
 
-## 十五、业务 Skill 路由
+## 十六、业务 Skill 路由
 
 > 适用场景：当待审批单据的流程编码命中路由表时，自动调用对应业务 Skill 补充风险信息，展示给审批人作为决策参考。
 > **路由触发规则（三种时机）：**
@@ -569,11 +624,11 @@ Step 4：格式化风险结论
 - 风险信息仅供参考，审批人最终决策，AI 建议不替代人工判断
 - 业务 Skill 调用失败时，不影响审批操作的正常进行
 
-## 十六、内部能力依赖
+## 十七、内部能力依赖
 
 | 场景                             | 依赖 Skill（ID）      | 调用方式                          |
 | -------------------------------- | --------------------- | --------------------------------- |
-| 重新提交/发起审批 - 复杂表单填写 | kuaida-submit（3060） | 运行时自动安装，读取 fill-form.md |
+| 重新提交/发起审批 - 复杂表单填写 | 快搭助手（32795） | 运行时自动安装，读取 fill-form.md |
 | 搭建类问题兜底                   | 快搭帮助答疑（5517）  | 文案引导用户安装（非运行时）      |
 
-> 反向引用：kuaida-conditionset（32795）声明依赖 approval（4550），审批操作由本 Skill 承接。
+> 反向引用：快搭助手（32795）声明依赖 approval（4550），审批操作由本 Skill 承接。

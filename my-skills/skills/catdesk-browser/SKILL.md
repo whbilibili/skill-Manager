@@ -7,25 +7,13 @@ description: "Browser automation via CatPaw Desk CLI. Use when the user needs to
 
 > **CRITICAL**: For `*.sankuai.com` URLs, you **MUST** complete the [Meituan Internal Pages](#mandatory-meituan-internal-pages) section **before** running any `browser-action` command. Skipping this is a violation of this skill's instructions.
 
-> **Windows (CMD)**: Replace `~/.catpaw/bin/catdesk` with `%USERPROFILE%\.catpaw\bin\catdesk.cmd` in all commands below.
+> `catdesk` is available globally in PATH on all platforms. Just use `catdesk` directly.
 >
-> **Windows (PowerShell)**: The system prompt provides a `catdesk` function definition that wraps the Electron binary and automatically handles PowerShell 5.x quote-stripping. Run the function definition ONCE per shell session (the system prompt provides the exact command), then use `catdesk` identically to macOS/Linux:
->
-> ```powershell
-> # After running the function definition from the system prompt:
-> catdesk browser-action '{"action":"navigate","url":"https://example.com"}'
->
-> # Values with spaces work correctly:
-> catdesk browser-action '{"action":"fill","selector":"@e1","value":"Jane Doe"}'
->
-> # Batch array:
-> catdesk browser-action '[{"action":"click","selector":"@e1"},{"action":"snapshot"}]'
-> ```
+> **Windows (PowerShell)**: CatDesk auto-installs a `.ps1` wrapper that PowerShell discovers before `.cmd`, so `catdesk` works correctly out of the box — no manual escaping needed.
 >
 > **Rules**:
 > - Always use **single quotes** `'...'` around the JSON string (not double quotes)
-> - The `catdesk` function automatically escapes `"` for PowerShell 5.x — no manual escaping needed
-> - For nested `"` in JS expressions (e.g. `evaluate`), use `''` (two single quotes) to embed a literal single quote, or use template strings to avoid quotes entirely
+> - For nested `"` in JS expressions (e.g. `evaluate`), use template strings to avoid quotes entirely
 
 ## MANDATORY: Meituan Internal Pages
 
@@ -48,16 +36,16 @@ Every browser automation follows this pattern:
 3. **Interact**: Use refs to click, fill, select
 4. **Re-snapshot**: After navigation or DOM changes, get fresh refs
 
-> Prefer `snapshot` over `screenshot` to inspect page state — snapshot returns a lightweight accessibility tree (text) and is more token-efficient. Use `screenshot` only when you need visual information that snapshot cannot provide (see [Annotated Screenshots](#annotated-screenshots-vision-mode)).
+> **CRITICAL**: **MUST use `snapshot` to inspect page state, NOT `screenshot`**. Only use `screenshot` when you need visual information (unlabeled icons, layout checks, canvas/charts).
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"navigate","url":"https://example.com/form"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '{"action":"navigate","url":"https://example.com/form"}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
 # Output: @e1 [input type="email"], @e2 [input type="password"], @e3 [button] "Submit"
 
-~/.catpaw/bin/catdesk browser-action '[{"action":"fill","selector":"@e1","value":"user@example.com"},{"action":"fill","selector":"@e2","value":"password123"},{"action":"click","selector":"@e3"},{"action":"waitforloadstate","state":"networkidle"}]'
+catdesk browser-action '[{"action":"fill","selector":"@e1","value":"user@example.com"},{"action":"fill","selector":"@e2","value":"password123"},{"action":"click","selector":"@e3"},{"action":"waitforloadstate","state":"networkidle"}]'
 
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
 ```
 
 ## Batch Execution
@@ -65,7 +53,7 @@ Every browser automation follows this pattern:
 Pass a JSON array to run multiple commands sequentially. Stops on first failure.
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '[{"action":"fill","selector":"@e1","value":"text"},{"action":"keyboard","keys":"Enter"},{"action":"wait","timeout":2000}]'
+catdesk browser-action '[{"action":"fill","selector":"@e1","value":"text"},{"action":"keyboard","keys":"Enter"},{"action":"wait","timeout":2000}]'
 ```
 
 **When to batch**: `fill + keyboard + wait`, `click + fill + keyboard` — any sequence where you don't need intermediate output.
@@ -76,53 +64,53 @@ Pass a JSON array to run multiple commands sequentially. Stops on first failure.
 
 ```bash
 # Navigation
-~/.catpaw/bin/catdesk browser-action '{"action":"navigate","url":"<url>","waitUntil":"networkidle"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"navigate","url":"<url>","headers":{"X-Auth":"token","X-Custom":"value"}}'
-~/.catpaw/bin/catdesk browser-action '{"action":"back"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"forward"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"reload"}'
+catdesk browser-action '{"action":"navigate","url":"<url>","waitUntil":"networkidle"}'
+catdesk browser-action '{"action":"navigate","url":"<url>","headers":{"X-Auth":"token","X-Custom":"value"}}'
+catdesk browser-action '{"action":"back"}'
+catdesk browser-action '{"action":"forward"}'
+catdesk browser-action '{"action":"reload"}'
 
 # Snapshot
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true,"selector":"#main"}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '{"action":"snapshot","interactive":true,"selector":"#main"}'
 
 # Interaction (use @refs from snapshot)
-~/.catpaw/bin/catdesk browser-action '{"action":"click","selector":"@e1"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"fill","selector":"@e2","value":"text"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"type","selector":"@e2","text":"text"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"select","selector":"@e1","values":"option"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"check","selector":"@e1"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"press","key":"Enter"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"keyboard","keys":"Control+a"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"scroll","direction":"down","amount":500}'
-~/.catpaw/bin/catdesk browser-action '{"action":"upload","selector":"@e1","files":"./file.pdf"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"upload","selector":"@e1","files":["./a.pdf","./b.png"]}'
+catdesk browser-action '{"action":"click","selector":"@e1"}'
+catdesk browser-action '{"action":"fill","selector":"@e2","value":"text"}'
+catdesk browser-action '{"action":"type","selector":"@e2","text":"text"}'
+catdesk browser-action '{"action":"select","selector":"@e1","values":"option"}'
+catdesk browser-action '{"action":"check","selector":"@e1"}'
+catdesk browser-action '{"action":"press","key":"Enter"}'
+catdesk browser-action '{"action":"keyboard","keys":"Control+a"}'
+catdesk browser-action '{"action":"scroll","direction":"down","amount":500}'
+catdesk browser-action '{"action":"upload","selector":"@e1","files":"./file.pdf"}'
+catdesk browser-action '{"action":"upload","selector":"@e1","files":["./a.pdf","./b.png"]}'
 
 # Get information
-~/.catpaw/bin/catdesk browser-action '{"action":"url"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"title"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"content","selector":"@e1"}'
+catdesk browser-action '{"action":"url"}'
+catdesk browser-action '{"action":"title"}'
+catdesk browser-action '{"action":"content","selector":"@e1"}'
 
 # Wait
-~/.catpaw/bin/catdesk browser-action '{"action":"wait","timeout":2000}'
-~/.catpaw/bin/catdesk browser-action '{"action":"wait","selector":"@e1"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"waitforloadstate","state":"networkidle"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"waitforurl","url":"**/dashboard"}'
+catdesk browser-action '{"action":"wait","timeout":2000}'
+catdesk browser-action '{"action":"wait","selector":"@e1"}'
+catdesk browser-action '{"action":"waitforloadstate","state":"networkidle"}'
+catdesk browser-action '{"action":"waitforurl","url":"**/dashboard"}'
 
 # Tabs
-~/.catpaw/bin/catdesk browser-action '{"action":"tab_new","url":"https://example.com"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"tab_list"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"tab_switch","index":0}'
-~/.catpaw/bin/catdesk browser-action '{"action":"tab_close","index":0}'
+catdesk browser-action '{"action":"tab_new","url":"https://example.com"}'
+catdesk browser-action '{"action":"tab_list"}'
+catdesk browser-action '{"action":"tab_switch","index":0}'
+catdesk browser-action '{"action":"tab_close","index":0}'
 
 # Network & Headers
-~/.catpaw/bin/catdesk browser-action '{"action":"headers","headers":{"X-Auth":"token123"}}'
+catdesk browser-action '{"action":"headers","headers":{"X-Auth":"token123"}}'
 
 # Capture
-~/.catpaw/bin/catdesk browser-action '{"action":"screenshot"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"screenshot","fullPage":true}'
-~/.catpaw/bin/catdesk browser-action '{"action":"screenshot","annotate":true}'
-~/.catpaw/bin/catdesk browser-action '{"action":"pdf","path":"output.pdf"}'
+catdesk browser-action '{"action":"screenshot"}'
+catdesk browser-action '{"action":"screenshot","fullPage":true}'
+catdesk browser-action '{"action":"screenshot","annotate":true}'
+catdesk browser-action '{"action":"pdf","path":"output.pdf"}'
 ```
 
 ## Common Patterns
@@ -130,21 +118,21 @@ Pass a JSON array to run multiple commands sequentially. Stops on first failure.
 ### Form Submission
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"navigate","url":"https://example.com/signup"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
-~/.catpaw/bin/catdesk browser-action '[{"action":"fill","selector":"@e1","value":"Jane Doe"},{"action":"fill","selector":"@e2","value":"jane@example.com"},{"action":"select","selector":"@e3","values":"California"},{"action":"check","selector":"@e4"},{"action":"click","selector":"@e5"},{"action":"waitforloadstate","state":"networkidle"}]'
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '{"action":"navigate","url":"https://example.com/signup"}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '[{"action":"fill","selector":"@e1","value":"Jane Doe"},{"action":"fill","selector":"@e2","value":"jane@example.com"},{"action":"select","selector":"@e3","values":"California"},{"action":"check","selector":"@e4"},{"action":"click","selector":"@e5"},{"action":"waitforloadstate","state":"networkidle"}]'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
 ```
 
 ### File Upload
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"navigate","url":"https://example.com/upload"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '{"action":"navigate","url":"https://example.com/upload"}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
 # Find the file input: @e1 [input type="file"]
-~/.catpaw/bin/catdesk browser-action '{"action":"upload","selector":"@e1","files":"./report.pdf"}'
+catdesk browser-action '{"action":"upload","selector":"@e1","files":"./report.pdf"}'
 # Multiple files
-~/.catpaw/bin/catdesk browser-action '{"action":"upload","selector":"@e1","files":["./photo1.png","./photo2.jpg"]}'
+catdesk browser-action '{"action":"upload","selector":"@e1","files":["./photo1.png","./photo2.jpg"]}'
 ```
 
 `selector` must point to an `<input type="file">` element. `files` accepts a single path or an array of paths.
@@ -152,34 +140,34 @@ Pass a JSON array to run multiple commands sequentially. Stops on first failure.
 ### Data Extraction
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"navigate","url":"https://example.com/products"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
-~/.catpaw/bin/catdesk browser-action '{"action":"content","selector":"@e5"}'
+catdesk browser-action '{"action":"navigate","url":"https://example.com/products"}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '{"action":"content","selector":"@e5"}'
 ```
 
 ### Authentication with State Persistence
 
 ```bash
 # Login once and save state
-~/.catpaw/bin/catdesk browser-action '{"action":"navigate","url":"https://app.example.com/login"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
-~/.catpaw/bin/catdesk browser-action '[{"action":"fill","selector":"@e1","value":"user@example.com"},{"action":"fill","selector":"@e2","value":"password123"},{"action":"click","selector":"@e3"}]'
-~/.catpaw/bin/catdesk browser-action '{"action":"waitforurl","url":"**/dashboard"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"state_save","path":"auth.json"}'
+catdesk browser-action '{"action":"navigate","url":"https://app.example.com/login"}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '[{"action":"fill","selector":"@e1","value":"user@example.com"},{"action":"fill","selector":"@e2","value":"password123"},{"action":"click","selector":"@e3"}]'
+catdesk browser-action '{"action":"waitforurl","url":"**/dashboard"}'
+catdesk browser-action '{"action":"state_save","path":"auth.json"}'
 
 # Reuse in future sessions
-~/.catpaw/bin/catdesk browser-action '{"action":"state_load","path":"auth.json"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"navigate","url":"https://app.example.com/dashboard"}'
+catdesk browser-action '{"action":"state_load","path":"auth.json"}'
+catdesk browser-action '{"action":"navigate","url":"https://app.example.com/dashboard"}'
 ```
 
 ### Semantic Locators (when refs unavailable)
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"getbyrole","role":"button","name":"Submit","subaction":"click"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"getbylabel","label":"Email","subaction":"fill","value":"user@test.com"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"getbytext","text":"Sign In","subaction":"click"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"getbyplaceholder","placeholder":"Search","subaction":"fill","value":"query"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"getbytestid","testId":"submit-btn","subaction":"click"}'
+catdesk browser-action '{"action":"getbyrole","role":"button","name":"Submit","subaction":"click"}'
+catdesk browser-action '{"action":"getbylabel","label":"Email","subaction":"fill","value":"user@test.com"}'
+catdesk browser-action '{"action":"getbytext","text":"Sign In","subaction":"click"}'
+catdesk browser-action '{"action":"getbyplaceholder","placeholder":"Search","subaction":"fill","value":"query"}'
+catdesk browser-action '{"action":"getbytestid","testId":"submit-btn","subaction":"click"}'
 ```
 
 `subaction` can be: `"click"`, `"fill"`, `"hover"`, `"check"`
@@ -187,12 +175,12 @@ Pass a JSON array to run multiple commands sequentially. Stops on first failure.
 ### Annotated Screenshots (Vision Mode)
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"screenshot","annotate":true}'
+catdesk browser-action '{"action":"screenshot","annotate":true}'
 # Output includes the image path and a legend:
 #   [1] @e1 button "Submit"
 #   [2] @e2 link "Home"
 #   [3] @e3 textbox "Email"
-~/.catpaw/bin/catdesk browser-action '{"action":"click","selector":"@e2"}'
+catdesk browser-action '{"action":"click","selector":"@e2"}'
 ```
 
 Use annotated screenshots when the page has unlabeled icon buttons or you need spatial reasoning about element positions.
@@ -201,22 +189,22 @@ Use annotated screenshots when the page has unlabeled icon buttons or you need s
 
 ```bash
 # Snapshot -> action -> diff
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
-~/.catpaw/bin/catdesk browser-action '{"action":"click","selector":"@e2"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"diff_snapshot"}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '{"action":"click","selector":"@e2"}'
+catdesk browser-action '{"action":"diff_snapshot"}'
 
 # Visual regression
-~/.catpaw/bin/catdesk browser-action '{"action":"diff_screenshot","baseline":"before.png"}'
+catdesk browser-action '{"action":"diff_screenshot","baseline":"before.png"}'
 
 # Compare two pages
-~/.catpaw/bin/catdesk browser-action '{"action":"diff_url","url1":"https://staging.example.com","url2":"https://prod.example.com","screenshot":true}'
+catdesk browser-action '{"action":"diff_url","url1":"https://staging.example.com","url2":"https://prod.example.com","screenshot":true}'
 ```
 
 ### JavaScript Evaluation
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"evaluate","script":"document.title"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"evaluate","script":"document.querySelectorAll(\"img\").length"}'
+catdesk browser-action '{"action":"evaluate","script":"document.title"}'
+catdesk browser-action '{"action":"evaluate","script":"document.querySelectorAll(\"img\").length"}'
 ```
 
 **Note**: JSON escaping can corrupt complex JavaScript. Use simpler expressions or chain multiple evaluate calls.
@@ -230,46 +218,46 @@ Refs (`@e1`, `@e2`, etc.) are invalidated when the page changes. Always re-snaps
 - Dynamic content loading (dropdowns, modals)
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"click","selector":"@e5"}'  # Navigates
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'  # MUST re-snapshot
+catdesk browser-action '{"action":"click","selector":"@e5"}'  # Navigates
+catdesk browser-action '{"action":"snapshot","interactive":true}'  # MUST re-snapshot
 ```
 
 ## Wait Strategies
 
 ```bash
 # Wait for network idle (best for slow pages)
-~/.catpaw/bin/catdesk browser-action '{"action":"waitforloadstate","state":"networkidle"}'
+catdesk browser-action '{"action":"waitforloadstate","state":"networkidle"}'
 
 # Wait for a specific element
-~/.catpaw/bin/catdesk browser-action '{"action":"wait","selector":"@e1"}'
+catdesk browser-action '{"action":"wait","selector":"@e1"}'
 
 # Wait for URL pattern (useful after redirects)
-~/.catpaw/bin/catdesk browser-action '{"action":"waitforurl","url":"**/dashboard"}'
+catdesk browser-action '{"action":"waitforurl","url":"**/dashboard"}'
 
 # Wait for JavaScript condition
-~/.catpaw/bin/catdesk browser-action '{"action":"waitforfunction","expression":"document.readyState === \"complete\""}'
+catdesk browser-action '{"action":"waitforfunction","expression":"document.readyState === \"complete\""}'
 
 # Fixed duration (milliseconds)
-~/.catpaw/bin/catdesk browser-action '{"action":"wait","timeout":5000}'
+catdesk browser-action '{"action":"wait","timeout":5000}'
 ```
 
 ## Downloads
 
 ```bash
 # Click element to trigger download
-~/.catpaw/bin/catdesk browser-action '{"action":"download","selector":"@e1","path":"./file.pdf"}'
+catdesk browser-action '{"action":"download","selector":"@e1","path":"./file.pdf"}'
 
 # Wait for download to complete
-~/.catpaw/bin/catdesk browser-action '{"action":"waitfordownload","path":"./output.zip","timeout":30000}'
+catdesk browser-action '{"action":"waitfordownload","path":"./output.zip","timeout":30000}'
 ```
 
 ## Performance Profiling
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"profiler_start"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"navigate","url":"https://example.com"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"click","selector":"@e1"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"profiler_stop","path":"./trace.json"}'
+catdesk browser-action '{"action":"profiler_start"}'
+catdesk browser-action '{"action":"navigate","url":"https://example.com"}'
+catdesk browser-action '{"action":"click","selector":"@e1"}'
+catdesk browser-action '{"action":"profiler_stop","path":"./trace.json"}'
 ```
 
 Open trace.json in Chrome DevTools (Performance panel) or [Perfetto UI](https://ui.perfetto.dev/) for analysis.
@@ -277,10 +265,10 @@ Open trace.json in Chrome DevTools (Performance panel) or [Perfetto UI](https://
 ## Viewport & Device Emulation
 
 ```bash
-~/.catpaw/bin/catdesk browser-action '{"action":"viewport","width":1920,"height":1080}'
-~/.catpaw/bin/catdesk browser-action '{"action":"viewport","width":1920,"height":1080,"deviceScaleFactor":2}'
-~/.catpaw/bin/catdesk browser-action '{"action":"device","device":"iPhone 14"}'
-~/.catpaw/bin/catdesk browser-action '{"action":"emulatemedia","colorScheme":"dark"}'
+catdesk browser-action '{"action":"viewport","width":1920,"height":1080}'
+catdesk browser-action '{"action":"viewport","width":1920,"height":1080,"deviceScaleFactor":2}'
+catdesk browser-action '{"action":"device","device":"iPhone 14"}'
+catdesk browser-action '{"action":"emulatemedia","colorScheme":"dark"}'
 ```
 
 ## Actions Reference
@@ -382,18 +370,18 @@ Clicking links may open a **new tab** (e.g. `target="_blank"`). When this happen
 
 ```bash
 # 1. On search results page, click a result link
-~/.catpaw/bin/catdesk browser-action '{"action":"click","selector":"@e3"}'
+catdesk browser-action '{"action":"click","selector":"@e3"}'
 # Response may include: _tabChanged { notice: "A new tab was opened...", hint: "use tab_close to return" }
 
 # 2. Read the new tab content
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
 
 # 3. Done with this result — close current tab to return to search results
-~/.catpaw/bin/catdesk browser-action '{"action":"tab_close"}'
+catdesk browser-action '{"action":"tab_close"}'
 
 # 4. Back on search results page — re-snapshot and click next result
-~/.catpaw/bin/catdesk browser-action '{"action":"snapshot","interactive":true}'
-~/.catpaw/bin/catdesk browser-action '{"action":"click","selector":"@e5"}'
+catdesk browser-action '{"action":"snapshot","interactive":true}'
+catdesk browser-action '{"action":"click","selector":"@e5"}'
 ```
 
 ### Rules
@@ -405,8 +393,7 @@ Clicking links may open a **new tab** (e.g. `target="_blank"`). When this happen
 
 ## Tips
 
-- Prefer `snapshot` over `screenshot` to check page state — it is text-based and more token-efficient.
-- Use `screenshot` for visual verification — unlabeled icon buttons, layout/styling checks, canvas/chart content, or spatial reasoning about element positions.
+- **MUST use `snapshot` (not `screenshot`) to check page state.** Only use `screenshot` for visual verification (unlabeled icons, layout, canvas/charts).
 - **Always prefer batch** for 2+ sequential interactions after a snapshot.
 - **`fill` auto-focuses** the target element. Skip `click` if the element is already an input.
 - Use `interactive:true` in snapshot to reduce output.

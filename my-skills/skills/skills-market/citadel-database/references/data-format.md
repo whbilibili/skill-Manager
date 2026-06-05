@@ -56,6 +56,12 @@
     - [成功响应](#成功响应)
     - [错误响应](#错误响应)
     - [数据查询响应（完整示例）](#数据查询响应完整示例)
+  - [公式语法速查](#公式语法速查)
+    - [公式列概述](#公式列概述)
+    - [运算符表](#运算符表)
+    - [完整函数表](#完整函数表)
+    - [CLI 快速操作示例](#cli-快速操作示例)
+    - [常见公式模板](#常见公式模板)
 
 ## 列类型 (ColumnType)
 
@@ -903,3 +909,303 @@ oa-skills citadel-database updateData \
   "pageToken": "next_page_token_here"
 }
 ```
+
+## 公式语法速查
+
+> 🚨 **生成任何公式前必须满足的三条硬性约束（违反必出错，无例外）**
+>
+> | # | ❌ 禁止 | ✅ 正确 |
+> |---|--------|--------|
+> | 1 | 使用 `TEXT()`、`VLOOKUP()`、`DATEDIF()`、`EDATE()`、`NOW()`、`CONCAT()` 等 Excel/Google Sheets 函数 | **只能使用下方「完整函数表」中列出的函数**；白名单是封闭集，不在其中的函数在本系统中不存在，不要从 Excel/Sheets 经验推断 |
+> | 2 | `[#1] == "值"` 或 `[#1] === "值"`（双/三等号） | `[#1] = "值"`（**等于判断只写单个 `=`**，`==` 是语法错误，会导致公式执行失败） |
+> | 3 | `[5000#2]`、`[$5000#2]` 等合并写法（tableId 和 colId 连写） | `[$5000].[#2]`（**跨表引用必须用 `.` 分开两段**：`$` 后接目标表 tableId，`#` 后接目标列 colId，顺序不可颠倒） |
+
+### 公式列概述
+
+公式列（`columnType: 9`）是一种计算列，**单元格内容由公式自动计算，不可手动写入**。公式表达式存储在列的 `columnConfig.formula` 中。
+
+**关键特性：**
+- **字段引用格式：`[#colId]`**（`#` 加列的数字 colId，通过 `getTableMeta` 获取）；**不支持 `[列名]` 格式**
+- **跨表引用语法：`[$表ID].[#列ID]`**，可引用同一 contentId 下其他数据表的整列数据
+- 公式计算结果在查询时通过 `textCellValue` 返回（统一为字符串形式）
+- 支持引用同一数据表中的其他列（**包括公式列**），跨表场景同样支持引用另一张表的公式列；需避免循环引用
+- **`formulaFormat` 控制结果类型**：2=数字、7=日期、8=货币；**结果为文本/字符串时不传此字段**（或省略）
+
+**`formulaFormat` 与 `formatter` 配套规则：**
+
+| 公式结果类型 | formulaFormat | formatter 示例 | 说明 |
+|---|---|---|---|
+| 文本 / 字符串 | 不传（省略） | 不传 | IF/IFS/拼接等返回字符串的公式 |
+| 数字 | `2` | `"0"` / `"0.00"` / `"0,0.00"` | 同数字列 formatter 规则 |
+| 日期 | `7` | `"YYYY/MM/DD"` / `"YYYY-MM-DD"` | 同日期列 formatter 规则 |
+| 货币 | `8` | `"0,0.00"` | 同货币列 formatter 规则，可配合 currencyCode/currencySymbol |
+
+> ⚠️ **formatter 是类型相关的**：`formulaFormat:2`（数字）时用数字格式串；`formulaFormat:7`（日期）时用日期格式串；两者不能混用。
+
+**CLI 操作：**
+```bash
+# 新增数字公式列（总价 = 单价 × 数量，formulaFormat:2）
+oa-skills citadel-database addTableColumns \
+  --tableId <id> \
+  --columnMetas '[{"columnName":"总价","columnType":9,"columnConfig":{"formula":"[#101] * [#102]","formulaFormat":2,"formatter":"0,0.00"}}]'
+
+# 新增文本公式列（结果为字符串时，不传 formulaFormat）
+oa-skills citadel-database addTableColumns \
+  --tableId <id> \
+  --columnMetas '[{"columnName":"状态标识","columnType":9,"columnConfig":{"formula":"IF([#103] >= 100, \"✅已完成\", \"🔄进行中\")"}}]'
+
+# 修改已有公式列（推荐：用 --columnConfig 可同时修改 formula/formulaFormat/formatter）
+oa-skills citadel-database updateColumnConfig \
+  --tableId <id> \
+  --columnId <cid> \
+  --columnConfig '{"formula":"[#101] * [#102] * (1 - IFBLANK([#103], 0))","formulaFormat":2,"formatter":"0.00"}'
+```
+
+---
+
+### 运算符表
+
+| 符号类型 | 运算符 | 说明 | 示例 |
+|----------|--------|------|------|
+| 数值运算 | `+` | 加法 | `[#101] + [#102]` |
+| 数值运算 | `-` | 减法 | `[#101] - [#102]` |
+| 数值运算 | `*` | 乘法 | `[#101] * [#102]` |
+| 数值运算 | `/` | 除法 | `[#101] / [#102]` |
+| 文本拼接 | `&` | 将两侧值转为字符串并拼接 | `[#103] & "-" & [#104]` |
+| 比较 | `>` / `>=` | 大于 / 大于等于 | `[#105] >= 90` |
+| 比较 | `<` / `<=` | 小于 / 小于等于 | `[#106] < 10` |
+| 比较 | `=` | 等于（**注意：只写 `=`，禁止写 `==`**） | `[#107] = "完成"` |
+| 比较 | `!=` | 不等于（**禁止写 `!==`**） | `[#108] != "已删除"` |
+| 逻辑 | `&&` | 与（AND） | `[#101] > 0 && [#102] > 0` |
+| 逻辑 | `\|\|` | 或（OR） | `[#101] = "是" \|\| [#102] = "是"` |
+
+> ⚠️ 单选/多选/人员列参与字符串运算时需加 `& ""` 转为字符串：`[#107] & "" = "进行中"`
+>
+> ⚠️ **等于判断符只能用 `=`，严禁写 `==`**（`==` 不是有效运算符，会导致语法错误）。`!=` 表示不等于，同样无 `!==`
+
+---
+
+### 完整函数表
+
+#### 逻辑函数
+
+| 函数 | 参数说明 | 示例 |
+|------|----------|------|
+| `AND(条件1, 条件2, ...)` | 所有条件均为 TRUE 时返回 TRUE | `AND([#101] > 0, [#102] > 0)` |
+| `OR(条件1, 条件2, ...)` | 任一条件为 TRUE 时返回 TRUE | `OR([#103] = "完成", [#103] = "关闭")` |
+| `NOT(条件)` | 逻辑取反 | `NOT([#104] = "是")` |
+| `IF(条件, 真値, 假値)` | 条件判断 | `IF([#105] >= 60, "及格", "不及格")` |
+| `IFS(条件1, 值1, 条件2, 值2, ...)` | 多条件分支 | `IFS([#105] >= 90, "优", [#105] >= 60, "良", "差")` |
+| `SWITCH(表达式, 值1, 结果1, ...)` | 多值匹配分支 | `SWITCH([#106], "P5", "初级", "P6", "中级", "高级")` |
+| `IFBLANK(値, 默认値)` | 空值判断，空时返回默认值 | `IFBLANK([#107], "无")` |
+| `IFERROR(値, 错误默认)` | 错误判断，出错时返回默认值 | `IFERROR([#108] / [#109], 0)` |
+| `ISBLANK(値)` | 是否为空，返回 true/false | `IF(ISBLANK([#107]), "空", [#107])` |
+| `ISERROR(値)` | 是否出错，返回 true/false | `IF(ISERROR([#108]/[#109]), "错误", [#108]/[#109])` |
+| `TRUE()` | 返回逻辑真 | `IF(TRUE(), "yes", "no")` |
+| `FALSE()` | 返回逻辑假 | `AND(FALSE(), TRUE())` |
+
+#### 数字函数
+
+| 函数 | 参数说明 | 示例 |
+|------|----------|------|
+| `ROUND(数値, 位数)` | 四舍五入到指定小数位 | `ROUND([#101] * [#102], 2)` |
+| `ROUNDUP(数値, 位数)` | 向上舍入 | `ROUNDUP([#103], 0)` |
+| `ROUNDDOWN(数値, 位数)` | 向下舍入（截断） | `ROUNDDOWN([#104] * 100, 0)` |
+| `ABS(数値)` | 绝对值 | `ABS([#105])` |
+| `POWER(底数, 指数)` | 幂运算 | `POWER([#106], 2)` |
+| `VALUE(文本)` | 文本转数字（从左起第一个数） | `VALUE([#107] & "")` |
+| `SUM(値1, 値2, ...)` | 求和 | `SUM([#101], [#102], [#103], [#104])` |
+| `AVERAGE(値1, 値2, ...)` | 平均值 | `AVERAGE([#101], [#102], [#103])` |
+| `MAX(値1, 値2, ...)` | 最大值 | `MAX([#101], [#102])` |
+| `MIN(値1, 値2, ...)` | 最小值 | `MIN([#101], [#102])` |
+| `COUNTA(値1, ...)` | 非空值计数 | `COUNTA(LIST([#101], [#102], [#103]))` |
+
+#### 日期函数
+
+| 函数 | 参数说明 | 示例 |
+|------|----------|------|
+| `TODAY()` | 返回今天的日期 | `DAYS([#101], TODAY())` |
+| `DATE(年, 月, 日)` | 构造日期 | `DATE(2026, 12, 31)` |
+| `DAYS(结束日期, 起始日期)` | 两日期之间的天数（**剩余天数用 `DAYS([#截止日期], TODAY())`，禁用 `DATEDIF()`**） | `DAYS([#101], [#102])` |
+| `YEAR(日期)` | 提取年份 | `YEAR([#103])` |
+| `MONTH(日期)` | 提取月份 | `MONTH([#101])` |
+| `DAY(日期)` | 提取日 | `DAY([#101])` |
+| `HOUR(时间)` | 提取小时 | `HOUR([#104])` |
+| `MINUTE(时间)` | 提取分钟 | `MINUTE([#104])` |
+| `SECOND(时间)` | 提取秒钟 | `SECOND([#104])` |
+| `WEEKDAY(日期, [类型])` | 星期几（1=周日起，2=周一起） | `WEEKDAY([#101], 2)` |
+
+#### 文本函数
+
+| 函数 | 参数说明 | 示例 |
+|------|----------|------|
+| `LEFT(文本, 字符数)` | 从左取 N 个字符 | `LEFT([#101], 20)` |
+| `RIGHT(文本, 字符数)` | 从右取 N 个字符 | `RIGHT([#102], 4)` |
+| `MID(文本, 起始, 长度)` | 从指定位置取子串 | `MID([#103], 7, 8)` |
+| `LEN(文本)` | 字符串长度 | `LEN([#104])` |
+| `TRIM(文本)` | 去除前后空格 | `TRIM([#105])` |
+| `UPPER(文本)` | 转大写 | `UPPER([#106])` |
+| `LOWER(文本)` | 转小写 | `LOWER([#107])` |
+| `CONCATENATE(串1, 串2, ...)` | 拼接多个字符串 | `CONCATENATE([#108], "-", [#109])` |
+| `FIND(查找值, 范围, [起始])` | 查找位置（不存在返回 -1） | `FIND("@", [#110])` |
+| `REPLACE(文本, 位置, 长度, 新文本)` | 替换指定位置内容 | `REPLACE([#111], 4, 4, "****")` |
+| `SUBSTITUTE(文本, 被替换, 替换, [第N个])` | 替换字符串内容 | `SUBSTITUTE([#104], "旧", "新")` |
+| `CONTAINTEXT(文本, 查找文本)` | 是否包含（返回 true/false） | `CONTAINTEXT([#112], "紧急")` |
+
+#### 集合/统计函数
+
+| 函数 | 参数说明 | 示例 |
+|------|----------|------|
+| `LIST(値1, 値2, ...)` | 构造数组 | `SUM(LIST([#101], [#102], [#103]))` |
+| `ARRAYJOIN(数组, 分隔符)` | 数组转字符串 | `ARRAYJOIN(LIST([#101], [#102]), ", ")` |
+| `UNIQUE(値1, 値2, ...)` | 去重 | `UNIQUE([#103], [#104])` |
+| `LISTCOMBINE(字段1, 字段2, ...)` | 合并多组字段/列表 | `LISTCOMBINE([#101], [#102], LIST(1,2))` |
+| `CONTAIN(范围, 値)` | 是否包含（精确匹配） | `CONTAIN(LIST("A","B","C"), [#105])` |
+| `SUMIF(范围, 条件)` | 条件求和 | `SUMIF(LIST([#101],[#102],[#103]), CurrentValue > 0)` |
+| `COUNTIF(范围, 条件)` | 条件计数 | `COUNTIF(LIST([#101],[#102],[#103]), CurrentValue != "")` |
+| `数据范围.FILTER(条件)` | 筛选数组 | `LIST(1,2,3,4).FILTER(CurrentValue > 2)` |
+| `LOOKUP(搜索值, 匹配字段, 结果字段)` | 查表 | `LOOKUP([#105], LIST(1,2,3), LIST("a","b","c"))` |
+
+---
+
+### CLI 快速操作示例
+
+```bash
+# 1. 先查表格列结构（必须先做，获取各列 colId 用于公式引用）
+oa-skills citadel-database getTableMeta --tableId 123456789
+# 假设返回：单价列 colId=101，数量列 colId=102，进度列 colId=103，折扣列 colId=104
+
+# 2a. 新增公式列（总价 = 单价 × 数量）
+# ⚠️ 字段引用必须用 [#colId] 格式，不支持列名
+oa-skills citadel-database addTableColumns \
+  --tableId 123456789 \
+  --columnMetas '[{"columnName":"总价","columnType":9,"columnConfig":{"formula":"[#101] * [#102]","formulaFormat":2,"formatter":"0,0.00"}}]'
+
+# 2b. 新增复杂公式列（多条件状态标识，结果为文本时不传 formulaFormat）
+# IFS 的最后一个 else 分支必须用 TRUE() 作条件
+oa-skills citadel-database addTableColumns \
+  --tableId 123456789 \
+  --columnMetas '[{"columnName":"状态标识","columnType":9,"columnConfig":{"formula":"IF([#103] >= 100, \"✅已完成\", IF([#103] > 0, \"🔄进行中\", \"⬜未开始\"))"}}]'
+
+# 3a. 修改已有公式列（推荐：用 --columnConfig 可同时修改 formula/formulaFormat/formatter）
+oa-skills citadel-database updateColumnConfig \
+  --tableId 123456789 \
+  --columnId 5 \
+  --columnConfig '{"formula":"[#101] * [#102] * (1 - IFBLANK([#104], 0))","formulaFormat":2,"formatter":"0.00"}'
+
+# 3b. 修改已有公式列（兼容旧写法：--formula 只传表达式，等价于 --columnConfig '{"formula":"..."}'）
+oa-skills citadel-database updateColumnConfig \
+  --tableId 123456789 \
+  --columnId 5 \
+  --formula "[#101] * [#102] * (1 - IFBLANK([#104], 0))"
+```
+
+---
+
+### 常见公式模板
+
+> 💡 以下模板中的 `[#101]`、`[#102]` 等均为示例 colId，**实际使用时请替换为 `getTableMeta` 返回的真实列 colId**。字段引用只支持 `[#colId]` 格式，不支持列名。
+
+```
+# 计算总价（数字 × 数字，单价列colId=101，数量列colId=102）
+# formulaFormat: 2，formatter: "0,0.00"
+[#101] * [#102]
+
+# 计算含税总价（保留2位小数）
+# formulaFormat: 2，formatter: "0,0.00"
+ROUND([#101] * [#102] * 1.13, 2)
+
+# 剩余天数（截止日期列colId=103，结果为数字，formulaFormat: 2，formatter: "0"）
+DAYS([#103], TODAY())
+
+# 任务状态（多级判断，进度列colId=104，结果为文本，不传 formulaFormat）
+# IFS 最后一个 else 分支必须用 TRUE() 作条件
+IFS([#104] >= 100, "✅ 已完成", [#104] > 0, "🔄 进行中", TRUE(), "⬜ 未开始")
+
+# 分数等级（总分列colId=105，结果为文本，不传 formulaFormat）
+# IFS 最后一个 else 分支必须用 TRUE() 作条件
+IFS([#105] >= 90, "A", [#105] >= 75, "B", [#105] >= 60, "C", TRUE(), "不及格")
+
+# 人员 + 备注拼接（负责人列colId=106，备注列colId=107；单选/人员列需 & "" 转字符串）
+# 结果为文本，不传 formulaFormat
+[#106] & "" & IF(ISBLANK([#107]), "", " (" & [#107] & ")")
+
+# 百分比展示（完成数量列colId=108，总数量列colId=109，结果为文本，不传 formulaFormat）
+ROUND([#108] / [#109] * 100, 1) & "%"
+
+# 手机号脱敏（手机列colId=110，结果为文本，不传 formulaFormat）
+REPLACE([#110], 4, 4, "****")
+
+# 日期转 YYYYMM（无 TEXT 函数，用数学拼接，创建时间列colId=111）
+# formulaFormat: 2，formatter: "0"
+YEAR([#111]) * 100 + MONTH([#111])
+
+# 日期取年月显示（YYYY/MM 字符串，结果为文本，不传 formulaFormat）
+YEAR([#111]) & "/" & MONTH([#111])
+
+# 计算工作完成率（防除零，完成列colId=112，总数列colId=113，结果为文本，不传 formulaFormat）
+IFERROR(ROUND([#112] / [#113] * 100, 1) & "%", "0%")
+
+# 多选标签包含判断（标签列colId=114；& "" 转字符串后用 CONTAINTEXT，结果为文本，不传 formulaFormat）
+IF(CONTAINTEXT([#114] & "", "紧急"), "🔴 紧急", "🟢 正常")
+```
+
+> ⚠️ **注意事项**
+> - **字段引用只支持 `[#colId]` 格式**（`#` 加列的数字 colId），`[列名]` 格式不支持
+> - `colId` 通过 `getTableMeta` 获取，是一个数字，不是列名字符串
+> - 单选/多选/人员列参与字符串运算时需加 `& ""` 转为字符串
+> - 公式列单元格不可写入数据；若误操作写入，API 会报错
+> - 公式列**支持引用其他公式列**（同表或跨表均可）；但禁止循环引用（A→B→A 会报错）
+> - **`IFS` 的最后一个 else 分支必须用 `TRUE(), <默认值>` 格式**，不能直接放裸值
+> - **本系统函数是封闭白名单**：上方表格是全部可用函数，不在表中的函数不存在。不要从 Excel/Sheets 经验推测函数名，如需替代写法，查 SKILL.md 的「需求→正确写法对照表」
+> - **比较运算符用单等号 `=`（不是 `==`）**，不等于用 `!=`（不是 `!==`）
+
+---
+
+### 跨表公式
+
+**跨表引用语法：`[$表ID].[#列ID]`**
+
+- 引用同一 contentId（文档/空间）下其他数据表的**整列数据**
+- `$` 后接目标表的 `tableId`（数字），`#` 后接目标列的 `colId`（数字）
+- 常与 `LOOKUP`、`FILTER`、`COUNTIF`、`SUMIF` 等集合函数配合使用
+
+**使用前必须先收集的信息：**
+
+```bash
+# Step 1：列出同一 contentId 下的所有表，确认目标表和当前表在同一文档中
+oa-skills citadel-database listTables --contentId <contentId>
+# 记录：目标表名称对应的 tableId（如 5000）
+
+# Step 2：获取目标表的列结构
+oa-skills citadel-database getTableMeta --tableId <目标表tableId>
+# 记录：用于匹配的列 colId 和用于取值的列 colId
+
+# Step 3：获取当前表的列结构（如尚未获取）
+oa-skills citadel-database getTableMeta --tableId <当前表tableId>
+# 记录：用于匹配的列 colId
+```
+
+> ⚠️ **跨表约束**：跨表公式只能引用**同一 contentId** 下的表；`$` 后的表 ID 必须通过 `listTables` 获取，不能手写或猜测。
+> 💡 **数字范围区分**：`tableId` 是较长数字（通常 10 位，如 `2750248577`）；`colId` 是较短数字（通常 1-3 位，如 `101`）。`[$表ID]` 后接 `tableId`，`[#列ID]` 后接 `colId`，注意不要颠倒。
+
+**跨表公式模板（tableId 和 colId 均需先用上述步骤获取）：**
+
+```
+# 从"商品信息"表（tableId=5000）中，按当前行的商品ID列（列ID=201）查出对应单价列（列ID=202）
+LOOKUP([#201], [$5000].[#201], [$5000].[#202])
+
+# 统计"订单"表（tableId=6000）中产品名称列（列ID=301）与当前行匹配的行数
+[$6000].[#301].COUNTIF(CurrentValue = [#301])
+
+# 对"明细"表（tableId=7000）金额列（列ID=401）按项目 ID列（列ID=402）求和
+[$7000].[#401].FILTER(LOOKUP(CurrentValue, [$7000].[#401], [$7000].[#402]) = [#402]).SUMIF(CurrentValue > 0)
+
+# 获取"员工"表（tableId=8000）中整列手机号（列ID=501）
+[$8000].[#501]
+```
+
+> 💡 **跨表使用建议**
+> - 跨表公式中 `$` 加的是目标表的 tableId，`#` 加的是目标列的 colId
+> - 目标 tableId 必须通过 `listTables` 获取，目标列 colId 通过 `getTableMeta` 获取
+> - 对大量数据的跨表聚合（SUMIF、COUNTIF）可能影响计算性能，建议在数据量较小时使用

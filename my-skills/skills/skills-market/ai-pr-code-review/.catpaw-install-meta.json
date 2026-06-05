@@ -1,8 +1,10 @@
 {
   "source": "market",
   "id": 5205,
-  "updateTime": 1777459267000,
-  "downloadTime": 1777464153587,
+  "updateTime": 1779990680000,
+  "downloadTime": 1779994663641,
   "alias": "ai-pr-code-review",
-  "intro": "前后端全栈代码审查一站式 Skill，支持单仓库和多仓库联合 CR。三层上下文感知 + 四层审查模型（P0零容忍/P1稳定性/P2规范/P3性能）+ Cross-Repo 跨仓库检查层（接口兼容/数据流/分布式事务/配置一致/上线顺序/灰度安全/监控/幂等）。"
+  "intro": "前后端全栈代码审查一站式 Skill，支持单仓库和多仓库联合 CR。三层上下文感知 + 四层审查模型（P0零容忍/P1稳定性/P2规范/P3性能）+ Cross-Repo 跨仓库检查层（接口兼容/数据流/分布式事务/配置一致/上线顺序/灰度安全/监控/幂等）。",
+  "creator": "mengmuzi",
+  "visibility": "partial"
 }

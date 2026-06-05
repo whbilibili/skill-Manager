@@ -5,7 +5,7 @@ description: "通过 fsd CLI 管理部署（骨干/备机/泳道）、交付自�
 metadata:
   skillhub.creator: "lixuesong05"
   skillhub.updater: "lixuesong05"
-  skillhub.version: "V12"
+  skillhub.version: "V13"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "14902"
   skillhub.high_sensitive: "false"
@@ -177,7 +177,7 @@ fsd-sso logout
 
 ## 部署（fsd deploy）
 
-`test` / `staging` / `swimlane --create` / `swimlane -u <uuid>` / `templates` / `status -i <eventId>` / `analyze -i <eventId>` → 详见 [deploy.md](references/deploy.md)。**应用维度**下模板列举与 `--deploy-template` → 详见 [deploy.md · 应用维度独立部署与部署模板](references/deploy.md#sec-app-dimension-deploy-templates)。**`status` 输出中的部署机器 IP**（`data.serviceDeployIps`、`--no-service-ips`）→ 详见：[deploy.md · 部署进度与部署机器 IP](references/deploy.md#部署进度与部署机器-ip)。**部署失败 / 定因 / 修复**：先 [deploy-failure-routing.md](references/deploy-failure-routing.md)，再按需读本节与 `deploy.md`。
+`test` / `staging` / `swimlane --create` / `swimlane -u <uuid>` / `templates` / `status -i <eventId>` / `analyze -i <eventId>` → 详见 [deploy.md](references/deploy.md)。**应用维度**下模板列举与 `--deploy-template` → 详见 [deploy.md · 应用维度独立部署与部署模板](references/deploy.md#sec-app-dimension-deploy-templates)；**npm 服务 `bdsMode`** 与用户指定模板的校验/提交取值 → [deploy.md · npm 与 --deploy-template](references/deploy.md#npm-bds-deploy-template)。**`status` 输出中的部署机器 IP**（`data.serviceDeployIps`、`--no-service-ips`）→ 详见：[deploy.md · 部署进度与部署机器 IP](references/deploy.md#部署进度与部署机器-ip)。**部署失败 / 定因 / 修复**：先 [deploy-failure-routing.md](references/deploy-failure-routing.md)，再按需读本节与 `deploy.md`。
 
 **场景路由**：骨干/test/qa → `test`；备机/staging → `staging`；泳道/cargo → `swimlane`；未提及 → `test`。分支默认值：`-t` 骨干=`qa`/备机=`staging`/泳道=当前分支；`-d` 优先 `git branch --show-current`。
 
@@ -293,13 +293,13 @@ gate 三步复检细则 → [delivery.md · gate](references/delivery.md#gate-�
 | `fsd task create-branch` | 创建分支 | `-b` 分支名（必填）；`-f` 迁出分支（默认 master）；`-j` 服务名（默认当前工程）；`-i` 关联工作项ID |
 | `fsd task bind-branch` | 分支绑定任务 | `-i` 任务ID（必填）；`-b` 分支名（默认当前分支）；`-g` Git 地址（默认当前工程） |
 
-**创建任务行为：** 助手**必须先执行 `fsd task create`**（拼上用户已给的参数），由 CLI 输出告知缺失信息（需求/空间/排期阶段）。**用户话语中包含任务类型名或别名（如"开发任务""测试""默认任务"）时，必须加 `--task-type`**，否则 CLI 按角色自动判断可能与用户意图不符。**禁止不执行 CLI 就自行编造排期阶段名称**——不同任务类型的排期阶段不同，只有 CLI 输出才是准确的。CLI 输出的排期阶段表**每一行都必须完整展示**，不得省略、重排或丢弃任何阶段。排期时间禁止 AI 自行填充，必须等用户明确提供日期。**排期时间直接传日期字符串**（如 `--start-time 2026-03-01 --end-time 2026-03-02`），**禁止助手自行计算毫秒时间戳**，CLI 内部自动处理时区转换。创建成功后必须展示链接。
-**任务类型（6种）：** developOnline（开发任务）、qaOnline（测试任务）、product（产品任务）、design（设计任务）、algorithm（算法任务）、default（默认任务）。注意"默认任务"是正式类型名，不等于"不指定类型"。
-**任务类型 vs 状态（易混淆）：** `--subtype` 是任务分类（开发任务/测试任务/产品任务等）；`-s` 是任务进度（待处理/进行中/已完成）。"查进行中的测试任务" → `-s 进行中 --subtype 测试任务`。
+**创建任务行为：** 必须先执行 `fsd task create`（拼上用户已给参数），由 CLI 输出告知缺失信息。用户提到任务类型名/别名时必须加 `--task-type`。排期阶段禁止编造，以 CLI 输出为准。排期时间禁止 AI 填充，等用户提供后直接传日期字符串。
 
-**排期筛选（重要）：** 用户说"查今天/本周/下周/某天有排期的任务"时，**必须使用 `--schedule-range` 参数**，禁止先拉全量列表再手动过滤。示例：`fsd task list --schedule-range this-week --pretty`。
+**排期筛选：** 用户说"查今天/本周/下周有排期的任务"时，必须用 `--schedule-range`，禁止全量拉取后过滤。
 
-详细参数与决策树 → [task.md](references/task.md)
+**类型 vs 状态：** `--subtype` 是任务分类（开发/测试/产品等）；`-s` 是进度（待处理/进行中/已完成）。
+
+详细行为规则与决策树 → [task.md](references/task.md)
 
 ---
 

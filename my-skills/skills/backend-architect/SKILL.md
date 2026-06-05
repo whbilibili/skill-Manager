@@ -177,7 +177,45 @@ metadata:
 
 ---
 
+### Step 0.5：Tech Spec 检测（前置于技术栈决策）
+
+在执行 Step 1 之前，**必须检测** `docs/design-docs/tech-spec.md` 是否存在：
+
+```
+检测路径：docs/design-docs/tech-spec.md
+检测字段：YAML frontmatter 中的 status 字段
+```
+
+**分支逻辑：**
+
+| 情况 | 行为 |
+|------|------|
+| 文件不存在 | 正常执行 Step 1（自行决策技术栈） |
+| 文件存在但 `status: draft` 或 `status: needs_review` | 提示用户："检测到未审批的技术方案（status={当前状态}），建议先完成 tech-spec-architect 流程获得 approved 状态后再拆任务。是否忽略技术方案继续？" |
+| 文件存在且 `status: approved` | **进入 Tech Spec 驱动模式**（见下方） |
+
+#### Tech Spec 驱动模式
+
+当检测到 `status: approved` 的 Tech Spec 时，**Step 1 的行为变更为**：
+
+1. **跳过技术栈决策**：不再自行选型，直接从 Tech Spec 区块 2（技术选型决策表）读取选型结果
+2. **直接采用数据模型**：Tech Spec 区块 3 的表结构/Schema 直接作为 feature-list.json 中 `contracts.database` 的权威来源
+3. **基于模块边界拆解**：Tech Spec 区块 5 的模块划分直接决定 Task 的分组方式
+4. **引用 API 契约**：Tech Spec 区块 6 的 API 清单直接作为 `contracts.backend_api` 的路径和方法来源
+5. **继承非功能性约束**：Tech Spec 区块 7 的性能/安全指标直接写入 `ARCHITECTURE.md` 和 `docs/SECURITY.md`
+
+**输出变更**：
+- Step 1 不再输出"技术栈选型理由"，改为输出 `✅ 基于已审批的 Tech Spec (v{版本号}) 进行任务拆解`
+- 项目目录树摘要仍然输出（基于 Tech Spec 选型推导）
+- `progress.txt` 的 `[Key Decisions]` 中注明：`技术选型来源：docs/design-docs/tech-spec.md (approved)`
+
+> ⚠️ **一致性约束**：Tech Spec 驱动模式下，feature-list.json 中的任何 `contracts` 字段不得与 Tech Spec 产生矛盾。如果拆解过程中发现 Tech Spec 有遗漏（如某个 API 未在区块 6 中列出），必须在 `progress.txt` 的 `[Blockers & Solutions]` 中标注，并建议用户回到 tech-spec-architect 补充。
+
+---
+
 ### Step 1：技术栈决策与目录规约
+
+> 💡 **注意**：如果 Step 0.5 已进入 Tech Spec 驱动模式，本步骤仅输出目录树摘要，跳过选型决策。
 
 根据需求语境决定技术栈（如 Spring Boot + MyBatis + Redis、Go + Gin + GORM、Node.js + NestJS + PostgreSQL 等），输出：
 

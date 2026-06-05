@@ -1,0 +1,10 @@
+{
+  "source": "market",
+  "id": 1822,
+  "updateTime": 1776389936000,
+  "downloadTime": 1779956870665,
+  "alias": "用美境生成图片",
+  "intro": "美团内部AI生图平台（美境 aidesign.meituan.com）的浏览器自动化调用。当用户需要生成图片、插画、海报、封面等视觉内容，且希望直接出图（而非仅获取prompt文本）时使用此skill。支持选择模型、设置比例、填入prompt、触发生成、等待出图并获取结果图片。依赖浏览器已登录美团SSO。可与 image-gen-prompt skill 配合：先用后者编写高质量prompt，再用本skill执行生图。",
+  "creator": "sunjian46",
+  "visibility": "public"
+}

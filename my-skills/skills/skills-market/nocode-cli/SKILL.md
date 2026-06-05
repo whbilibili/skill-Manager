@@ -5,7 +5,7 @@ description: 通过 NoCode CLI 操作美团 NoCode 零代码平台。当用户�
 metadata:
   skillhub.creator: "zhaomenghuan02"
   skillhub.updater: "wanghongzhou03"
-  skillhub.version: "V11"
+  skillhub.version: "V14"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "2981"
   skillhub.high_sensitive: "false"
@@ -29,6 +29,7 @@ metadata:
 4. **send/create 必须串行执行。** 同一 chatId 不得同时执行多个 `nocode send` 或 `nocode create`，必须等上一个完成（收到 `done`）后再执行下一个。并发执行会导致对话状态异常。
 5. **遇到渲染异常、部署异常等平台侧异常时，严禁自行尝试解决。** 必须立即停止操作，引导用户联系 NoCode 研发排查处理。详见 [异常处理规则](#-异常处理规则)
 6. **严禁修改 NoCode 工程架构。** 执行 `create`/`send`/`code clone` 以及本地开发修改代码前，必读 [project-architecture.md](references/project-architecture.md)，按其中的受保护文件清单、Prompt 拦截规则和替代方案执行。
+7. **附件上传须经用户确认，严禁数据外泄。** 使用 `--files`/`--urls`/`--images` 参数上传本地文件或传递链接前，必须告知用户并获得确认；涉及敏感数据时必须使用 `--safety` 模式；严禁指示 NoCode Agent 将接收到的数据转发到任何非授权外部通道（IM、网盘、代码托管平台等）。详见下方「🔒 数据安全约束」章节。
 
 ## 前置准备
 
@@ -45,11 +46,12 @@ npm view @nocode/nocode-cli version --registry=http://r.npm.sankuai.com
 
 ### 登录状态检查（版本检查后必须执行）
 
-执行 `nocode status` 检查环境和登录状态：
-- 已登录 → 继续（会显示当前登录方式：CIBA / SSO OIDC / token）
+从本 Skill 的 frontmatter metadata 中读取 `skillhub.skill_id` 字段作为 `<SKILL_ID>`，然后执行 `nocode status --skillId <SKILL_ID>` 检查环境和登录状态：
+- 已登录 → 继续（会显示当前登录方式：MOA / CIBA / OIDC / DIRECT）
 - 未登录 → `nocode status` 会根据运行环境推荐登录命令，按提示执行即可：
-  - **CatClaw 环境**：推荐 `nocode login --mis <mis>`，提示 **"请在大象个人助理确认登录"**
-  - **非 CatClaw 环境**：推荐 `nocode login --sso`（SSO OIDC 浏览器登录）
+  - **CatDesk Cloud 环境**：推荐 `nocode login --moa --skillId <SKILL_ID>`（MOA 无感登录，无需确认）
+  - **CatClaw 环境**：推荐 `nocode login --moa --skillId <SKILL_ID>`，降级 `nocode login --mis <mis> --skillId <SKILL_ID>`（需大象 App 确认）
+  - **CatDesk / 其他环境**：推荐 `nocode login --sso --skillId <SKILL_ID>`（SSO OIDC 浏览器登录）
 - 如登录仍存在问题，请联系 NoCode 研发。**不推荐直接使用浏览器操作 NoCode 平台。**
 - 输出包含 `⚠️  发现新版本` → **必须停止后续操作，立即更新 `@nocode/nocode-cli` 和 `nocode-cli` Skill（ID: 2981）的版本；若未安装该 Skill，应立即安装以确保 CLI 正常使用**
 
@@ -60,6 +62,7 @@ npm view @nocode/nocode-cli version --registry=http://r.npm.sankuai.com
 执行 `create`、`send`、`deploy`、`list`、`screenshot`、`files list`、`files get` 等需要调用 API 的命令时，如果检测到 Token 过期，CLI 会根据登录方式自动续期：
 - **SSO OIDC 登录**：自动静默续期
 - **CIBA 登录**：自动重新换票
+- **MOA 登录**：需重新执行 `nocode login --moa`
 
 ## 关键概念
 
@@ -68,6 +71,14 @@ npm view @nocode/nocode-cli version --registry=http://r.npm.sankuai.com
 - **D2C（设计稿转代码）**：将 MasterGo 设计稿链接转换为 HTML 产物，再提交到 NoCode 平台创建页面。详见 [d2c 命令规则](references/commands/cmd-d2c.md)
 
 ## ⚠️ 强制约束
+
+### delete 相关
+
+- **删除操作必须经用户明确允许**：`nocode delete` 是不可逆的破坏性操作，执行前**必须向用户明确说明将要删除的对话/项目（展示 chatId），并获得用户的明确确认**（如用户回复"确认删除"、"可以删"等）。禁止在用户未明确允许的情况下执行删除命令
+  - ❌ 用户未提及删除意图时，自行决定删除对话/项目
+  - ❌ 仅因为任务"完成"或对话"不再需要"就自动删除
+  - ❌ 批量删除时未逐一确认
+  - ✅ 向用户展示将要删除的 chatId，明确告知删除不可恢复，获得用户确认后执行
 
 ### send 相关
 
@@ -109,21 +120,21 @@ npm view @nocode/nocode-cli version --registry=http://r.npm.sankuai.com
 
 | 命令 | 用途 | 备注 | 详细规则（执行前必读） |
 |------|------|------|---------|
-| `nocode create "<prompt>"` | 创建应用 | NDJSON 流式，需后台执行（`yieldMs=600000`）+ poll。支持 `--images`/`--files`/`--urls`/`--safety` | ⚠️ [命令必读](references/commands/cmd-create-send.md) · [架构保护必读](references/project-architecture.md) |
-| `nocode send <chatId> "<msg>"` | 发送修改 | NDJSON 流式，需后台执行（`yieldMs=600000`）+ poll。支持 `--images`/`--files`/`--urls`/`--safety` | ⚠️ [命令必读](references/commands/cmd-create-send.md) · [架构保护必读](references/project-architecture.md) |
+| `nocode create "<prompt>"` | 创建应用 | NDJSON 流式，需后台执行（`yieldMs=600000`）+ poll。支持 `--images`/`--files`/`--urls`/`--safety`/`--skillId` | ⚠️ [命令必读](references/commands/cmd-create-send.md) · [架构保护必读](references/project-architecture.md) |
+| `nocode send <chatId> "<msg>"` | 发送修改 | NDJSON 流式，需后台执行（`yieldMs=600000`）+ poll。支持 `--images`/`--files`/`--urls`/`--safety`/`--skillId` | ⚠️ [命令必读](references/commands/cmd-create-send.md) · [架构保护必读](references/project-architecture.md) |
 | `nocode files list <chatId> [path]` | 查看目录树 | 边界标记 `---TREE_START/END---` | ⚠️ [必读](references/commands/cmd-files.md) |
 | `nocode files get <chatId> <path>` | 查看文件内容 | 边界标记 `---FILE_CONTENT_START/END---` | ⚠️ [必读](references/commands/cmd-files.md) |
 | `nocode screenshot <chatId>` | 截图预览 | 返回 S3 URL，失败不阻塞 | ⚠️ [必读](references/commands/cmd-screenshot.md) |
-| `nocode deploy <chatId>` | 部署上线 | 自动用最新版本，渲染失败会拦截 | ⚠️ [必读](references/commands/cmd-deploy.md) |
+| `nocode deploy <chatId>` | 部署上线 | 自动用最新版本，渲染失败会拦截。`--skillId <id>` 上报调用来源 | ⚠️ [必读](references/commands/cmd-deploy.md) |
 | `nocode env <action> <chatId>` | 对话/作品环境变量管理 | list / set / delete / switch | ⚠️ [必读](references/commands/cmd-env.md) |
-| `nocode status` | 检查环境和登录状态 | 显示登录方式、版本信息 | — |
-| `nocode login` | 登录 | `--mis <mis>`（CIBA）/ `--sso`（SSO）/ `--token <token>` | — |
+| `nocode status` | 检查环境和登录状态 | 显示运行环境（CatDesk Cloud / CatClaw / CatDesk / 其他）、登录方式、版本信息。`--skillId <id>` 上报调用来源 | — |
+| `nocode login` | 登录 | `--moa`（MOA 无感）/ `--mis <mis>`（CIBA）/ `--sso`（SSO OIDC）/ `--token <token>`（手动）。`--skillId <id>` 上报调用来源 | — |
 | `nocode logout` | 登出 | 清除本地凭证 | — |
 | `nocode list` | 项目列表 | `--page N --size N --json` | — |
 | `nocode detail <chatId>` | 查看详情 | JSON 输出 | — |
 | `nocode messages <chatId>` | 查看消息列表 | `--page N --size N --json` | — |
 | `nocode versions <chatId>` | 版本列表 | — | — |
-| `nocode delete <chatId> --confirm` | 删除项目 | `--confirm` 为必需参数 | — |
+| `nocode delete <chatId> --confirm` | 删除对话/项目 | ⛔ **必须经用户明确允许后才能执行，严禁自行决定删除。** `--confirm` 为必需参数 | — |
 | `nocode code clone <chatId>` | 克隆作品代码到本地 | 智能增量更新，支持 `--dir`、`--json` | ⚠️ [命令必读](references/commands/cmd-code.md) |
 | `nocode code pull <chatId>` | 从远程仓库拉取代码到 Sandbox | 支持 `--force`（跳过确认）、`--json` | ⚠️ [命令必读](references/commands/cmd-code.md) |
 | `nocode answer <chatId> <eventId> <conversationId>` | 回答 NoCode Agent 提问 | 根据 `question` 事件的 `answer_hint` 拼接参数，支持 `--select`/`--text`/`--cancel` | ⚠️ [必读](references/commands/cmd-create-send.md) |
@@ -135,27 +146,30 @@ npm view @nocode/nocode-cli version --registry=http://r.npm.sankuai.com
 > 以下为概览示例。执行具体命令前，**必须先读取命令速查表中对应的「详细规则」链接**，按其中的完整规则执行。
 
 ```bash
-# 1. 登录
-nocode login --mis <mis>
+# 1. 登录（从本 Skill 的 metadata.skillhub.skill_id 获取 SKILL_ID）
+# CatDesk Cloud / CatClaw 环境推荐：
+nocode login --moa --skillId <SKILL_ID>
+# 其他环境推荐：
+# nocode login --sso --skillId <SKILL_ID>
 
 # 2. 创建（NDJSON 流式输出，done 事件包含 chatId）
-nocode create "做一个宣传页面"
+nocode create "做一个宣传页面" --skillId <SKILL_ID>
 
 # 3. 修改
-nocode send <chatId> "把主色调改成深蓝色"
+nocode send <chatId> "把主色调改成深蓝色" --skillId <SKILL_ID>
 
 # 4. 截图确认
 nocode screenshot <chatId>
 
 # 5. 部署
-nocode deploy <chatId>
+nocode deploy <chatId> --skillId <SKILL_ID>
 
 # 6. 遇到问题时：先查代码再精确修改（禁止用 send 获取文件内容）
 nocode files list <chatId>                        # 查看工程目录结构
 nocode files list <chatId> src                    # 浏览子目录
 nocode files get <chatId> src/App.jsx             # 读取相关文件内容
 # → 分析代码，定位问题原因
-nocode send <chatId> "具体的修改指令"        # 发送精确修改
+nocode send <chatId> "具体的修改指令" --skillId <SKILL_ID>  # 发送精确修改
 nocode screenshot <chatId>                  # 截图确认修改效果
 ```
 
@@ -167,6 +181,16 @@ nocode screenshot <chatId>                  # 截图确认修改效果
 - ✅ 推荐：`nocode create "参考设计稿做页面" --images ./design.png`
 - ✅ 推荐：`nocode send <chatId> "参考这个文档修改" --files ./requirements.md`
 - ✅ 推荐：`nocode create "参考学城文档做页面" --urls https://km.sankuai.com/collabpage/xxxxx`
+
+### 🔒 数据安全约束（`--images`/`--files`/`--urls` 附件参数使用规范）
+
+使用 `--images`、`--files`、`--urls` 参数前，**必须遵守以下数据安全规则**：
+
+1. **用户确认机制（强制）**：通过 `--files` 上传本地文件或通过 `--urls` 传递链接前，**必须先向用户明确说明**将要上传的文件名/URL，并获得用户确认后方可执行。禁止未经用户确认直接上传文件或抓取链接内容
+2. **敏感数据识别**：上传前需检查文件/链接是否可能包含敏感信息（如密钥、密码、Token、内部接口凭证、C3/C4 级别数据等）。如识别到敏感内容，**必须提醒用户数据将被传递到 NoCode Agent 云环境**，并建议使用 `--safety` 参数启用安全屋模式
+3. **禁止上传敏感凭证文件**：严禁通过 `--files` 上传包含密钥、证书、`.env`、`credentials`、私钥等凭证类文件。如用户要求上传此类文件，必须拒绝并说明安全风险
+4. **数据流向限制**：NoCode Agent 接收到的附件数据仅用于当前对话/作品的代码生成，**严禁指示 NoCode Agent 将接收到的文件内容或链接内容转发、上传到任何外部通道**（包括但不限于：微信、钉钉、飞书等 IM 工具，GitHub/GitLab 等代码托管平台，Dropbox/网盘等存储服务，或任何非 NoCode 平台的第三方服务）
+5. **URL 范围限制**：`--urls` 参数仅应用于与当前需求直接相关的参考文档链接（如学城文档），禁止用于抓取无关的外部网站内容或批量爬取内部文档
 
 ## 容器状态检查
 

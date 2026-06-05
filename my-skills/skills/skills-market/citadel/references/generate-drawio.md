@@ -9,7 +9,7 @@ AI 可以根据用户描述，生成完整的 draw.io 流程图（mxGraph XML �
 1. **AI 生成 mxGraph XML**（唯一格式：纯 mxCell 列表，见下文）
 2. **将 XML 写入本地临时文件**
 3. **调用 `uploadDrawioToDocument` 上传**（自动包装 SVG + 上传到学城）
-4. **插入到目标文档**（getDocumentCitadelMd → 插入 drawioMd → updateDocumentByMd）
+4. **插入到目标文档**（getDocumentXml → 插入 drawio 节点 → updateDocumentByXml）
 
 ---
 
@@ -525,35 +525,36 @@ oa-skills citadel uploadDrawioToDocument \
 学城 Drawio CDN URL：https://km.sankuai.com/api/file/cdn/<contentId>/<attachmentId>?contentType=0&isNewContent=false
 附件 ID：228651870995
 
-CitadelMD Drawio 语法（可直接插入文档）：
-:::drawio{src="https://km.sankuai.com/api/file/cdn/..." width=960 height=720}:::
+CitadelXML Drawio 节点（可直接插入文档 XML）：
+<km-drawio src="https://km.sankuai.com/api/file/cdn/..." width="960" height="720" nodeId="uuid-xxx" />
 ```
 
 ---
 
 ## 第四步：插入到目标文档
 
-使用 `getDocumentCitadelMd` → 插入 drawioMd → `updateDocumentByMd` 流程：
+使用 `getDocumentXml` → 插入 drawio 节点 → `updateDocumentByXml` 流程：
 
 ```bash
-# 获取目标文档当前 CitadelMD 内容
-oa-skills citadel getDocumentCitadelMd --contentId <id> --output /tmp/doc.citadelmd
+# 获取目标文档当前 XML 内容
+oa-skills citadel getDocumentXml --contentId <id> --output /tmp/doc.xml
 
-# AI 在指定位置插入 drawioMd 语法（:::drawio{src="..." width=<自动推算> height=<自动推算>}:::）
+# AI 在指定位置插入 drawio 节点（<km-drawio src="..." width="<自动推算>" height="<自动推算>" nodeId="uuid-xxx" />）
 
 # 回传更新文档
-oa-skills citadel updateDocumentByMd --contentId <id> --file /tmp/doc.citadelmd
+oa-skills citadel updateDocumentByXml --contentId <id> --file /tmp/doc.xml --step-version <stepVersion>
 ```
 
-**CitadelMD drawio 语法格式**：
+**CitadelXML drawio 节点格式**：
 
-```
-:::drawio{src="<学城CDN URL>" width=<宽度> height=<高度>}:::
+```xml
+<km-drawio src="<学城CDN URL>" width="<宽度>" height="<高度>" nodeId="uuid-xxx" />
 ```
 
 - `src`：学城附件 CDN URL（由 uploadDrawioToDocument 返回的 url 字段），**必填**
-- `width`：画布宽度（px），由 uploadDrawioToDocument 自动推算并写入 drawioMd，**必填**
-- `height`：画布高度（px），由 uploadDrawioToDocument 自动推算并写入 drawioMd，**必填**
+- `width`：画布宽度（px），由 uploadDrawioToDocument 自动推算，**必填**
+- `height`：画布高度（px），由 uploadDrawioToDocument 自动推算，**必填**
+- `nodeId`：插入新节点时生成新 UUID，修改已有节点时保留原属性
 
 ---
 
@@ -576,7 +577,7 @@ oa-skills citadel updateDocumentByMd --contentId <id> --file /tmp/doc.citadelmd
 - 单元素变更：就地修改 XML，保留其他节点的位置调优
 - 布局大幅重构（如 TB 改 LR）：全量重新生成
 - 每次迭代后重新上传，使用 `uploadDrawioToDocument` 获取新的 CDN URL
-- 将文档中原有的 `:::drawio{...}:::` 替换为新的 drawioMd
+- 将文档 XML 中原有的 `<km-drawio ...>` 替换为新的 drawio 节点（保留 nodeId）
 
 **迭代轮次建议**：
 - 5 轮内无法收敛时，建议用户直接在当前文档 编辑 流程图，这是更高效的精细调整方式
@@ -603,19 +604,19 @@ oa-skills citadel uploadDrawioToDocument \
   --contentId 1234567890 \
   --file /tmp/register-flow.xml
 
-# 第三步：获取文档内容
-oa-skills citadel getDocumentCitadelMd --contentId 1234567890 --output /tmp/doc.citadelmd
+# 第三步：获取文档 XML 内容
+oa-skills citadel getDocumentXml --contentId 1234567890 --output /tmp/doc.xml
 
-# 第四步：AI 在正确位置插入 :::drawio{...}::: 语法
+# 第四步：AI 在正确位置插入 <km-drawio ...> 节点
 # 第五步：回传
-oa-skills citadel updateDocumentByMd --contentId 1234567890 --file /tmp/doc.citadelmd
+oa-skills citadel updateDocumentByXml --contentId 1234567890 --file /tmp/doc.xml --step-version <stepVersion>
 ```
 
 ---
 
 ## 禁止事项
 
-- **严禁直接将非学城 Drawio URL 写入 CitadelMD**，必须先通过 `uploadDrawioToDocument` 上传获取学城 CDN URL
+- **严禁直接将非学城 Drawio URL 写入文档 XML**，必须先通过 `uploadDrawioToDocument` 上传获取学城 CDN URL
 - **严禁在 mxCell XML 中包含 XML 注释**（`<!-- ... -->`），会导致 draw.io 渲染失败
 - **严禁在 mxCell 中嵌套 mxCell**，所有 mxCell 必须是平级的兄弟元素
 - **严禁在 XML 中包含 `<mxfile>`、`<mxGraphModel>`、`<root>` 等包装标签**，工具只接受纯 mxCell 列表，传入外层结构会导致解析错误
@@ -627,12 +628,12 @@ oa-skills citadel updateDocumentByMd --contentId 1234567890 --file /tmp/doc.cita
 
 若用户要求修改文档中已有的流程图，流程如下：
 
-1. `getDocumentCitadelMd` 获取文档，找到 `:::drawio{src="<url>"}:::` 节点
+1. `getDocumentXml` 获取文档 XML，找到 `<km-drawio src="<url>" ...>` 节点
 2. `fetchDrawio --drawioUrl "<url>"` 获取流程图的 mxGraph XML 源数据（`mxGraphXml` 字段）
 3. AI 根据 `mxGraphXml` 中的 mxCell 内容进行修改（增删改节点和连线），**只保留 mxCell 元素**，去掉 mxfile/mxGraphModel/root 外层标签
 4. 将修改后的**纯 mxCell 列表** XML 写入临时文件
-5. `uploadDrawioToDocument` 重新上传，获取新的 CDN URL 和 drawioMd
-6. 将文档中原有的 `:::drawio{...}:::` 替换为新的 drawioMd
-7. `updateDocumentByMd` 回传更新文档
+5. `uploadDrawioToDocument` 重新上传，获取新的 CDN URL 和 drawio 节点
+6. 将文档 XML 中原有的 `<km-drawio ...>` 替换为新的 drawio 节点（保留 nodeId）
+7. `updateDocumentByXml` 回传更新文档
 
 > ⚠️ **修改流程图时基于 `mxGraphXml` 而非 `svgContent`**：`mxGraphXml` 是流程图的完整数据源（节点/连线/样式/布局），`svgContent` 是渲染后的展示图形，不可直接修改。

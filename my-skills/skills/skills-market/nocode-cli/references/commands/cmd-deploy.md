@@ -5,10 +5,10 @@
 部署应用到线上。自动从版本列表获取最新版本的 commitId 进行部署，也可通过 `--commit-id` 指定版本。
 
 ```bash
-nocode deploy <chatId>                           # 部署最新版本
-nocode deploy <chatId> --commit-id <commitId>    # 部署指定版本
-nocode deploy <chatId> --chatEnv test            # 使用对话/作品线下环境变量部署
-nocode deploy <chatId> --chatEnv prod            # 使用对话/作品线上环境变量部署（默认）
+nocode deploy <chatId> --skillId <SKILL_ID>                           # 部署最新版本
+nocode deploy <chatId> --commit-id <commitId> --skillId <SKILL_ID>    # 部署指定版本
+nocode deploy <chatId> --chatEnv test --skillId <SKILL_ID>            # 使用对话/作品线下环境变量部署
+nocode deploy <chatId> --chatEnv prod --skillId <SKILL_ID>            # 使用对话/作品线上环境变量部署（默认）
 ```
 
 **流程：**
@@ -57,7 +57,7 @@ nocode env set <chatId> VITE_ENV test --chatEnv test
 nocode env switch <chatId> --chatEnv test
 
 # 3. 部署（使用对话/作品线下环境变量）
-nocode deploy <chatId> --chatEnv test
+nocode deploy <chatId> --chatEnv test --skillId <SKILL_ID>
 ```
 
 ## ⚠️ 渲染失败拦截

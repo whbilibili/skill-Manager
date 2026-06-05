@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birchline Design System — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --background: #F8F3EA;
+  --surface1: #FDFAF5;
+  --surface2: #F8F3EA;
+  --surface3: #F0E9DA;
+  --border: #F0E9DA;
+  --border-visible: #E4D9C8;
+  --text1: #2C2416;
+  --text2: #7A6E5F;
+  --text3: #A89880;
+  --text4: #C8BAA4;
+  --accent: #C17B3A;
+  --accent-subtle: #FDF6EC;
+  --success: #4A9B6A;
+  --success-bg: #F0FDF4;
+  --warning: #D97706;
+  --warning-bg: #FFFBEB;
+  --error: #DC4A4A;
+  --error-bg: #FEF2F2;
+  --shadow-1: 0 1px 3px rgba(44,36,22,.06), 0 1px 2px rgba(44,36,22,.04);
+  --shadow-2: 0 4px 12px rgba(44,36,22,.08), 0 2px 4px rgba(44,36,22,.05);
+  --shadow-3: 0 8px 32px rgba(44,36,22,.12), 0 4px 8px rgba(44,36,22,.06);
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --radius-element: 4px;
+  --radius-control: 6px;
+  --radius-component: 8px;
+  --radius-container: 12px;
+  --radius-pill: 999px;
+  --dur-fast: 120ms;
+  --dur-med: 200ms;
+}
+[data-theme="dark"] {
+  --background: #1A1510;
+  --surface1: #2C2416;
+  --surface2: #3D3530;
+  --surface3: #5A5048;
+  --border: #3D3530;
+  --border-visible: #5A5048;
+  --text1: #FDFAF5;
+  --text2: #E4D9C8;
+  --text3: #A89880;
+  --text4: #7A6E5F;
+  --accent: #E09A42;
+  --accent-subtle: #2A1808;
+  --success: #4A9B6A;
+  --success-bg: #052e16;
+  --warning: #D97706;
+  --warning-bg: #1c1400;
+  --error: #DC4A4A;
+  --error-bg: #1c0000;
+  --shadow-1: 0 1px 3px rgba(0,0,0,.25), 0 1px 2px rgba(0,0,0,.15);
+  --shadow-2: 0 4px 12px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.20);
+  --shadow-3: 0 8px 32px rgba(0,0,0,.45), 0 4px 8px rgba(0,0,0,.25);
+}
+
+/* ─── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--background);
+  color: var(--text1);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background var(--dur-med) ease, color var(--dur-med) ease;
+}
+
+/* ─── LAYOUT ─────────────────────────────────────────────── */
+.page { max-width: 1100px; margin: 0 auto; padding: 48px 24px 96px; }
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-visible);
+}
+.page-title { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; }
+.page-subtitle { font-size: 14px; color: var(--text3); margin-top: 4px; }
+
+/* ─── SECTION ────────────────────────────────────────────── */
+.section { margin-bottom: 56px; }
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+
+/* ─── BENTO GRID ─────────────────────────────────────────── */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+}
+.bento-cell {
+  background: var(--surface1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-container);
+  padding: 24px;
+  box-shadow: var(--shadow-1);
+  transition: box-shadow var(--dur-fast) ease;
+}
+.bento-cell:hover { box-shadow: var(--shadow-2); }
+.bento-cell--span2  { grid-column: span 2; }
+.bento-cell--span3  { grid-column: span 3; }
+.bento-cell--span4  { grid-column: span 4; }
+.bento-cell--span5  { grid-column: span 5; }
+.bento-cell--span6  { grid-column: span 6; }
+.bento-cell--span7  { grid-column: span 7; }
+.bento-cell--span8  { grid-column: span 8; }
+.bento-cell--span12 { grid-column: span 12; }
+.bento-cell-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 16px; }
+
+/* ─── COLOR SWATCHES ─────────────────────────────────────── */
+.swatch-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.swatch {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-component);
+  border: 1px solid rgba(0,0,0,.06);
+  position: relative;
+  cursor: default;
+  flex-shrink: 0;
+}
+.swatch-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.swatch-name { font-size: 10px; color: var(--text3); text-align: center; }
+
+/* ─── TYPE SCALE ─────────────────────────────────────────── */
+.type-row { display: flex; flex-direction: column; gap: 12px; }
+.type-sample { display: flex; align-items: baseline; gap: 16px; }
+.type-meta { font-size: 11px; color: var(--text3); white-space: nowrap; min-width: 120px; font-family: var(--font-mono); }
+
+/* ─── BUTTONS ────────────────────────────────────────────── */
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 32px; padding: 0 16px;
+  border-radius: var(--radius-control);
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none;
+  transition: background var(--dur-fast) ease, opacity var(--dur-fast) ease;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--text1); color: var(--surface1); }
+.btn-primary:hover { opacity: .85; }
+.btn-secondary { background: var(--surface3); color: var(--text2); border: 1px solid var(--border-visible); }
+.btn-secondary:hover { background: var(--surface2); }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { opacity: .88; }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid transparent; }
+.btn-ghost:hover { background: var(--surface3); }
+.btn-sm { height: 26px; padding: 0 10px; font-size: 12px; }
+.btn-lg { height: 40px; padding: 0 24px; font-size: 14px; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ─── SLOT TAGS ──────────────────────────────────────────── */
+.slot-tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 400;
+  line-height: 1.5;
+}
+.tag-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* ─── PLAN BADGES ────────────────────────────────────────── */
+.plan-badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.plan-badge--free   { background: #E8F0E0; color: #3A6B2A; }
+.plan-badge--team   { background: #E0EAF5; color: #2A4A7A; }
+.plan-badge--studio { background: #EDE0F5; color: #5A2A7A; }
+
+/* ─── FORM CONTROLS ──────────────────────────────────────── */
+.input-field {
+  width: 100%; height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border-visible);
+  background: var(--surface1);
+  color: var(--text1);
+  font-family: var(--font-body); font-size: 14px;
+  outline: none;
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+.input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(193,123,58,.15); }
+.input-field::placeholder { color: var(--text4); }
+.textarea-field {
+  width: 100%; min-height: 80px;
+  padding: 10px 12px;
+  border-radius: var(--radius-component);
+  border: 1px solid var(--border-visible);
+  background: var(--surface1);
+  color: var(--text1);
+  font-family: var(--font-body); font-size: 14px;
+  outline: none; resize: vertical;
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+.textarea-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(193,123,58,.15); }
+.form-label { font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 6px; display: block; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+/* ─── CARDS ──────────────────────────────────────────────── */
+.card {
+  background: var(--surface1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-component);
+  padding: 20px;
+  box-shadow: var(--shadow-1);
+}
+.card-title { font-size: 14px; font-weight: 600; color: var(--text1); margin-bottom: 6px; }
+.card-body  { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ─── STATUS BADGES ──────────────────────────────────────── */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px; font-weight: 500;
+}
+.status-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; }
+.status-badge--success { background: var(--success-bg); color: var(--success); }
+.status-badge--success::before { background: var(--success); }
+.status-badge--warning { background: var(--warning-bg); color: var(--warning); }
+.status-badge--warning::before { background: var(--warning); }
+.status-badge--error   { background: var(--error-bg);   color: var(--error);   }
+.status-badge--error::before   { background: var(--error);   }
+
+/* ─── BREADCRUMB ─────────────────────────────────────────── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text3);
+}
+.breadcrumb-sep { color: var(--text4); }
+.breadcrumb-current { color: var(--text2); }
+
+/* ─── PROMPT EDITOR DEMO ─────────────────────────────────── */
+.editor-shell {
+  background: var(--surface1);
+  border: 1px solid var(--border-visible);
+  border-radius: var(--radius-container);
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+}
+.editor-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.editor-topbar-left { display: flex; align-items: center; gap: 8px; }
+.editor-topbar-title { font-size: 13px; font-weight: 600; color: var(--text1); }
+.editor-body { display: grid; grid-template-columns: 1fr 1fr; }
+.editor-pane {
+  padding: 20px;
+  min-height: 180px;
+}
+.editor-pane + .editor-pane { border-left: 1px solid var(--border); }
+.editor-pane-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 12px; }
+.editor-text { font-size: 14px; color: var(--text1); line-height: 1.7; }
+.editor-text .slot { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: var(--radius-pill); background: var(--accent-subtle); color: var(--accent); font-family: var(--font-mono); font-size: 12px; }
+.editor-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--surface2);
+}
+.editor-footer-meta { font-size: 12px; color: var(--text3); }
+
+/* ─── SHADOW SCALE ───────────────────────────────────────── */
+.shadow-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.shadow-swatch {
+  width: 80px; height: 60px;
+  background: var(--surface1);
+  border-radius: var(--radius-component);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--text3);
+}
+
+/* ─── RADIUS SCALE ───────────────────────────────────────── */
+.radius-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+.radius-swatch {
+  background: var(--surface3);
+  border: 1px solid var(--border-visible);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--text3);
+  width: 60px; height: 60px;
+}
+
+/* ─── THEME TOGGLE ───────────────────────────────────────── */
+.theme-toggle {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-visible);
+  background: var(--surface3);
+  color: var(--text2);
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  cursor: pointer;
+  transition: background var(--dur-fast) ease;
+}
+.theme-toggle:hover { background: var(--surface2); }
+
+/* ─── DIVIDER ────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); margin: 0; }
+
+/* ─── MONO BLOCK ─────────────────────────────────────────── */
+.mono-block {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text2);
+  background: var(--surface3);
+  border: 1px solid var(--border-visible);
+  border-radius: var(--radius-component);
+  padding: 12px 16px;
+  line-height: 1.7;
+}
+
+/* ─── ICON PLACEHOLDER ───────────────────────────────────── */
+.icon-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+.icon-box {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-component);
+  background: var(--surface3);
+  border: 1px solid var(--border-visible);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2);
+  font-size: 16px;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .bento { grid-template-columns: 1fr 1fr; }
+  .bento-cell--span3, .bento-cell--span4, .bento-cell--span5,
+  .bento-cell--span6, .bento-cell--span7, .bento-cell--span8 { grid-column: span 2; }
+  .bento-cell--span12 { grid-column: span 2; }
+  .editor-body { grid-template-columns: 1fr; }
+  .editor-pane + .editor-pane { border-left: none; border-top: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ── PAGE HEADER ── -->
+  <header class="page-header">
+    <div>
+      <div class="page-title">Birchline</div>
+      <div class="page-subtitle">Warm Document Craft — Design System Preview</div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <span id="theme-icon">☀️</span>
+      <span id="theme-label">Light</span>
+    </button>
+  </header>
+
+  <!-- ── SECTION: PROMPT EDITOR DEMO ── -->
+  <div class="section">
+    <div class="section-label">Signature Component — Prompt Tuner Editor</div>
+    <div class="editor-shell">
+      <div class="editor-topbar">
+        <div class="editor-topbar-left">
+          <div class="breadcrumb">
+            <span>Templates</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">Email Outreach</span>
+          </div>
+          <span class="plan-badge plan-badge--team">Team</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-secondary btn-sm">Save Draft</button>
+          <button class="btn btn-primary btn-sm">Run Prompt</button>
+        </div>
+      </div>
+      <div class="editor-body">
+        <div class="editor-pane">
+          <div class="editor-pane-label">Template</div>
+          <div class="editor-text">
+            Write a <span class="slot">{{tone}}</span> email to
+            <span class="slot">{{recipient_name}}</span> about
+            <span class="slot">{{topic}}</span>. Keep it under
+            <span class="slot">{{word_count}}</span> words and end with a
+            clear call to action for <span class="slot">{{cta_goal}}</span>.
+          </div>
+        </div>
+        <div class="editor-pane">
+          <div class="editor-pane-label">Variables</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="form-group">
+              <label class="form-label">tone</label>
+              <input class="input-field" value="professional yet warm" style="font-family:var(--font-mono);font-size:13px;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">recipient_name</label>
+              <input class="input-field" value="Sarah Chen" style="font-family:var(--font-mono);font-size:13px;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">topic</label>
+              <input class="input-field" value="Q3 partnership proposal" style="font-family:var(--font-mono);font-size:13px;">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="editor-footer">
+        <div class="editor-footer-meta">5 variables · 3 filled · 2 pending</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="status-badge status-badge--warning">Draft</span>
+          <button class="btn btn-accent btn-sm">Generate ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BENTO GRID ── -->
+  <div class="section">
+    <div class="section-label">Design Tokens</div>
+    <div class="bento">
+
+      <!-- Color Palette -->
+      <div class="bento-cell bento-cell--span8">
+        <div class="bento-cell-title">Color Palette</div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Neutral Scale</div>
+            <div class="swatch-row">
+              <div class="swatch-group"><div class="swatch" style="background:#FDFAF5;"></div><div class="swatch-name">surface1</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#F8F3EA;"></div><div class="swatch-name">surface2</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#F0E9DA;"></div><div class="swatch-name">surface3</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#E4D9C8;"></div><div class="swatch-name">border</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#C8BAA4;"></div><div class="swatch-name">text4</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#A89880;"></div><div class="swatch-name">text3</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#7A6E5F;"></div><div class="swatch-name">text2</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#2C2416;"></div><div class="swatch-name">text1</div></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Accent &amp; Semantic</div>
+            <div class="swatch-row">
+              <div class="swatch-group"><div class="swatch" style="background:#FDF6EC;"></div><div class="swatch-name">accent-subtle</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#C17B3A;"></div><div class="swatch-name">accent</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#F0FDF4;"></div><div class="swatch-name">success-bg</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#4A9B6A;"></div><div class="swatch-name">success</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#FFFBEB;"></div><div class="swatch-name">warning-bg</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#D97706;"></div><div class="swatch-name">warning</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#FEF2F2;"></div><div class="swatch-name">error-bg</div></div>
+              <div class="swatch-group"><div class="swatch" style="background:#DC4A4A;"></div><div class="swatch-name">error</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shadow Scale -->
+      <div class="bento-cell bento-cell--span4">
+        <div class="bento-cell-title">Shadow Scale</div>
+        <div class="shadow-row">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div class="shadow-swatch" style="box-shadow:var(--shadow-1);">shadow-1</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div class="shadow-swatch" style="box-shadow:var(--shadow-2);">shadow-2</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div class="shadow-swatch" style="box-shadow:var(--shadow-3);">shadow-3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Type Scale -->
+      <div class="bento-cell bento-cell--span7">
+        <div class="bento-cell-title">Type Scale — DM Sans</div>
+        <div class="type-row">
+          <div class="type-sample">
+            <span class="type-meta">28px / -0.01em</span>
+            <span style="font-size:28px;font-weight:600;letter-spacing:-0.01em;line-height:1.2;">Display Heading</span>
+          </div>
+          <div class="type-sample">
+            <span class="type-meta">20px / -0.01em</span>
+            <span style="font-size:20px;font-weight:600;letter-spacing:-0.01em;line-height:1.3;">Section Heading</span>
+          </div>
+          <div class="type-sample">
+            <span class="type-meta">16px / 0em</span>
+            <span style="font-size:16px;font-weight:500;line-height:1.4;">Subheading Text</span>
+          </div>
+          <div class="type-sample">
+            <span class="type-meta">14px / 0em</span>
+            <span style="font-size:14px;font-weight:400;line-height:1.6;">Body text — the primary reading size for all content areas.</span>
+          </div>
+          <div class="type-sample">
+            <span class="type-meta">13px / 0em</span>
+            <span style="font-size:13px;font-weight:400;color:var(--text2);line-height:1.5;">Small body — secondary descriptions and metadata.</span>
+          </div>
+          <div class="type-sample">
+            <span class="type-meta">11px / 0.06em</span>
+            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);">SECTION LABEL / CAPTION</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mono + Radius -->
+      <div class="bento-cell bento-cell--span5">
+        <div class="bento-cell-title">Mono — JetBrains Mono</div>
+        <div class="mono-block">
+          const prompt = `Write a<br>
+          {{tone}} email to<br>
+          {{recipient}} about<br>
+          {{topic}}.`
+        </div>
+        <div style="margin-top:20px;">
+          <div class="bento-cell-title">Border Radius</div>
+          <div class="radius-row">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="radius-swatch" style="border-radius:4px;">4px</div>
+              <span style="font-size:10px;color:var(--text3);">element</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="radius-swatch" style="border-radius:6px;">6px</div>
+              <span style="font-size:10px;color:var(--text3);">control</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="radius-swatch" style="border-radius:8px;">8px</div>
+              <span style="font-size:10px;color:var(--text3);">component</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="radius-swatch" style="border-radius:12px;">12px</div>
+              <span style="font-size:10px;color:var(--text3);">container</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="radius-swatch" style="border-radius:999px;width:60px;height:28px;">pill</div>
+              <span style="font-size:10px;color:var(--text3);">pill</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="bento-cell bento-cell--span6">
+        <div class="bento-cell-title">Buttons</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="btn-row">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-accent">Accent</button>
+            <button class="btn btn-ghost">Ghost</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary btn-sm">Small</button>
+            <button class="btn btn-primary">Default</button>
+            <button class="btn btn-primary btn-lg">Large</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" disabled>Disabled</button>
+            <button class="btn btn-secondary" disabled>Disabled</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tags & Badges -->
+      <div class="bento-cell bento-cell--span6">
+        <div class="bento-cell-title">Slot Tags &amp; Plan Badges</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Slot Tags (JetBrains Mono)</div>
+            <div class="tag-row">
+              <span class="slot-tag">{{tone}}</span>
+              <span class="slot-tag">{{recipient_name}}</span>
+              <span class="slot-tag">{{topic}}</span>
+              <span class="slot-tag">{{word_count}}</span>
+              <span class="slot-tag">{{cta_goal}}</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Plan Badges</div>
+            <div class="tag-row">
+              <span class="plan-badge plan-badge--free">Free</span>
+              <span class="plan-badge plan-badge--team">Team</span>
+              <span class="plan-badge plan-badge--studio">Studio</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Status Badges</div>
+            <div class="tag-row">
+              <span class="status-badge status-badge--success">Active</span>
+              <span class="status-badge status-badge--warning">Draft</span>
+              <span class="status-badge status-badge--error">Error</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Controls -->
+      <div class="bento-cell bento-cell--span6">
+        <div class="bento-cell-title">Form Controls</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Text Input</label>
+            <input class="input-field" placeholder="Enter a value…">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Focused State</label>
+            <input class="input-field" value="Focused input" style="border-color:var(--accent);box-shadow:0 0 0 3px rgba(193,123,58,.15);">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Textarea</label>
+            <textarea class="textarea-field" placeholder="Write your prompt template here…" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="bento-cell bento-cell--span6">
+        <div class="bento-cell-title">Cards</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card">
+            <div class="card-title">Email Outreach Template</div>
+            <div class="card-body">A professional cold email template with 5 customizable slots for tone, recipient, topic, length, and CTA.</div>
+            <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+              <span class="plan-badge plan-badge--team">Team</span>
+              <span style="font-size:12px;color:var(--text3);">Updated 2 days ago</span>
+            </div>
+          </div>
+          <div class="card" style="border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow-1);">
+            <div class="card-title" style="color:var(--accent);">Selected Card</div>
+            <div class="card-body">Cards use a 1px accent border + ring when selected or focused.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breadcrumb + Navigation -->
+      <div class="bento-cell bento-cell--span12">
+        <div class="bento-cell-title">Navigation Patterns</div>
+        <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:center;">
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Breadcrumb</div>
+            <div class="breadcrumb">
+              <span>Workspace</span>
+              <span class="breadcrumb-sep">/</span>
+              <span>Templates</span>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-current">Email Outreach</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Tab Bar</div>
+            <div style="display:flex;gap:2px;background:var(--surface3);padding:3px;border-radius:var(--radius-component);">
+              <button style="padding:5px 14px;border-radius:5px;border:none;background:var(--surface1);color:var(--text1);font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer;box-shadow:var(--shadow-1);">Editor</button>
+              <button style="padding:5px 14px;border-radius:5px;border:none;background:transparent;color:var(--text3);font-family:var(--font-body);font-size:13px;cursor:pointer;">Preview</button>
+              <button style="padding:5px 14px;border-radius:5px;border:none;background:transparent;color:var(--text3);font-family:var(--font-body);font-size:13px;cursor:pointer;">History</button>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Sidebar Item</div>
+            <div style="display:flex;flex-direction:column;gap:2px;width:180px;">
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius-control);background:var(--accent-subtle);color:var(--accent);font-size:13px;font-weight:500;">
+                <span>📝</span> Email Outreach
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius-control);color:var(--text2);font-size:13px;">
+                <span>📋</span> Meeting Notes
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius-control);color:var(--text2);font-size:13px;">
+                <span>🔍</span> SEO Content
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SECTION: PHILOSOPHY ── -->
+  <div class="section">
+    <div class="section-label">Design Philosophy</div>
+    <div class="bento">
+      <div class="bento-cell bento-cell--span4" style="background:var(--accent-subtle);border-color:rgba(193,123,58,.2);">
+        <div style="font-size:20px;margin-bottom:8px;">🌿</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Warm Neutrality</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;">Birch-white and parchment tones create a calm, focused workspace. No cold grays — every neutral carries warmth.</div>
+      </div>
+      <div class="bento-cell bento-cell--span4">
+        <div style="font-size:20px;margin-bottom:8px;">🎯</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Single Accent</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;">Amber orange (#C17B3A) is the only chromatic accent. It marks interactive elements, slot tags, and active states — never decorative.</div>
+      </div>
+      <div class="bento-cell bento-cell--span4">
+        <div style="font-size:20px;margin-bottom:8px;">⌨️</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Craft Typography</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;">DM Sans for all prose. JetBrains Mono exclusively for template slots and code — the visual signal that something is a variable.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+  document.getElementById('theme-label').textContent = isDark ? 'Light' : 'Dark';
+}
+</script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 skill-manifest-version: 1
-skill-id: e06a5cdb45d7518689cc4421aefb9cfb997bee28510aa227e3802ac006294bd7
+skill-id: bee8e98c6097b8317aafae755f02a1dec85fc2b1c8dba2042ce56ef78b3728ee
 
 files:
-  d9c7ada0082c2ead7bdef9df0e670be8f5eb383d48abd438a7cb5e1724cb9450  SKILL.md
+  51e1c6f3f1c295a5f7edd5a49725368557c6084a274f5dbe756296e328843c3a  SKILL.md
   1178493dfdd98fac8715ec5314159d19ee8bf7ab9eed8dbbbed9eafacb19d6c9  _meta.json
   c09bc2bd98a09072dce41b145d0f1c09bd0553eeccead5570d26e95f89c3c951  evals/evals.json
   fc0a4c2f6ef117b703b8f8a4c88843aecb8e4b9c7c7df39977036dd625c902ee  references/app-integration-guide.md

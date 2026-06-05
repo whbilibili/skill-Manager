@@ -1,7 +1,7 @@
 ---
 name: friday-skill-cli
-description: Friday Skills 广场 CLI 工具。认证优先级：(1) MOA 无感登录（@mtfe/mtsso-auth-official，无需确认）(2) CIBA 降级（需大象确认）(3) --browser（浏览器 cookie）(4) --app-auth（client credentials，无用户身份）。
-version: 2.3.2
+description: Friday Skills 广场 CLI 工具。认证优先级：(1) MOA 无感登录（@mtfe/mtsso-auth-official，无需确认）(2) CatDesk auth exchange（CatDesk/CatPaw 环境，无需确认）(3) CIBA 降级（需大象确认）(4) --browser（浏览器 cookie）(5) --app-auth（client credentials，无用户身份）。
+version: 2.4.0
 tags: 技术开发,CLI
 
 skill-dependencies:
@@ -14,7 +14,7 @@ skill-dependencies:
 metadata:
   skillhub.creator: "yeshaozhi"
   skillhub.updater: "yeshaozhi"
-  skillhub.version: "V29"
+  skillhub.version: "V31"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "2030"
   skillhub.high_sensitive: "false"
@@ -27,7 +27,7 @@ metadata:
 ## 安装
 
 ```bash
-cp {baseDir}/scripts/friday-skill /usr/local/bin/friday-skill && chmod +x /usr/local/bin/friday-skill
+cp {baseDir}/bin/friday-skill /usr/local/bin/friday-skill && chmod +x /usr/local/bin/friday-skill
 ```
 
 ## 触发条件 / 适用场景
@@ -68,12 +68,11 @@ friday-skill list --mine
 
 ## 认证
 
-### 默认（MOA 无感登录 → CIBA 降级）
+### 默认（MOA 无感登录 → CatDesk → CIBA 降级）
 - 优先通过 `@mtfe/mtsso-auth-official` MOA 无感取票，**无需任何操作**
-- 认证前自动探测 MOA 支持情况（`npx mtsso-moa-feature-probe`）
-- MOA 不可用时自动降级为 CIBA（需大象 App 确认）
-- 两者均传递用户身份
-- CIBA 等待进度输出到 stderr，避免污染 stdout JSON
+- MOA 不可用时自动尝试 `catdesk auth exchange`（CatDesk/CatPaw 环境，**无需任何操作**）
+- 两者均不可用时降级为 CIBA（需大象 App 确认）
+- 所有方式均传递用户身份
 
 ```bash
 friday-skill list --mine

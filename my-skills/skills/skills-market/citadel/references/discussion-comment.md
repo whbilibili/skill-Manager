@@ -25,7 +25,7 @@
 |---|---|
 | `from` / `to` | 节点在文档 ProseMirror 序列中的起止位置（通过 client 内部计算） |
 | `quoteId` | 该引用的唯一 ID，格式 `{contentId}--{uuid}` |
-| `stepVersion` / `baseStepVersion` | 当前文档的 step 版本号，从 `getDocumentCitadelMd` 返回 |
+| `stepVersion` / `baseStepVersion` | 当前文档的 step 版本号，从 `getDocumentXml` 返回 |
 | `clientId` | 固定值 `FROM-CITADEL-SKILL` |
 | `msgId` | 每次请求随机生成的 UUID |
 
@@ -45,7 +45,7 @@
 |---|---|---|
 | `--contentId <id>` | string | 文档 ID |
 | `--nodeId <nodeId>` | string | 目标节点的 nodeId（从文档 JSON 的段落/标题节点 attrs.nodeId 字段获取） |
-| `--stepVersion <版本号>` | number | 文档当前 step 版本号（从 `getDocumentCitadelMd` 返回的 stepVersion 字段） |
+| `--stepVersion <版本号>` | number | 文档当前 step 版本号（从 `getDocumentXml` 返回的 stepVersion 字段） |
 | `--text <内容>` | string | 评论正文纯文本内容 |
 
 **可选参数：**
@@ -135,13 +135,15 @@ oa-skills citadel replyDiscussionComment \
 
 ## 评论内容格式限制
 
-评论正文（包括划词评论和回复）仅支持以下三种内联节点类型：
+评论正文（包括划词评论和回复）**仅支持以下三种内联节点类型**，其他格式一律不支持：
 
 | 类型 | 说明 | CLI 传递方式 |
 |---|---|---|
 | 纯文本 | 普通文字 | `--text` 参数直接传递 |
 | @提及 | 提及某人（会触发消息通知） | `--mention` + `--mentionNames` 参数 |
 | 链接 | （暂未在 CLI 中直接支持，如需使用请通过 client API 直接调用） | — |
+
+**明确不支持**：图片、附件、代码块、表格、有序/无序列表、标题、加粗/斜体/颜色等富文本格式，以及任何块级节点。评论只接受纯文本和上述两种内联节点，传入其他格式不会报错但内容可能被忽略或丢失。
 
 **注意：** 每篇文档每次 AI 会话最多添加 1 条划词评论或 1 条回复，禁止批量循环调用避免刷屏。
 
@@ -152,33 +154,30 @@ oa-skills citadel replyDiscussionComment \
 **推荐流程：**
 
 ```bash
-# 1. 获取文档 CitadelMD 内容（同时返回文档 JSON 结构和 stepVersion）
-oa-skills citadel getDocumentCitadelMd --contentId "2755005703"
+# 1. 获取文档 XML 内容（同时返回 stepVersion）
+oa-skills citadel getDocumentXml --contentId "2755005703" --output /tmp/doc.xml
 
 # 输出中会显示：
 # 文档版本（stepVersion）：42
-# 内容中的节点都带有 nodeId 属性，例如：
-# :::paragraph{nodeId="abc123def456"}
-# 这段文字内容
-# :::
+# XML 中的节点都带有 nodeId 属性，例如：
+# <p nodeId="abc123def456">这段文字内容</p>
 ```
 
-CitadelMD 格式中，每个块级节点的 `nodeId` 属性即为所需参数。也可以通过 `getDocumentJson` 获取原始 JSON，查看节点 `attrs.nodeId` 字段。
+CitadelXML 格式中，每个块级节点的 `nodeId` 属性即为所需参数。也可以通过 `getDocumentJson` 获取原始 JSON，查看节点 `attrs.nodeId` 字段。
 
 ### nodeId 的查找说明
 
-划词评论的 `nodeId` 必须是文档顶层内容块（`doc.content` 数组中的直接子节点），即段落（paragraph）、标题（heading）等块级节点的 `attrs.nodeId`。
+文档中任何带有 `nodeId` 属性的块级节点均可作为划词评论的引用目标，通过 `getDocumentXml` 或 `getDocumentJson` 获取节点的 `nodeId` 属性即可。
 
 **当前限制：**
-- 只支持对整个顶层块节点添加划词评论（整段或整个标题作为引用范围）
-- 不支持对段落内的部分文字范围进行划词（例如某句话中的某几个字）
+- 只支持对整个块节点添加划词评论（整节点作为引用范围），不支持对节点内部分文字范围划词（例如某句话中的某几个字）
 - 如果需要对特定文字范围划词，建议先调整文档结构，将目标内容拆分为独立段落
 
 ## 常见错误处理
 
 | 错误信息 | 原因 | 解决方法 |
 |---|---|---|
-| `未找到 nodeId=xxx 对应的节点` | nodeId 不存在或拼写有误 | 重新通过 `getDocumentCitadelMd` 获取正确的 nodeId |
+| `未找到 nodeId=xxx 对应的节点` | nodeId 不存在或拼写有误 | 重新通过 `getDocumentXml` 获取正确的 nodeId |
 | `提交 addMark step 失败` | stepVersion 与服务端不一致（文档有其他人同时编辑） | 重新获取最新的 stepVersion 后重试 |
 | `划词评论不支持 1.0 旧版文档` | 文档是 1.0 格式（HTML 存储） | 该文档不支持划词评论，请使用全文评论 |
 | `创建划词评论失败` | discussion 创建接口异常 | 检查网络和认证状态后重试 |

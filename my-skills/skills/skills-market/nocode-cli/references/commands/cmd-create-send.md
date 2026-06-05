@@ -28,13 +28,13 @@
 **⚠️ 架构保护：** 执行 create 前必须通过上方「执行前必检：架构保护」检查。
 
 ```bash
-nocode create "帮我做一个 TODO 应用"
-nocode create "做一个博客" --template nocode-react-roo
-nocode create "做一个落地页" --platform web
-nocode create "参考这张设计稿做页面" --images ./design.png
-nocode create "参考这个文档做页面" --urls https://km.sankuai.com/collabpage/xxxxx
-nocode create "根据配置文件生成页面" --files ./config.json
-nocode create "做一个内部管理系统" --safety
+nocode create "帮我做一个 TODO 应用" --skillId <SKILL_ID>
+nocode create "做一个博客" --template nocode-react-roo --skillId <SKILL_ID>
+nocode create "做一个落地页" --platform web --skillId <SKILL_ID>
+nocode create "参考这张设计稿做页面" --images ./design.png --skillId <SKILL_ID>
+nocode create "参考这个文档做页面" --urls https://km.sankuai.com/collabpage/xxxxx --skillId <SKILL_ID>
+nocode create "根据配置文件生成页面" --files ./config.json --skillId <SKILL_ID>
+nocode create "做一个内部管理系统" --safety --skillId <SKILL_ID>
 ```
 
 **附件参数（可选，可组合使用）：**
@@ -45,8 +45,11 @@ nocode create "做一个内部管理系统" --safety
 | `--files <path...>` | 附带本地文本文件（仅支持 1 个） | 支持 txt/md/csv/json/js/html/css/xml/yaml/doc/docx 等，最大 1MB |
 | `--urls <url...>` | 附带 URL 链接（最多 10 个） | 支持学城 2.0 文档链接，后端会爬取内容作为上下文 |
 | `--safety` | 安全屋模式（使用 Friday 私有部署模型，C4 信息安全） | 涉及敏感数据时使用 |
+| `--skillId <id>` | 上报调用来源 Skill ID | 从 Skill metadata 中读取 `skillhub.skill_id` |
 
 **⚠️ 用户附件处理：** 见 [SKILL.md](../../SKILL.md)「用户提供图片/文档/链接时的处理方式」章节。核心要点：优先通过 `--images`/`--files`/`--urls` 附件传递，避免粘贴内容到 prompt。
+
+**🔒 附件安全规则（强制）：** 使用 `--files`/`--urls`/`--images` 参数前，必须遵守 [SKILL.md](../../SKILL.md)「🔒 数据安全约束」章节的全部规则。核心要点：① 上传前必须告知用户并获得确认；② 禁止上传含密钥/凭证的文件（`.env`、私钥等）；③ 涉及 C3/C4 敏感数据时必须加 `--safety` 参数；④ 严禁在 prompt 中指示 NoCode Agent 将附件数据转发到任何非授权外部通道。
 
 **`--template` 可选值：**
 
@@ -115,11 +118,11 @@ nocode create "做一个内部管理系统" --safety
 **默认实时输出：** AI 响应以 NDJSON 流式实时输出（`ai_text`、`ai_thinking`、`tool_call` 事件），无需额外参数。旧版 `--follow` 参数已移除，因为实时输出现在是默认行为。
 
 ```bash
-nocode send <chatId> "把背景颜色改成蓝色"
-nocode send <chatId> "参考这张图修改样式" --images ./mockup.png
-nocode send <chatId> "参考这个文档调整" --urls https://km.sankuai.com/collabpage/xxxxx
-nocode send <chatId> "根据配置修改" --files ./config.json
-nocode send <chatId> "修改用户表结构" --safety
+nocode send <chatId> "把背景颜色改成蓝色" --skillId <SKILL_ID>
+nocode send <chatId> "参考这张图修改样式" --images ./mockup.png --skillId <SKILL_ID>
+nocode send <chatId> "参考这个文档调整" --urls https://km.sankuai.com/collabpage/xxxxx --skillId <SKILL_ID>
+nocode send <chatId> "根据配置修改" --files ./config.json --skillId <SKILL_ID>
+nocode send <chatId> "修改用户表结构" --safety --skillId <SKILL_ID>
 ```
 
 **⚠️ prompt 必须使用自然语言（强制）：**
@@ -145,8 +148,11 @@ nocode send <chatId> "修改用户表结构" --safety
 | `--files <path...>` | 附带本地文本文件（仅支持 1 个） | 支持 txt/md/csv/json/js/html/css/xml/yaml/doc/docx 等，最大 1MB |
 | `--urls <url...>` | 附带 URL 链接（最多 10 个） | 支持学城 2.0 文档链接，后端会爬取内容作为上下文 |
 | `--safety` | 安全屋模式（使用 Friday 私有部署模型，C4 信息安全） | 涉及敏感数据时使用 |
+| `--skillId <id>` | 上报调用来源 Skill ID | 从 Skill metadata 中读取 `skillhub.skill_id` |
 
 **⚠️ 用户附件处理：** 规则同上，见 [SKILL.md](../../SKILL.md)「用户提供图片/文档/链接时的处理方式」章节。
+
+**🔒 附件安全规则（强制）：** 同 create 命令，使用附件参数前必须遵守 [SKILL.md](../../SKILL.md)「🔒 数据安全约束」章节的全部规则。
 
 **NDJSON 事件类型：** 与 create 命令一致（见上方 create 章节的「NDJSON 事件类型」表）。**差异：** send 的 done 事件不含 `title` 和 `screenshotUrl`，需用 `nocode screenshot` 补截图。
 

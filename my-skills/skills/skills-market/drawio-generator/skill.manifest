@@ -1,0 +1,9 @@
+skill-manifest-version: 1
+skill-id: ea12732c8ccc86b1ef54bef1f9876f796ed66372fdcf4cd4176abc69a33fb9d6
+
+files:
+  9042f9eea6ff7c302b3eecffe206b9e8470f3c8f24c51a09c1bb597da8a9cf66  SKILL.md
+  6f697c16d48dc9e62a93028d6884799985228d03a82f86bd73881c0ba2d8f32f  references/drawio-example.drawio
+  ee07838bce61423459584b0f428ec03c7f0c3a7998b2d8876a54a619840be278  references/drawio-xml-generation.md
+  370bbb8801bf4dc21849e16bdf323f947c429ce747a3f376a0f7ff0f370eaeb6  scripts/lint_and_fix.sh
+  8400d8a1a974575d311175d7ad0b9b7f3f90fd58f1cc01edd1f1f956439411a5  scripts/xml_urlencode.sh

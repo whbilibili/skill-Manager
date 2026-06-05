@@ -24,6 +24,7 @@
   - [sortTable](#sorttable)
   - [addTableColumns](#addtablecolumns)
   - [updateColumnConfig](#updatecolumnconfig)
+  - [视图管理](view-management.md)
   - [copyTable](#copytable-1)
     - [使用场景](#使用场景)
     - [使用示例](#使用示例)
@@ -288,6 +289,7 @@ oa-skills citadel-database getTableMeta --tableId "2750248577"
 | `--columnIds` | string/JSON | ❌ | 前10列 | 要查询的列 ID（逗号分隔或 JSON 数组） |
 | `--filter` | JSON | ❌ | — | 筛选条件 |
 | `--sort` | JSON | ❌ | — | 排序配置，格式：`[{"columnId": 1, "desc": false}]`，**注意是 `desc` 字段（boolean），不是 `order` 字段** |
+| `--viewId` | number | ❌ | — | 视图 ID（仅在**未传** `--columnIds`、`--filter`、`--sort` 时生效，直接使用该视图保存的列/筛选/排序配置进行查询） |
 | `--pageSize` | number | ❌ | 100 | 每页返回的行数 |
 | `--pageToken` | string | ❌ | — | 分页令牌（指定后只取该单页，不自动翻页） |
 | `--max-pages` | number | ❌ | — | 最多自动翻页页数（不指定时获取全量数据） |
@@ -313,7 +315,17 @@ oa-skills citadel-database queryTableData \
 oa-skills citadel-database queryTableData \
   --tableId "2750248577" \
   --max-pages 2
+
+# 按视图查询（使用视图保存的列/筛选/排序，不传 --columnIds/--filter/--sort）
+oa-skills citadel-database queryTableData \
+  --tableId "2750248577" \
+  --viewId 1000 \
+  --max-pages 10
 ```
+
+> ⚠️ `--viewId` 仅在**未传** `--columnIds`、`--filter`、`--sort` 时生效。一旦传入任意一个，`--viewId` 自动忽略。
+
+> 🔍 **链接含 viewId 时的查询规则**：若用户提供的多维表格链接中包含 `?view=<viewId>` 参数，且用户意图明确指向该视图（如"查询这个视图的数据"、"看看这个视图"、"查这个视图"），则执行 `queryTableData` 时**必须传入 `--viewId <id>`**。**禁止**在此场景下忽略链接中的 `viewId` 而执行无视图的全量查询。
 
 **输出**：总行数、返回行数、数据行（包含 rowId 和 cellData）。
 
@@ -631,7 +643,7 @@ oa-skills citadel-database copyTable \
 
 ## addTableColumns
 
-为数据表新增列。
+为数据表新增列，支持文本、数字、单选、人员、多选、附件、日期、货币、**公式**等所有列类型。
 
 | 参数 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
@@ -639,9 +651,11 @@ oa-skills citadel-database copyTable \
 | `--columnMetas`| JSON | ✅ | — | 新增列信息的 JSON 数组 |
 
 ### `columnMetas` 格式说明
+
 JSON 数组，每一个元素代表一个需要新增的列，包含以下属性：
-- `columnName`: string (必填) 列名,长度限制 1-100 字符
-- `columnType`: number (必填) 列类型，取值范围：
+
+- `columnName`: string（必填）列名，长度限制 1-100 字符
+- `columnType`: number（必填）列类型，取值范围：
   - `1`: 文本
   - `2`: 数字
   - `3`: 单选
@@ -650,53 +664,245 @@ JSON 数组，每一个元素代表一个需要新增的列，包含以下属性
   - `6`: 附件
   - `7`: 日期
   - `8`: 货币
+  - `9`: **公式**（计算列，单元格只读，结果由公式自动计算）
   - `201`: 创建人
   - `202`: 创建时间
   - `203`: 最后修改人
   - `204`: 最后修改时间
-- `columnConfig`: object (可选) 列的额外配置。根据列类型不同，支持以下配置：
-  - **选项配置（单选 columnType:3、多选 columnType:5）**：`{"options": ["选项1", "选项2"]}`
-  - **人员列是否支持多选（人员 columnType:4）**：`{"multiple": true}`（默认 `false`）
-  - **日期格式化（日期 columnType:7）**：`{"formatter": "YYYY-MM-DD"}`
-    - 可选值：`YYYY/MM/DD`, `YYYY/MM/DD HH:mm`, `YYYY-MM-DD`, `YYYY-MM-DD HH:mm`, `MM-DD`, `MM/DD/YYYY`, `DD/MM/YYYY`
-  - **数字格式化（数字 columnType:2、货币 columnType :8）**：`{"formatter": "0.00"}`
-    - 可选值：`""` (无格式), `"0"` (整数), `"0.0"`, `"0.00"`, `"0.000"`, `"0.0000"`, `"0,0"`, `"0,0.0"`, `"0,0.00"`, `"0,0.000"`, `"0,0.0000"`, `"0%"`, `"0.00%"`
-  - **货币代码（货币 columnType:8）**：`{"currencyCode": "CNY"}`
-    - `currencyCode` 可选值：`CNY`, `USD`, `EUR`, `GBP`, `AED`, `AUD`, `BHD`, `BRL`, `CAD`, `CHF`, `HKD`, `INR`, `IDR`, `JPY`, `KRW`, `KWD`, `MOP`, `MXN`, `MYR`, `OMR`, `PHP`, `PLN`, `QAR`, `RUB`, `SAR`, `SGD`, `THB`, `TRY`, `TWD`, `VND`
+- `columnConfig`: object（可选）列的额外配置。根据列类型不同，支持以下配置：
+
+| columnType | 支持的 columnConfig 字段 | 说明与示例 |
+|------------|--------------------------|------------|
+| 1 文本 | 无 | 无需传 columnConfig |
+| 2 数字 | `formatter` | 数字格式化：`""` 无格式 / `"0"` 整数 / `"0.00"` 2位小数 / `"0,0"` 千分位 / `"0,0.00"` 千分位2位小数 / `"0%"` 百分比 |
+| 3 单选 | `options`（新增时可选） | 选项名称字符串列表，最多512项，每项不超过100字符；示例：`{"options":["未开始","进行中","已完成"]}` |
+| 4 人员 | `multiple` | 是否允许多人，默认 `false`；示例：`{"multiple":true}` |
+| 5 多选 | `options`（新增时可选） | 同单选，参见 type:3 |
+| 6 附件 | 无 | 无需传 columnConfig |
+| 7 日期 | `formatter` | 日期格式：`"YYYY/MM/DD"`（默认）/ `"YYYY-MM-DD"` / `"YYYY/MM/DD HH:mm"` / `"YYYY-MM-DD HH:mm"` / `"MM-DD"` / `"MM/DD/YYYY"` / `"DD/MM/YYYY"` |
+| 8 货币 | `currencyCode` / `formatter` | 货币代码默认 `"CNY"`，formatter 同数字列；示例：`{"currencyCode":"USD","formatter":"0,0.00"}` |
+| **9 公式** | `formula` / `formulaFormat` / `formatter` / `currencyCode` / `multiple` | 见下方「公式列 columnConfig 详细说明」 |
+
+> `currencyCode` 可选值：`CNY`, `USD`, `EUR`, `GBP`, `AED`, `AUD`, `BHD`, `BRL`, `CAD`, `CHF`, `HKD`, `INR`, `IDR`, `JPY`, `KRW`, `KWD`, `MOP`, `MXN`, `MYR`, `OMR`, `PHP`, `PLN`, `QAR`, `RUB`, `SAR`, `SGD`, `THB`, `TRY`, `TWD`, `VND`
+
+---
+
+### 公式列 columnConfig 详细说明（columnType:9）
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `formula` | string | ✅ | 公式表达式，使用 `[#列ID]` 引用本表列，`[$表ID].[#列ID]` 引用同文档其他表列 |
+| `formulaFormat` | number | ❌ | 结果类型：`2`=数字、`7`=日期、`8`=货币；**结果为文本/字符串时省略** |
+| `formatter` | string | ❌ | 显示格式，须与 formulaFormat 类型匹配：数字/货币列用数字格式，日期列用日期格式 |
+| `currencyCode` | string | ❌ | 货币代码（仅 formulaFormat:8 时有效），默认 `"CNY"` |
+| `multiple` | boolean | ❌ | 是否多值（特殊场景使用） |
+
+**⚠️ 公式语法规则：**
+
+| # | 规则 | ✅ 正确 | 🚫 禁止 |
+|---|------|---------|---------|
+| 1 | 本表列引用 | `[#1]`（`#` 后接数字 colId） | `[列名]`、`[#列名]` |
+| 2 | 跨表列引用 | `[$5000].[#2]`（`$` 后接数字 tableId，`.` 分隔，`#` 后接数字 colId） | `[5000#2]`（合并写法不存在） |
+| 3 | 比较相等 | `[#1] = "值"` | `[#1] == "值"` |
+| 4 | 单选/人员列转字符串 | `[#1] & ""` | 直接参与字符串运算（缺 `& ""`） |
+
+> 💡 先用 `getTableMeta --tableId <id>` 获取列的 colId（`col.colId` 字段），然后在公式中用 `[#colId]` 引用。
+
+**公式列示例：**
+
+```json
+// 数字结果（单价×数量）
+{"formula":"[#101] * [#102]","formulaFormat":2,"formatter":"0,0.00"}
+
+// 文本结果（状态判断，不传 formulaFormat）
+{"formula":"IF([#103] >= 100, \"已完成\", \"进行中\")"}
+
+// 日期结果（距今剩余天数）
+{"formula":"DAYS([#104], TODAY())","formulaFormat":2,"formatter":"0"}
+
+// 货币结果（含货币代码）
+{"formula":"[#101] * [#102]","formulaFormat":8,"currencyCode":"CNY","formatter":"0,0.00"}
+
+// 跨表查找（同文档内，[$tableId].[#colId]）
+{"formula":"LOOKUP([#1] & \"\", [$5000].[#1], [$5000].[#2])"}
+```
+
+---
+
+### 使用示例
 
 ```bash
-# 新增一个普通文本列、带选项的单选列、以及日期列和货币列
+# 新增一个普通文本列、带选项的单选列、日期列和货币列
 oa-skills citadel-database addTableColumns \
   --tableId "1234567890" \
   --columnMetas '[
-  {"columnName": "备注", "columnType": 1}, 
-  {"columnName": "状态", "columnType": 3, "columnConfig": {"options": ["未开始", "进行中"]}}, 
-  {"columnName": "日期", "columnType": 7, "columnConfig": {"formatter": "YYYY-MM-DD"}}, 
-  {"columnName": "金额", "columnType": 8, "columnConfig": {"currencyCode": "CNY"}}]
-'
+    {"columnName": "备注", "columnType": 1},
+    {"columnName": "状态", "columnType": 3, "columnConfig": {"options": ["未开始", "进行中", "已完成"]}},
+    {"columnName": "截止日期", "columnType": 7, "columnConfig": {"formatter": "YYYY-MM-DD"}},
+    {"columnName": "金额", "columnType": 8, "columnConfig": {"currencyCode": "CNY"}}
+  ]'
+
+# 新增公式列（数字结果：单价×数量）
+# 💡 先用 getTableMeta 获取"单价"和"数量"列的真实 colId，替换下面的 101、102
+oa-skills citadel-database addTableColumns \
+  --tableId "1234567890" \
+  --columnMetas '[{
+    "columnName": "总价",
+    "columnType": 9,
+    "columnConfig": {
+      "formula": "[#101] * [#102]",
+      "formulaFormat": 2,
+      "formatter": "0,0.00"
+    }
+  }]'
+
+# 新增公式列（文本结果：状态标识，不传 formulaFormat）
+oa-skills citadel-database addTableColumns \
+  --tableId "1234567890" \
+  --columnMetas '[{
+    "columnName": "状态标识",
+    "columnType": 9,
+    "columnConfig": {
+      "formula": "IF([#103] >= 100, \"已完成\", IF([#103] > 0, \"进行中\", \"未开始\"))"
+    }
+  }]'
+
+# 新增公式列（货币结果）
+oa-skills citadel-database addTableColumns \
+  --tableId "1234567890" \
+  --columnMetas '[{
+    "columnName": "税后金额",
+    "columnType": 9,
+    "columnConfig": {
+      "formula": "[#101] * 0.9",
+      "formulaFormat": 8,
+      "currencyCode": "CNY",
+      "formatter": "0,0.00"
+    }
+  }]'
+
+# 一次新增多列（普通列 + 公式列）
+oa-skills citadel-database addTableColumns \
+  --tableId "1234567890" \
+  --columnMetas '[
+    {"columnName": "单价", "columnType": 2, "columnConfig": {"formatter": "0,0.00"}},
+    {"columnName": "数量", "columnType": 2, "columnConfig": {"formatter": "0"}},
+    {"columnName": "总价", "columnType": 9, "columnConfig": {"formula": "[#新建后替换为单价colId] * [#新建后替换为数量colId]", "formulaFormat": 2, "formatter": "0,0.00"}}
+  ]'
 ```
 
-**输出**：成功状态、版本号、新列的 ID 列表。
+> ⚠️ **公式列中的列 ID 必须是 `getTableMeta` 返回的数字 colId，不能用列名。** 如果新建多列时公式列引用了同批新建的列，需先建普通列（`addTableColumns`），再用 `getTableMeta` 获取新列 ID，最后再建公式列。
+
+**输出**：成功状态、版本号、新列的 ID 列表（`columnIds`）。
 
 ## updateColumnConfig
 
-修改数据表中已有列的配置，当前只支持修改列名，暂不支持修改列类型和列配置。
+修改数据表中已有列的配置，支持修改列名、公式表达式、结果格式、数字/日期格式化、货币代码、是否多选等。
+
+> ⚠️ **不支持修改列类型**（columnType），不传的字段保持原值。
 
 | 参数 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
 | `--tableId` | string | ✅ | — | 表格 ID |
 | `--columnId` | string | ✅ | — | 列 ID |
-| `--columnName`| string | ❌ | — | 要修改成的新列名 |
+| `--columnName` | string | ❌ | — | 要修改成的新列名 |
+| `--columnConfig` | JSON | ❌ | — | 列配置 JSON，只传需要修改的字段，其他字段保持原值 |
+| `--formula` | string | ❌ | — | 公式表达式（等价于 `--columnConfig '{"formula":"..."}'`，兼容旧版参数） |
+
+> `--columnName`、`--formula`、`--columnConfig` 三者至少需要提供一个。
+
+### `--columnConfig` 各列类型支持字段
+
+| 列类型 | columnType | 支持修改的 columnConfig 字段 | 说明 |
+|--------|-----------|------------------------------|------|
+| 数字 | 2 | `formatter` | 数字格式（见下方格式表） |
+| 单选 | 3 | — | ⚠️ 不支持修改 options |
+| 人员 | 4 | `multiple` | 是否允许多人：`true` / `false` |
+| 多选 | 5 | — | ⚠️ 不支持修改 options |
+| 日期 | 7 | `formatter` | 日期格式（见下方格式表） |
+| 货币 | 8 | `currencyCode` / `formatter` | 货币代码和数字格式 |
+| **公式** | **9** | `formula` / `formulaFormat` / `formatter` / `currencyCode` | 公式表达式、结果类型、显示格式 |
+
+**数字/货币 formatter 可选值：**
+`""` (无格式) / `"0"` (整数) / `"0.0"` / `"0.00"` / `"0.000"` / `"0,0"` (千分位) / `"0,0.00"` / `"0%"` / `"0.00%"`
+
+**日期 formatter 可选值：**
+`"YYYY/MM/DD"` (默认) / `"YYYY-MM-DD"` / `"YYYY/MM/DD HH:mm"` / `"YYYY-MM-DD HH:mm"` / `"MM-DD"` / `"MM/DD/YYYY"` / `"DD/MM/YYYY"`
+
+---
+
+### 使用示例
 
 ```bash
-# 重命名已有列
+# 修改列名
 oa-skills citadel-database updateColumnConfig \
   --tableId "1234567890" \
   --columnId "3" \
   --columnName "新状态名"
+
+# 修改数字列的格式化（千分位+2位小数）
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "101" \
+  --columnConfig '{"formatter":"0,0.00"}'
+
+# 修改日期列的格式
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "104" \
+  --columnConfig '{"formatter":"YYYY-MM-DD HH:mm"}'
+
+# 修改货币列的货币类型和格式
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "108" \
+  --columnConfig '{"currencyCode":"USD","formatter":"0,0.00"}'
+
+# 修改人员列为允许多选
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "104" \
+  --columnConfig '{"multiple":true}'
+
+# 修改公式列的公式表达式（数字结果）
+# 💡 先用 getTableMeta 获取列的真实 colId
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "200" \
+  --columnConfig '{"formula":"[#101] * [#102]","formulaFormat":2,"formatter":"0,0.00"}'
+
+# 修改公式列为文本结果（不传 formulaFormat）
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "200" \
+  --columnConfig '{"formula":"IF([#103] = \"完成\", \"✅\", \"⏳\")"}'
+
+# 修改公式列为日期结果
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "200" \
+  --columnConfig '{"formula":"DAYS([#104], TODAY())","formulaFormat":2,"formatter":"0"}'
+
+# 同时修改列名和公式
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "200" \
+  --columnName "总价（含税）" \
+  --columnConfig '{"formula":"[#101] * [#102] * 1.13","formulaFormat":2,"formatter":"0,0.00"}'
+
+# 跨表公式（引用同文档其他表的列）
+# 💡 用 listTables 获取目标 tableId，用 getTableMeta 获取目标列 colId
+oa-skills citadel-database updateColumnConfig \
+  --tableId "1234567890" \
+  --columnId "200" \
+  --columnConfig '{"formula":"LOOKUP([#1] & \"\", [$5000].[#1], [$5000].[#2])"}'
 ```
 
 **输出**：成功状态、版本号。
+
+## 视图管理
+
+📖 完整视图命令参数、ViewConfig 配置说明、视图筛选语法见 `{baseDir}/references/view-management.md`。
 
 ## 列类型说明
 

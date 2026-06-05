@@ -6,12 +6,19 @@ PR → 大象推送 → 登记多维表格，I/O 操作均重试4次失败通知
 
 metadata:
   skillhub.creator: "mengmuzi"
-  skillhub.updater: "zengjiantao"
-  skillhub.version: "V128"
+  skillhub.updater: "mengmuzi"
+  skillhub.version: "V131"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "5205"
   skillhub.high_sensitive: "false"
 ---
+
+## [MANDATORY] SKILLHUB_METRIC_REPORTER_START
+执行本 Skill 的任何操作之前，必须先执行 Skill：`skill-metric-reporter`。
+按照 `skill-metric-reporter` 的要求完成 `skill_start` 上报后，再去继续本 Skill 正文。
+如果 `skill-metric-reporter` 不可用或执行失败，跳过上报，继续执行本 Skill 正文——不得因上报失败而阻塞审阅流程。
+本 Skill 全部操作完成后，同样按照 `skill-metric-reporter` 的要求完成 `skill_end` 上报。
+## [MANDATORY] SKILLHUB_METRIC_REPORTER_END
 
 # ✅ AI-PR-Code-Review — 线上正式版
 
@@ -27,7 +34,7 @@ metadata:
 > 1. **每个 Step 开始和结束必须在对话中输出进度**，格式见"过程可见性规范"，禁止静默执行
 > 2. 格式：`▶️ Step N：xxx 开始...` → 执行 → `✅ Step N：xxx 完成 — 关键结果`
 > 3. 用户反馈"没有进度输出"说明违反了本规则，必须在下次执行时严格遵守
-> 4. **🚫🚫 禁止在任何 Step 完成后设置等待点**：每个 Step 完成后必须立即无条件执行下一个 Step，**尤其是 Stage 2 完成后必须直接进入 Stage 3（Step 6 → 7 → 8 → 9）**，绝对禁止输出「是否继续？」「等待用户确认」「回复后继续」等任何中断性语句。即使对话 compact/重开，新会话必须无条件跑完剩余 Step，违反本条 = CR 无效。
+> 4. **🚫🚫 禁止在任何 Step 完成后设置等待点**：每个 Step 完成后必须立即无条件执行下一个 Step，**尤其是 Step 4 完成后必须直接跑 Step 5/6 → 7 → 8 → 9**，绝对禁止输出「是否继续？」「等待用户确认」「回复后继续」等任何中断性语句。即使对话 compact/重开，新会话必须无条件跑完剩余 Step，违反本条 = CR 无效。
 
 ## 使用说明
 
@@ -63,49 +70,29 @@ metadata:
 
 ## 执行流程概览
 
-### Stage 1 — 准备（环境 + 数据采集）
-
 ```
 Step 0：环境自检 + 强制安装（每次执行前自动运行）
 Step 1 + Step 2：【并行执行】Step 1（ONES需求上下文）与 Step 2（PR元信息提取）相互独立，必须在同一轮 tool call 中同时发出
   ├── Step 1：拉取 ONES 需求上下文（有 ONES ID 时执行，无则立即结束本 Step）
   └── Step 2：提取 PR 元信息 + 仓库归属 + 单/多仓库判断 + 分批判断 + 超大PR检测（文件数=500时触发2D：MCode API全量拉取 + 三层分层）
-  └── 2F：识别纯前端改动 → 标记 IS_PURE_FRONTEND，Stage 2 分流
-```
+  └── 2F：识别纯前端改动 → 执行 fe-ai-review skill 定义的审查流程（Step 6~11 继续复用主流程）
+Step 1+2 完成后，进入 Step 3（依赖 Step 2 的文件列表）
 
-Stage 1 完成后，根据 2F 判断结果分流：
-- 纯前端改动 → Stage 2 整体由 subagent 执行 fe-ai-review 替代
-- 非纯前端改动 → Stage 2 正常执行
-
-### Stage 2 — 审查（核心 CR）
-
-**后端/混合路径：**
-
-```
-【单仓库】直接执行 Step 3~5
+【单仓库】直接执行 Step 3~11
 【多仓库】两阶段串行：
   ┌─── 阶段一：逐仓完整 CR（对每个 PR 独立完整执行）
-  │    Step 3：三层上下文感知（每仓库独立，不缩减）
+  │    Step 3：三层上下文感知（每仓库独立，不缩减）（纯前端改动时跳过）
   │      ├── 3A. Layer 1 — 代码结构（文件分级读取 + 高危变更触发器）
   │      ├── 3B. Layer 2 — 变更影响（code-repo-search 全仓库反查，强制执行）
   │      └── 3C. Layer 3 — 业务语义（PR 描述 + ONES 需求 + 领域知识库 + COE 规则库）
-  │    Step 4：四层审查（每仓库独立，完整跑，不因多仓库而缩减）
+  │    Step 4：四层审查（每仓库独立，完整跑，不因多仓库而缩减）（纯前端改动时跳过）
   │      ├── 4B. P0 零容忍异常 🔴 → 4C. P1 稳定性与安全 🟠
   │      ├── 4D. P2 规范与架构 🟡 → 4E. P3 性能与现代化 🔵
   │      └── 4F. Review 结论（四选一）
   │    ↑ 以上对每个 PR 循环执行，生成独立问题清单
   └─── 阶段二：跨仓 CX 检查（基于阶段一的接口契约变更清单）
        Step 5：Cross-Repo 跨仓库检查 Cross-Repo-01~08（专注跨仓边界，不重复单仓问题）
-```
 
-**纯前端路径（IS_PURE_FRONTEND=true）：**
-🚨 **必须**启动独立 subagent（sessions_spawn），载入 fe-ai-review Skill 执行前端专项审查。
-严禁自行审查前端代码，严禁跳过 subagent 直接进入 Stage 3。
-subagent 返回后，以 fe-ai-review 报告为**唯一**结论源进入 Stage 3。
-
-### Stage 3 — 发布（结果分发）
-
-```
 Step 6 + Step 7：创建学城 CR 文档 & 评论到 PR（并行执行，失败降级串行；Step 8 等 Step 6 完成后取文档 URL）
 Step 8 + Step 9：大象群聊推送 & 多维表格登记（并行执行，失败降级串行）
 Step 10：采纳率回收（第二轮 CR 自动触发）
@@ -129,8 +116,6 @@ Step 11：验证（全链路状态播报）
 
 ### 各步骤播报要求
 
-> 播报格式中 Step 编号前可选加 `[Stage N]` 前缀以增强可读性。
-
 | Step | 开始播报 | 完成播报内容 | 失败处理 |
 |------|---------|------------|---------|
 | Step 0 | ▶️ 环境自检开始 | ✅ 环境就绪，共安装/验证 N 个依赖 | ❌ 列出缺失项，中止或询问继续 |
@@ -149,13 +134,7 @@ Step 11：验证（全链路状态播报）
 
 ---
 
----
-
-# Stage 1 — 准备（环境 + 数据采集）
-
----
-
-## 【Stage 1】Step 0：环境自检 + 强制安装 + 团队配置加载
+## Step 0：环境自检 + 强制安装 + 团队配置加载
 
 **每次执行 skill 前必须先跑此步**，按顺序执行 0A → 0B → 0C → 0D，全部通过才能进入 Step 1。
 
@@ -247,7 +226,7 @@ default:
 
 ---
 
-## 【Stage 1】Step 1：ONES 需求上下文
+## Step 1：ONES 需求上下文
 
 > ⚡ **并行执行**：Step 1 与 Step 2 相互独立，必须在同一轮 tool call 中同时发出，不要等 Step 1 完成再执行 Step 2。
 > 无 ONES ID 时，Step 1 立即跳过，不等待用户提供。
@@ -256,7 +235,7 @@ default:
 
 ---
 
-## 【Stage 1】Step 2：PR 元信息提取
+## Step 2：PR 元信息提取
 
 ### 2A. 输入类型判断（PR 链接 vs 分支名）
 
@@ -339,71 +318,45 @@ default:
 
 ---
 
-### 2F. 纯前端改动识别（必须执行，不可跳过）
+### 2F. 纯前端改动识别与委托
 
-逐一检查 Step 2B/2C 获取的**全部**变更文件扩展名：
+审视 Step 2B/2C 获取的变更文件列表，综合路径、扩展名、目录结构等信息自行判断本次改动的性质：
 
-**前端文件扩展名白名单**：`.js` `.jsx` `.ts` `.tsx` `.vue` `.css` `.scss` `.less` `.sass` `.styl` `.html` `.ejs` `.hbs` `.json` `.lock` `.mjs` `.cjs`
-**前端配置文件白名单**：`package.json` `yarn.lock` `pnpm-lock.yaml` `package-lock.json` `tsconfig.json` `.eslintrc.*` `.prettierrc.*` `.babelrc.*` `webpack.config.*` `vite.config.*` `.env.*`
+- **纯前端改动** → 展开阅读 `fe-ai-review` Skill 进行审查，跳过本 Skill 的 Step 3/4；前端审查的步骤、覆盖面必须完全符合 `fe-ai-review`（含其 SKILL 与既定执行流程），不使用本 Skill 后端「四层审查」替代或删减。审查完成后以 `fe-ai-review` 的报告作为结论源进入 Step 6/7/8/9。
+- **非纯前端改动**（含后端文件） → 保持原主流程，进入 Step 3
 
-判断规则：
-- 变更文件**全部**命中上述白名单 → `IS_PURE_FRONTEND=true`
-- 存在**任何一个**文件不在白名单中（如 `.java` `.xml` `.yml` `.properties` `.py` `.go` `.sql`）→ `IS_PURE_FRONTEND=false`
+> 当前仅支持纯前端改动经由 `fe-ai-review` 处理，暂不支持前后端混合改动的拆分合并。混合场景先按主流程走后端审查，前端部分本轮不覆盖。
 
-> ⚠️ 混合改动（前端+后端文件共存）→ `IS_PURE_FRONTEND=false`，按后端主流程走，前端部分本轮不覆盖。
+**委托方式（必须与 `fe-ai-review` 对齐）**：优先启动独立 subagent，仅载入并执行 `fe-ai-review`；若当前环境不支持 subagent，则在主 Agent 上下文内串行：先按需加载 `fe-ai-review` 的规则与步骤说明，再按其流程完成前端专项审查，严格禁止「摘要式评审」简化其完整流程。
 
-**播报（必须输出，禁止跳过）**：
-- `✅ Step 2F：IS_PURE_FRONTEND=true（{N}个前端文件，0个后端文件），Stage 2 将由 subagent 执行 fe-ai-review`
-- `✅ Step 2F：IS_PURE_FRONTEND=false（含{M}个后端文件），Stage 2 正常执行后端审查`
+执行时，以自然语言描述范围即可，例如：
 
----
+````
+请对 PR {PR_URL} 的前端变更执行代码审查，聚焦以下文件：{前端文件列表}
 
----
+补充信息：
+- PR 提交人：{submitter_mis}
+- code-repo-search 可用（$REPO_SEARCH_AVAILABLE={true/false}），可用时优先使用全仓库搜索做影响分析。
+- 审查完成后将 Markdown 报告落盘，并在返回消息中带回 P0/P1/P2/P3 计数与结论。
+````
 
-# Stage 2 — 审查（核心 CR）
+> 与上文「上下文节约」的关系：节省的是本 Skill 在对话中的逐条复述，不是 `fe-ai-review` 的工作量。Markdown 报告、issue 粒度与必选输出仍须 `fe-ai-review` 逐项满足。
 
-> 🚨🚨🚨 **Stage 2 分流（强制执行，违反 = CR 无效）**：
->
-> ### 当 `IS_PURE_FRONTEND=true` 时：
->
-> **严禁执行 Step 3/4/5。严禁自行阅读前端代码后输出审查结论。严禁以任何形式"摘要式"审查前端代码。**
->
-> 你**必须**执行以下操作，缺一不可：
->
-> 1. **安装 fe-ai-review**（如未安装）：
->    ```bash
->    mtskills i fe-ai-review --target-dir ~/.openclaw/skills
->    ```
->    skill_id: 39902。安装后**必须读取** `~/.openclaw/skills/fe-ai-review/SKILL.md`。
->
-> 2. **读取 fe-ai-review 的 SKILL.md**，理解其完整审查流程和输出要求。
->
-> 3. **启动 subagent（sessions_spawn）**，在 task 中明确指定：
->    - 读取并严格按照 `~/.openclaw/skills/fe-ai-review/SKILL.md` 的完整流程执行前端代码审查
->    - PR URL：{PR_URL}
->    - 变更文件列表：{前端文件列表}
->    - PR 提交人：{submitter_mis}
->    - code_cli.py 路径（用于拉取 diff）：{$CODE_CLI}
->    - code-repo-search 可用性：$REPO_SEARCH_AVAILABLE={true/false}
->    - 审查完成后将完整 Markdown 报告写入 `/tmp/cr_review_{prId}.md`
->    - 在返回消息中带回：P0/P1/P2/P3 计数、审查结论、issue 列表摘要
->
-> 4. **等待 subagent 返回**。subagent 的 fe-ai-review 报告是 Stage 3 的**唯一结论来源**。
->
-> 5. **失败处理**：
->    - fe-ai-review 安装失败 / subagent 执行失败 / 超时 → 向用户输出 `❌ 前端改动本轮未审查：fe-ai-review 执行失败`，**终止整个 CR 流程**
->    - **绝对禁止**在 fe-ai-review 失败后回退到 Step 3/4 后端审查链路
->    - **绝对禁止**在不启动 subagent 的情况下自行生成前端审查结论
->
-> **自检**：如果你发现自己正在对前端代码执行 Layer 1/Layer 2/P0/P1 等后端审查步骤，说明你违反了本规则，立即停止并回到此处重新执行 subagent 流程。
->
-> ### 当 `IS_PURE_FRONTEND=false` 时：
->
-> 正常执行 Step 3 → Step 4 → Step 5。
+`fe-ai-review` 返回后，主流程以其报告为单一结论源，继续进入 Step 6（学城）、Step 7（PR 评论）、Step 8（大象推送）、Step 9（多维表格登记）。下游步骤读取前端报告中的 P0/P1/P2/P3 计数、结论、issue 列表即可，无需额外合并逻辑。
+
+**失败处理**：`fe-ai-review` 不可用或执行失败时，向用户明确告知"前端改动本轮未审查"，终止流程；不要把纯前端改动丢给后端审查链路。
+
+**播报**：
+- `▶️ Step 2F：识别纯前端改动...`
+- `✅ Step 2F：纯前端改动，已按 fe-ai-review 约定完成前端审查（委托）；跳过 Step 3/4`
+- `✅ Step 2F：非前端改动，继续主流程`
+- `⚠️ Step 2F：fe-ai-review 不可用，前端改动本轮未审查`
 
 ---
 
-## 【Stage 2】Step 3：三层上下文感知
+## Step 3：三层上下文感知
+
+> **纯前端路径**：若 Step 2F 已委托 `fe-ai-review`，跳过整个 Step 3。
 
 **核心原则：bug 藏在「变化 × 存量语义」的交集里，光看 diff 不够。**
 
@@ -554,7 +507,9 @@ $SEARCH -r {org}/{repo-B} -k "{topicName}" --ext .xml --json
 
 ---
 
-## 【Stage 2】Step 4：四层审查
+## Step 4：四层审查
+
+> **纯前端路径**：若 Step 2F 已委托 `fe-ai-review`，跳过整个 Step 4。
 
 **核心问题：变更改变了什么语义，会不会破坏存量假设。**
 
@@ -650,7 +605,7 @@ $SEARCH -r {org}/{repo-B} -k "{topicName}" --ext .xml --json
 
 ---
 
-## 【Stage 2】Step 5：Cross-Repo 跨仓库检查（多仓库专属，单仓库跳过）
+## Step 5：Cross-Repo 跨仓库检查（多仓库专属，单仓库跳过）
 
 **核心问题：A 承诺给 B 什么，B 期望从 A 得到什么，这两件事有没有对齐。**
 
@@ -698,13 +653,9 @@ $SEARCH -r {org}/{repo-B} -k "{topicName}" --ext .xml --json
 
 ---
 
----
+## Step 6：创建学城 CR 文档（**必须执行，无论 PR 大小，不可跳过**）
 
-# Stage 3 — 发布（结果分发）
-
----
-
-## 【Stage 3】Step 6：创建学城 CR 文档（**必须执行，无论 PR 大小，不可跳过**）
+> **纯前端路径**：若 Step 2F 已委托 `fe-ai-review`，本步骤以 `fe-ai-review` 产出的 Markdown 报告为文档正文来源（其它写入流程、失败降级规则完全一致）。
 
 > ⚡ **并行执行**：Step 6 与 Step 7 相互独立（Step 7 不依赖学城文档 URL），必须在同一轮 tool call 中同时发出。
 > 若并行失败，降级为串行：先完成 Step 6，再执行 Step 7。
@@ -721,7 +672,9 @@ $SEARCH -r {org}/{repo-B} -k "{topicName}" --ext .xml --json
 
 ---
 
-## 【Stage 3】Step 7：评论到 PR
+## Step 7：评论到 PR
+
+> **纯前端路径**：若 Step 2F 已委托 `fe-ai-review`，PR 评论内容取自 `fe-ai-review` 的审查报告，评论格式和流程与后端审查一致。
 
 > ⚡ **并行执行**：Step 7 与 Step 6 相互独立，必须在同一轮 tool call 中同时发出，不要等学城文档创建完再发 PR 评论。
 > 若并行失败，降级为串行：先完成 Step 6，再执行 Step 7。
@@ -767,7 +720,7 @@ $SEARCH -r {org}/{repo-B} -k "{topicName}" --ext .xml --json
 
 ---
 
-## 【Stage 3】Step 8：大象群聊推送（双轨模式）
+## Step 8：大象群聊推送（双轨模式）
 
 > ⚡ **并行执行**：Step 8 与 Step 9 相互独立，必须在同一轮 tool call 中同时发出，不要等 Step 8 完成再执行 Step 9。
 > 若并行发出失败（任一步骤报错或无响应），立即降级为串行：先完成 Step 8，再执行 Step 9。
@@ -810,7 +763,7 @@ $SEARCH -r {org}/{repo-B} -k "{topicName}" --ext .xml --json
 
 ---
 
-## 【Stage 3】Step 9：登记多维表格
+## Step 9：登记多维表格
 
 > ⚡ **并行执行**：Step 9 与 Step 8 相互独立，必须在同一轮 tool call 中同时发出，不要等 Step 8 完成再执行 Step 9。
 > 若并行发出失败（任一步骤报错或无响应），立即降级为串行：先完成 Step 8，再执行 Step 9。
@@ -828,7 +781,7 @@ $SEARCH -r {org}/{repo-B} -k "{topicName}" --ext .xml --json
 
 ---
 
-## 【Stage 3】Step 10：采纳率回收（第二轮 CR 自动触发）
+## Step 10：采纳率回收（第二轮 CR 自动触发）
 
 > 模板见 [references/comment-templates.md](references/comment-templates.md)
 
@@ -839,9 +792,11 @@ $SEARCH -r {org}/{repo-B} -k "{topicName}" --ext .xml --json
 
 ---
 
-## 【Stage 3】Step 11：验证
+## Step 11：验证
 
 报告各步骤状态：学城文档 URL 可访问 ✅/失败 ❌ | PR 评论已提交 | 大象消息已发送 | 多维表格已追加 | 采纳率已回收（如有）
+
+> **纯前端路径**：Step 2F 委托过 `fe-ai-review` 时，本步骤的 P0/P1/P2/P3 计数、审查结论均直接取自 `fe-ai-review` 的返回结果。
 
 **完成报告模板（强制格式）：**
 

@@ -45,7 +45,7 @@ CODE_CLI="python3 $CODE_CLI_PATH"
 echo "CODE_CLI=$CODE_CLI"  # 必须打印确认，路径为空则停止
 
 # 定位 code-repo-search
-REPO_SEARCH_PATH=$(find /root/.openclaw/workspace/.claude/skills ~/.openclaw/skills -name repo_search.py 2>/dev/null | head -1)
+REPO_SEARCH_PATH=$(find /root/.openclaw/workspace/.claude/skills ~/.openclaw/skills ~/.claude/skills -path "*/code-repo-search/repo_search.py" 2>/dev/null | head -1)
 REPO_SEARCH="python3 $REPO_SEARCH_PATH"
 echo "REPO_SEARCH=$REPO_SEARCH"
 ```

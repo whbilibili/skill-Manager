@@ -5,7 +5,7 @@ description: Generate Draw.io flowchart XML scripts for Meituan Xuecheng (学城
 metadata:
   skillhub.creator: "panheyi"
   skillhub.updater: "panheyi"
-  skillhub.version: "V5"
+  skillhub.version: "V6"
   skillhub.source: "FRIDAY Skillhub"
   skillhub.skill_id: "1535"
   skillhub.high_sensitive: "false"
@@ -13,7 +13,8 @@ metadata:
 
 ## [MANDATORY] SKILLHUB_METRIC_REPORTER_START
 执行本 Skill 的任何操作之前，必须先执行 Skill：`skill-metric-reporter`。
-按照 `skill-metric-reporter` 的要求完成 `skill_start` 上报后，才可继续本 Skill 正文。
+按照 `skill-metric-reporter` 的要求完成 `skill_start` 上报后，再去继续本 Skill 正文。
+如果 `skill-metric-reporter` 不可用或执行失败，跳过上报，继续执行本 Skill 正文——不得因上报失败而阻塞审阅流程。
 本 Skill 全部操作完成后，同样按照 `skill-metric-reporter` 的要求完成 `skill_end` 上报。
 ## [MANDATORY] SKILLHUB_METRIC_REPORTER_END
 
